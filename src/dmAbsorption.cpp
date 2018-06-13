@@ -33,12 +33,10 @@ int main(void){
   int Gf;
   double Gh,Gd;
 
-  //q and dE grids:
-  double qmin,qmax,demin,demax;
-  int qsteps,desteps;
-
   // Max anglular momentums
-  int max_l,max_lc,max_L;
+  int min_n, max_n;
+  int min l, max_l;
+  int min lc, max lc;
 
   std::string label; //label for output file
 
@@ -60,10 +58,6 @@ int main(void){
     ifs >> Gf >> Gh >> Gd;        getline(ifs,jnk);
     ifs >> hart_del;              getline(ifs,jnk);
     ifs >> varalpha;              getline(ifs,jnk);
-    ifs >>demin>>demax>>desteps;  getline(ifs,jnk);
-    ifs >>qmin>> qmax >> qsteps;  getline(ifs,jnk);
-    ifs >> max_l >> max_lc;       getline(ifs,jnk);
-    ifs >> max_L;                 getline(ifs,jnk);
     ifs >> label;                 getline(ifs,jnk);
     ifs.close();
   }
@@ -71,33 +65,15 @@ int main(void){
   //default Hartree convergance goal:
   if(hart_del==0) hart_del=1.e-6;
 
-  //allow for single-step in dE or q grid
-  if(desteps==1) demax=demin;
-  if(qsteps==1) qmax=qmin;
-
-  // Fix maximum angular momentum values:
-  if(max_lc<0) return 2;
-  if(max_l<0 || max_l>3) max_l=3; //default: all core states (no >f)
-  if(max_L>max_l+max_lc || max_L<0) max_L = max_l + max_lc; //triangle rule
-
   //alpha can't be zero:
   if(varalpha==0) varalpha=1.e-25;
-
-  //Convert units for input q and dE range into atomic units
-  double keV = (1.e3/HARTREE_EV);
-  demin*=keV;
-  demax*=keV;
-  double qMeV = (1.e6/(HARTREE_EV*CLIGHT));
-  qmin*=qMeV;
-  qmax*=qMeV;
-
 
   //Look-up atomic number, Z, and also A
   int Z = ATI_get_z(Z_str);
   if(Z==0) return 2;
   if(A==-1) A=ATI_a[Z]; //if none given, get default A
 
-  printf("\nRunning Atomic Kernal for %s, Z=%i A=%i\n",
+  printf("\nRunning for %s, Z=%i A=%i\n",
     Z_str.c_str(),Z,A);
   printf("*************************************************\n");
   if(Gf!=0) printf("Using Green potential: H=%.4f  d=%.4f\n",Gh,Gd);
@@ -109,6 +85,7 @@ int main(void){
   , wf.ngp,wf.h,wf.r[0],wf.r[wf.ngp-1]);
 
   // Check if 'h' is small enough for oscillating region:
+  //XXX check this - dE max??
   double h_target = (M_PI/15)/sqrt(2.*demax);
   if(wf.h>2*h_target){
     std::cout<<"\nWARNING 101: Grid not dense enough for contimuum state with "
@@ -128,6 +105,8 @@ int main(void){
     return 1;
   }
 
+  //Solve Hartree potential for core.
+  //NOTE have option for H-like !!
   if(Gf==0){
     HF_hartreeCore(wf,hart_del);
   }else{
@@ -138,6 +117,8 @@ int main(void){
     // Solve Dirac equation for each (bound) core state:
     wf.solveInitialCore();
   }
+
+  //XXX solve for the valence states here!
 
   //make list of energy indices in sorted order:
   std::vector<int> sort_list;
@@ -168,6 +149,7 @@ int main(void){
   std::vector<std::string> nklst;
 
   //pre-calculate the spherical Bessel function look-up table for efficiency
+  //XXX Only for the Born approximation
   std::cout<<std::endl;
   std::vector< std::vector< std::vector<float> > > jLqr_f;
   jLqr_f.resize(max_L+1, std::vector< std::vector<float> >
@@ -186,109 +168,19 @@ int main(void){
   }
   std::cout<<"done\n";
 
-  //Calculate the AK
-  std::cout<<"\nCalculating atomic kernal AK(q,dE):\n";
-  printf(" dE: %5.2f -- %5.1f keV  (%.2f -- %.1f au)\n"
-  ,   demin/keV,demax/keV,demin,demax);
-  printf("  q: %5.0e -- %5.1g MeV  (%.2f -- %.1f au)\n"
-  ,   qmin/qMeV,qmax/qMeV,qmin,qmax);
-  for(int ide=0; ide<desteps; ide++){
-    int pc = int(100.*ide/desteps);
-    std::cout<<" Running dE step "<<ide<<"/"<<desteps<<"  -  "<<pc<<"% done"
-    <<"                                        \r";
-    std::cout.flush();
-    double y;
-    if(desteps>1) y=ide/(desteps-1.);
-    else y=0;
-    double dE = demin*pow(demax/demin,y);
-
-    //Loop over core (bound) states:
-    std::vector< std::vector<float> > AK_nk;
-    for(size_t is=0; is<wf.nlist.size(); is++){
-      int k = wf.klist[is];
-      int l = ATI_l_k(k);
-      if(l>max_l) continue;
-      int twoj = ATI_twoj_k(k);
-      int n=wf.nlist[is];
-
-      if(ide==0){
-        std::string nk=std::to_string(n)+ATI_l(l)
-          +"_{"+std::to_string(twoj)+"/2}";
-        nklst.push_back(nk);
-      }
-
-      //Calculate continuum wavefunctions
-      double ec = dE+wf.en[is];
-      cntm.clear();
-      if(ec>0)cntm.solveLocalContinuum(ec,max_lc);
-
-      // Generate AK for each L, lc, and q
-      //NB: L and lc summed, not stored indevidually
-      std::vector<float> AK_nk_q(qsteps);
-      for(int L=0; L<=max_L; L++){
-        for(size_t ic=0; ic<cntm.klist.size(); ic++){
-          int kc = cntm.klist[ic];
-          int lc = ATI_l_k(kc);
-          if(lc > max_lc) break;
-          double dC_Lkk = CLkk(L,k,kc);
-          if(dC_Lkk==0) continue;
-          #pragma omp parallel for
-          for(int iq=0; iq<qsteps; iq++){
-            double x=iq/(qsteps-1.);
-            double q = qmin*pow(qmax/qmin,x);
-            double a = 0;
-            double jLqr = 0;
-            if(cntm.p.size()>0){
-              if(ec<=0) std::cout<<"ERROR 244: !?!?\n";
-              int maxj = wf.pinflist[is]; //don't bother going further
-              //Do the radial integral:
-              a=0;
-              for(int j=0; j<maxj; j++){
-                jLqr = jLqr_f[L][iq][j];
-                a += (wf.p[is][j]*cntm.p[ic][j] + wf.q[is][j]*cntm.q[ic][j])
-                     *jLqr*wf.drdt[j];// *h below!
-              }
-            }
-            if(ide==0) qlst[iq]=q;
-            AK_nk_q[iq] += dC_Lkk*pow(a*wf.h,2);
-          }
-        } // END loop over cntm states (ic)
-      } // end L loop
-      AK_nk.push_back(AK_nk_q);
-      cntm.clear(); //deletes cntm wfs for this energy
-    }// END loop over bound states
-    dElst.push_back(dE);
-    AK.push_back(AK_nk);
-  }
-  std::cout<<" Running dE step "<<desteps<<"/"<<desteps<<"  -  100% done  :)   "
-  <<"                \n";// extra space to over-write any left-over junk.
 
 
-  //ALSO: should write the AK array to a binary file here,
-  //for ease of use in other applictaions.
+//XXX calc cross-sections here!
 
-  //Write out to text file (in gnuplot friendly form)
-  std::ofstream ofile;
-  std::string fname = "ak-"+Z_str+"_"+label+".txt";
-  ofile.open(fname);
-  ofile<<"dE(keV) q(MeV) ";
-  for(size_t i=0; i<nklst.size(); i++) ofile<<nklst[i]<<" ";
-  if(qsteps>1){
-    ofile<<"\n";
-    for(size_t i=0; i<dElst.size(); i++) ofile<<dElst[i]/keV<<" ";
-  }
-  ofile<<"\n\n";
-  for(size_t i=0; i<AK.size(); i++){
-    for(size_t k=0; k<AK[0][0].size(); k++){
-      ofile<<dElst[i]/keV<<" "<<qlst[k]/qMeV<<" ";
-      for(size_t j=0; j<AK[0].size(); j++){
-        ofile<<AK[i][j][k]<<" ";
-      }
-      ofile<<"\n";
-    }
-    if(qsteps>1)ofile<<"\n";
-  }
-  ofile.close();
+
+
+
+
+
+
+
+
+
 
   gettimeofday(&end, NULL);
   double total_time = (end.tv_sec-start.tv_sec)
