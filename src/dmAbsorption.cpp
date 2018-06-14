@@ -223,17 +223,22 @@ int main(void){
   }
   std::cout<<"done\n";
 
-  bool skip_j=true;
+  bool skip_j=false;
+  bool every_5 = false;
 
   std::cout<<"Calculating Chi_nk^2(k) ..";
   std::vector< std::vector<float> > chi2_nk_k;
   std::vector<std::string> state_list;
+  std::vector<double> Ink_list;
+  std::vector<int> kap_list;
   for(size_t is=0; is<wf.nlist.size(); is++){
     //Only calculate for required states..
     int k = wf.klist[is];
     int l = ATI_l_k(k);
     int n = wf.nlist[is];
+    if(every_5) if(n%5!=0) continue;
     int twoj = ATI_twoj_k(k);
+    if(n==4 && l==2) continue;
     if(n<n_min || l<l_min || l>l_max)continue;
     if(n>n_max) continue;
     std::string state=std::to_string(n)+ATI_l(l)+"_{"+std::to_string(twoj)+"/2}";
@@ -242,6 +247,8 @@ int main(void){
       state=std::to_string(n)+ATI_l(l);
     }
     state_list.push_back(state);
+    Ink_list.push_back(-wf.en[is]);
+    kap_list.push_back(k);
     //calculate chi_nk^2(k) for given nk
     std::vector<float> chi2_k;
     for(int ik=0; ik<N_hw; ik++){
@@ -260,7 +267,7 @@ int main(void){
   }
   std::cout<<".. done!\n";
   std::cout<<chi2_nk_k.size()<<" "<<chi2_nk_k[0].size()<<" ";
-
+std::cout<<"269\n";
   //convert from au to eV for momentum. XXX CHECK!!
   double q_to_keV = (HARTREE_EV*CLIGHT)/1.e3;
 
@@ -283,13 +290,63 @@ int main(void){
   }
   ofile.close();
 
+  std::cout<<"292\n";
 
+  double xfill = 1; //XXX fr core, hard-coded!
 
+  double coef = (16./3.)*M_PI*ALPHA;
 
+  std::vector< std::vector<float> > s_nk_hw;
+  s_nk_hw.resize(state_list.size(), std::vector<float>(N_hw));
+std::cout<<"300\n";
+  for(int ihw=0; ihw<N_hw; ihw++){
+    double x=ihw/(N_hw-1.);
+    double hw = hw_min*pow(hw_max/hw_min,x);
+    for(size_t is=0; is<state_list.size(); is++){
+      double ef = hw - Ink_list[is];
+      if(ef<=0){
+        s_nk_hw[is][ihw]=0;
+        continue; //XX no, write zero first! XXX
+      }
+      double dj = (N_hw-1.)*log(ef/hw_min)/log(hw_max/hw_min);
+      int j = int(dj);
+      double B = dj-j;
+      double A = 1-B; //A of j, B of (j+1)
+    //  std::cout<<j<<"\n";
+      if(j<0 || j>= N_hw-1) std::cout<<j<<"\n";
+      //return 1;
 
+      double k = sqrt(2*ef);
+      double tmp_chi = A*chi2_nk_k[is][j] + B*chi2_nk_k[is][j+1];
+      coef *= fabs(kap_list[is]) * xfill;
+      double sig = coef * (pow(k,3)/hw) * tmp_chi;
+      s_nk_hw[is][ihw]=sig;
+    }
+  }
+std::cout<<"325\n";
+  //nb: only makes sense to sum the core!!
+  std::vector<float> s_hw(N_hw);
+  for(int ihw=0; ihw<N_hw; ihw++){
+    for(size_t is=0; is<state_list.size(); is++) s_hw[ihw]+=s_nk_hw[is][ihw];
+  }
 
-
-
+  //Write out to text file (in gnuplot friendly form)
+  fname = "sigma-"+Z_str+"_"+label+".txt";
+  ofile.open(fname);
+  ofile<<"hw/au hw/eV Total ";
+  for(size_t is=0; is<state_list.size(); is++)
+    ofile<<state_list[is]<<" ";
+  ofile<<"\n";
+  for(int ihw=0; ihw<N_hw; ihw++){
+    double x=ihw/(N_hw-1.);
+    double hw = hw_min*pow(hw_max/hw_min,x);
+    ofile<<hw<<" "<<hw*HARTREE_EV<<" ";
+    ofile<<s_hw[ihw]<<" ";
+    for(size_t is=0; is<state_list.size(); is++)
+      ofile<<s_nk_hw[is][ihw]<<" ";
+    ofile<<"\n";
+  }
+  ofile.close();
 
 
 
