@@ -34,33 +34,47 @@ int main(void){
   double Gh,Gd;
 
   // Max anglular momentums
-  int min_n, max_n;
-  int min l, max_l;
-  int min lc, max lc;
+  int n_min=0, n_max=10;
+  int l_min=0, l_max=0;
+  int lc_min=0, lc_max=0;
+  double hw_min, hw_max; //hbar-omega - incident energy (or m_A).
+  int N_hw;
 
   std::string label; //label for output file
 
   //Open and read the input file:
   {
     std::ifstream ifs;
-    ifs.open("dmAbsorption.in");
+    ifs.open("dmAbsorption.in"); //XXX set up so can use other inputs!
     std::string jnk;
     // read in the input parameters:
     ifs >> Z_str >> A;            getline(ifs,jnk);
     while(true){
       std::string str;
       ifs >> str;
-      if(str=="."||str=="|"||str=="!") break;
+      if(str=="0"||str=="."||str=="|"||str=="!") break;
       str_core.push_back(str);
     }
     getline(ifs,jnk);
-    ifs >> r0 >> rmax >> ngp;     getline(ifs,jnk);
-    ifs >> Gf >> Gh >> Gd;        getline(ifs,jnk);
-    ifs >> hart_del;              getline(ifs,jnk);
-    ifs >> varalpha;              getline(ifs,jnk);
-    ifs >> label;                 getline(ifs,jnk);
+    ifs >> r0 >> rmax >> ngp;         getline(ifs,jnk);
+    ifs >> Gf >> Gh >> Gd;            getline(ifs,jnk);
+    ifs >> hart_del;                  getline(ifs,jnk);
+    ifs >> n_min >> n_max;            getline(ifs,jnk);
+    ifs >> l_min >> l_max;            getline(ifs,jnk);
+    ifs >> lc_min >> lc_max;          getline(ifs,jnk);
+    ifs >> hw_min >> hw_max >> N_hw;  getline(ifs,jnk);
+    ifs >> varalpha;                  getline(ifs,jnk);
+    ifs >> label;                     getline(ifs,jnk);
     ifs.close();
   }
+
+  //convert hw from eV to a.u.
+  hw_min/=HARTREE_EV;
+  hw_max/=HARTREE_EV;
+  //allow easier single energy
+  if(N_hw==1) hw_max=hw_min;
+  //don't let the max l be too large (for S.B. look-up table)
+  if(l_max>=n_max) l_max = n_max-1;
 
   //default Hartree convergance goal:
   if(hart_del==0) hart_del=1.e-6;
@@ -76,7 +90,10 @@ int main(void){
   printf("\nRunning for %s, Z=%i A=%i\n",
     Z_str.c_str(),Z,A);
   printf("*************************************************\n");
-  if(Gf!=0) printf("Using Green potential: H=%.4f  d=%.4f\n",Gh,Gd);
+  if(Gf!=0){
+    if(Gh==0) PRM_defaultGreen(Z,Gh,Gd);
+    printf("Using Green potential: H=%.4f  d=%.4f\n",Gh,Gd);
+  }
   else printf("Using Hartree potential (converge to %.0e)\n",hart_del);
 
   //Generate the orbitals object:
@@ -86,6 +103,7 @@ int main(void){
 
   // Check if 'h' is small enough for oscillating region:
   //XXX check this - dE max??
+  double demax=10.; // XXX TEMPORARY !! XXX
   double h_target = (M_PI/15)/sqrt(2.*demax);
   if(wf.h>2*h_target){
     std::cout<<"\nWARNING 101: Grid not dense enough for contimuum state with "
@@ -97,12 +115,14 @@ int main(void){
   if(A>0) wf.sphericalNucleus();
 
   //Determine which states are in the core:
-  int core_ok = wf.determineCore(str_core);
-  if(core_ok==2){
-    std::cout<<"Problem with core: ";
-    for(size_t i=0; i<str_core.size(); i++) std::cout<<str_core[i]<<" ";
-    std::cout<<"\n";
-    return 1;
+  if(str_core.size()!=0){
+    int core_ok = wf.determineCore(str_core);
+    if(core_ok==2){
+      std::cout<<"Problem with core: ";
+      for(size_t i=0; i<str_core.size(); i++) std::cout<<str_core[i]<<" ";
+      std::cout<<"\n";
+      return 1;
+    }
   }
 
   //Solve Hartree potential for core.
@@ -118,15 +138,47 @@ int main(void){
     wf.solveInitialCore();
   }
 
-  //XXX solve for the valence states here!
+  int max_core_n=0; //max 'n' in the core (used for valence energy guess)
+  for(int i=0; i<wf.num_core; i++)
+    if(wf.nlist[i]>max_core_n) max_core_n = wf.nlist[i];
+
+  //Calculate the valence (and excited) states
+  for(int n=n_min; n<=n_max; n++){
+    for(int l=l_min; l<=l_max; l++){ //loop over l
+      if(l+1>n) continue;
+      for(int tk=0; tk<2; tk++){ //loop over k (ie j=l +/- 1/2)
+        int k;
+        if(tk==0) k=l;      //j = l - 1/2
+        else      k=-(l+1); //j = l + 1/2
+        if(k==0) continue;  // no j = l - 1/2 for l=0
+        if(wf.isInCore(n,k)) continue; //skip states already in the core
+        //This energy guess works very well for Cs, Fr etc.
+        //Works poorly (but still converges) for light atoms
+        int dn=n-max_core_n;
+        double neff=1.+dn;
+        double x=1;
+        if(max_core_n<4) x=0.25;
+        if(l==1) neff+=0.5*x;
+        if(l==2) neff+=2.*pow(x,0.5);
+        if(l>=3) neff+=4.*x;
+        double en_a = -0.5/pow(neff,2);
+        wf.solveLocalDirac(n,k,en_a);
+      }
+    }
+  }
 
   //make list of energy indices in sorted order:
   std::vector<int> sort_list;
   wf.sortedEnergyList(sort_list);
 
-  //Output results:
-  printf("\n n l_j    k Rinf its    eps     En (au)     En (/cm)    En (eV)\n");
+
+
+  //Output energies:
+  printf("\n n  l_j      k   inf  it    eps      En (au)      En (eV)\n");
   for(size_t m=0; m<sort_list.size(); m++){
+    if((int)m==wf.num_core)
+      std::cout<<" ========= Valence: ======\n"
+      << " n  l_j      k   inf  it    eps      En (au)      En (eV)\n";
     int i = sort_list[m];
     int n=wf.nlist[i];
     int k=wf.klist[i];
@@ -134,43 +186,98 @@ int main(void){
     int l = ATI_l_k(k);
     double rinf = wf.r[wf.pinflist[i]];
     double eni = wf.en[i];
-    printf("%2i %s_%i/2 %2i  %3.0f %3i  %5.0e  %11.5f %12.0f %10.2f\n",
+    printf("%2i %2s_%2i/2 %3i  %4.0f %3i  %5.0e  %11.5f %12.4f\n",
         n,ATI_l(l).c_str(),twoj,k,rinf,wf.itslist[i],wf.epslist[i],
-        eni, eni*HARTREE_ICM, eni*HARTREE_EV);
+        eni, eni*HARTREE_EV);
   }
 
   //Continuum wavefunction object
   ContinuumOrbitals cntm(wf);
 
   //Arrays to store results for outputting later:
-  std::vector< std::vector< std::vector<float> > > AK; //float ok?
-  std::vector<float> qlst(qsteps);
-  std::vector<float> dElst;
-  std::vector<std::string> nklst;
+  //std::vector< std::vector< std::vector<float> > > AK; //float ok?
+  // std::vector<float> qlst(qsteps);
+  // std::vector<float> dElst;
+  // std::vector<std::string> nklst;
 
   //pre-calculate the spherical Bessel function look-up table for efficiency
   //XXX Only for the Born approximation
   std::cout<<std::endl;
-  std::vector< std::vector< std::vector<float> > > jLqr_f;
-  jLqr_f.resize(max_L+1, std::vector< std::vector<float> >
-    (qsteps, std::vector<float>(wf.ngp)));
-  for(int L=0; L<=max_L; L++){
+  std::vector< std::vector< std::vector<float> > > jLqr;
+  int max_L = l_max+1; //+1 for g_nk case
+  int min_L = l_min-1;
+  if(min_L<0) min_L=0;
+  jLqr.resize(max_L-min_L+1, std::vector< std::vector<float> >
+    (N_hw, std::vector<float>(wf.ngp)));
+  for(int L=min_L; L<=max_L; L++){
     std::cout<<"\rCalculating spherical Bessel look-up table for L="
     <<L<<"/"<<max_L<<" .. "<<std::flush;
     #pragma omp parallel for
-    for(int iq=0; iq<qsteps; iq++){
-      double x=iq/(qsteps-1.);
-      double q = qmin*pow(qmax/qmin,x);
+    for(int ik=0; ik<N_hw; ik++){
+      double x=ik/(N_hw-1.);
+      double ef = hw_min*pow(hw_max/hw_min,x); //note: not hw!!
+      double k = sqrt(2.*ef);
       for(int ir=0; ir<wf.ngp; ir++){
-        jLqr_f[L][iq][ir] = gsl_sf_bessel_jl(L, q*wf.r[ir]);
+        jLqr[L-min_L][ik][ir] = gsl_sf_bessel_jl(L, k*wf.r[ir]);
       }
     }
   }
   std::cout<<"done\n";
 
 
+  std::cout<<"Calculating Chi_nk^2(k) ..";
+  std::vector< std::vector<float> > chi2_nk_k;
+  std::vector<std::string> state_list;
+  for(size_t is=0; is<wf.nlist.size(); is++){
+    //Only calculate for required states..
+    int k = wf.klist[is];
+    int l = ATI_l_k(k);
+    int n = wf.nlist[is];
+    int twoj = ATI_twoj_k(k);
+    if(n<n_min || l<l_min || l>l_max)continue;
+    if(n>n_max) continue;
+    std::string state=std::to_string(n)+ATI_l(l)+"_{"+std::to_string(twoj)+"/2}";
+    state_list.push_back(state);
+    //calculate chi_nk^2(k) for given nk
+    std::vector<float> chi2_k;
+    for(int ik=0; ik<N_hw; ik++){
+      //perform integral over r:
+      double fint=0, gint=0;
 
-//XXX calc cross-sections here!
+      int ltil = ATI_l_k(-k);
+      for(int ir=0; ir<wf.ngp; ir++){
+        fint += wf.p[is][ir]*wf.r[ir]*jLqr[l-min_L][ik][ir]*wf.drdt[ir];
+        gint += wf.q[is][ir]*wf.r[ir]*jLqr[ltil-min_L][ik][ir]*wf.drdt[ir];
+      }
+      double tmp_chi = (pow(fint,2)+pow(gint,2))*pow(wf.h,2);
+      chi2_k.push_back(tmp_chi);
+    }
+    chi2_nk_k.push_back(chi2_k);
+  }
+  std::cout<<".. done!\n";
+  std::cout<<chi2_nk_k.size()<<" "<<chi2_nk_k[0].size()<<" ";
+
+  //convert from au to eV for momentum. XXX CHECK!!
+  double q_to_keV = (HARTREE_EV*CLIGHT)/1.e3;
+
+  //Write out to text file (in gnuplot friendly form)
+  std::ofstream ofile;
+  std::string fname = "chi2-"+Z_str+"_"+label+".txt";
+  ofile.open(fname);
+  ofile<<"k/au k/eV en_f/eV ";
+  for(size_t is=0; is<state_list.size(); is++)
+    ofile<<state_list[is]<<" ";
+  ofile<<"\n";
+  for(int ik=0; ik<N_hw; ik++){
+    double x=ik/(N_hw-1.);
+    double ef = hw_min*pow(hw_max/hw_min,x); //note: not hw!!
+    double k = sqrt(2.*ef);
+    ofile<<k<<" "<<k*q_to_keV<<" "<<ef*HARTREE_EV<<" ";
+    for(size_t is=0; is<state_list.size(); is++)
+      ofile<<chi2_nk_k[is][ik]<<" ";
+    ofile<<"\n";
+  }
+  ofile.close();
 
 
 
