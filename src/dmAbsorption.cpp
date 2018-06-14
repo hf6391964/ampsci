@@ -90,11 +90,7 @@ int main(void){
   printf("\nRunning for %s, Z=%i A=%i\n",
     Z_str.c_str(),Z,A);
   printf("*************************************************\n");
-  if(Gf!=0){
-    if(Gh==0) PRM_defaultGreen(Z,Gh,Gd);
-    printf("Using Green potential: H=%.4f  d=%.4f\n",Gh,Gd);
-  }
-  else printf("Using Hartree potential (converge to %.0e)\n",hart_del);
+
 
   //Generate the orbitals object:
   ElectronOrbitals wf(Z,A,ngp,r0,rmax,varalpha);
@@ -102,12 +98,10 @@ int main(void){
   , wf.ngp,wf.h,wf.r[0],wf.r[wf.ngp-1]);
 
   // Check if 'h' is small enough for oscillating region:
-  //XXX check this - dE max??
-  double demax=10.; // XXX TEMPORARY !! XXX
-  double h_target = (M_PI/15)/sqrt(2.*demax);
+  double h_target = (M_PI/15)/sqrt(2.*hw_max);
   if(wf.h>2*h_target){
     std::cout<<"\nWARNING 101: Grid not dense enough for contimuum state with "
-      <<"ec="<<demax<<" (h="<<wf.h<<", need h<"<<h_target<<")\n";
+      <<"ec="<<hw_max<<" (h="<<wf.h<<", need h<"<<h_target<<")\n";
     std::cout<<"Program will continue, but continuum wfs may be bad.\n\n";
   }
 
@@ -116,6 +110,11 @@ int main(void){
 
   //Determine which states are in the core:
   if(str_core.size()!=0){
+    if(Gf!=0){
+      if(Gh==0) PRM_defaultGreen(Z,Gh,Gd);
+      printf("Using Green potential: H=%.4f  d=%.4f\n",Gh,Gd);
+    }
+    else printf("Using Hartree potential (converge to %.0e)\n",hart_del);
     int core_ok = wf.determineCore(str_core);
     if(core_ok==2){
       std::cout<<"Problem with core: ";
@@ -224,6 +223,7 @@ int main(void){
   }
   std::cout<<"done\n";
 
+  bool skip_j=true;
 
   std::cout<<"Calculating Chi_nk^2(k) ..";
   std::vector< std::vector<float> > chi2_nk_k;
@@ -237,6 +237,10 @@ int main(void){
     if(n<n_min || l<l_min || l>l_max)continue;
     if(n>n_max) continue;
     std::string state=std::to_string(n)+ATI_l(l)+"_{"+std::to_string(twoj)+"/2}";
+    if(skip_j){
+      if(l!=0 && k<0) continue;
+      state=std::to_string(n)+ATI_l(l);
+    }
     state_list.push_back(state);
     //calculate chi_nk^2(k) for given nk
     std::vector<float> chi2_k;
