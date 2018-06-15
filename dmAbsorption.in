@@ -1,12 +1,12 @@
 Rb -1               | Z, A(=-1 for default A, 0='0 nucleus')
 Kr .                | Core configuration (end with ' .')
-1.e-5 5000.  50000  | r0, rmax, num_points *1
+1.e-4 2020.  500000  | r0, rmax, num_points *1
 1 0. 0.0            | green H d *2
 1.e-6               | Hartree convergence goal. put 0 for default.
-0 4                 | n min,max [valence/excited]
-0 2                 | l min,max [valence/exited]
+5 30                | n min,max [valence/excited]
+0 0                 | l min,max [valence/exited]
 0 0                 | lc min,max [for continuum] (only for dipole approx)
-1.e-3 2.e5 500      | hw (or m_A) min,max,steps. in eV
+1.e-4 1.e6 1000     | hw (or m_A) min,max,steps. in eV
 1                   | varalpha [<<1 for non-rel [1.e-20]; =1 for normal]
 sRyd                | label for output file
 --------------------
