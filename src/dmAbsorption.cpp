@@ -9,9 +9,7 @@
 #include "HF_hartree.h"
 #include "WIG_369j.h"
 #include <gsl/gsl_sf_bessel.h>
-
-//Declare angular coeficient. [See Phys.Rev.D 93, 115037 (2016).]
-double CLkk(int L, int ka, int kb);
+// #include "dmAbsorptionFunctions.h"
 
 //******************************************************************************
 int main(void){
@@ -108,13 +106,14 @@ int main(void){
   //If non-zero A is given, use spherical nucleus.
   if(A>0) wf.sphericalNucleus();
 
-  //Determine which states are in the core:
+
   if(str_core.size()!=0){
     if(Gf!=0){
       if(Gh==0) PRM_defaultGreen(Z,Gh,Gd);
       printf("Using Green potential: H=%.4f  d=%.4f\n",Gh,Gd);
     }
     else printf("Using Hartree potential (converge to %.0e)\n",hart_del);
+    //Determine which states are in the core:
     int core_ok = wf.determineCore(str_core);
     if(core_ok==2){
       std::cout<<"Problem with core: ";
@@ -125,7 +124,7 @@ int main(void){
   }
 
   //Solve Hartree potential for core.
-  //NOTE have option for H-like !!
+  //NOTE have option for H-like !! XXX
   if(Gf==0){
     HF_hartreeCore(wf,hart_del);
   }else{
@@ -137,7 +136,8 @@ int main(void){
     wf.solveInitialCore();
   }
 
-  int max_core_n=0; //max 'n' in the core (used for valence energy guess)
+  //Find max 'n' in the core (used for valence energy guess)
+  int max_core_n=0;
   for(int i=0; i<wf.num_core; i++)
     if(wf.nlist[i]>max_core_n) max_core_n = wf.nlist[i];
 
@@ -166,6 +166,9 @@ int main(void){
     }
   }
 
+  //XXX make en_guess(n,l,nmaxcore)
+  //XXX make "solveValenceStates"
+
   //make list of energy indices in sorted order:
   std::vector<int> sort_list;
   wf.sortedEnergyList(sort_list);
@@ -193,130 +196,126 @@ int main(void){
   //Continuum wavefunction object
   ContinuumOrbitals cntm(wf);
 
-  //Arrays to store results for outputting later:
-  //std::vector< std::vector< std::vector<float> > > AK; //float ok?
-  // std::vector<float> qlst(qsteps);
-  // std::vector<float> dElst;
-  // std::vector<std::string> nklst;
+  // //pre-calculate the spherical Bessel function look-up table for efficiency
+  // //XXX Only for the Born approximation
+  //
+  // std::vector< std::vector< std::vector<float> > > jLqr;
+  // std::cout<<std::endl;
+  // int max_L = l_max+1; //+1 for g_nk case
+  // int min_L = l_min-1;
+  // if(min_L<0) min_L=0;
+  // jLqr.resize(max_L-min_L+1, std::vector< std::vector<float> >
+  //   (N_hw, std::vector<float>(wf.ngp)));
+  // for(int L=min_L; L<=max_L; L++){
+  //   std::cout<<"\rCalculating spherical Bessel look-up table for L="
+  //     <<L<<"/"<<max_L<<" .. "<<std::flush;
+  //   #pragma omp parallel for
+  //   for(int ik=0; ik<N_hw; ik++){
+  //     double x=ik/(N_hw-1.);
+  //     double ef = hw_min*pow(hw_max/hw_min,x); //note: not hw!!
+  //     double k = sqrt(2.*ef);
+  //     for(int ir=0; ir<wf.ngp; ir++){
+  //       jLqr[L-min_L][ik][ir] = gsl_sf_bessel_jl(L, k*wf.r[ir]);
+  //     }
+  //   }
+  // }
+  // std::cout<<"done\n";
+  //
+  //
+  // std::cout<<"Calculating Chi_nk^2(k) ..";
+  // std::vector< std::vector<float> > chi2_nk_k;
+  // std::vector<std::string> state_list;
+  // std::vector<double> Ink_list;
+  // std::vector<int> kap_list;
+  // for(size_t is=0; is<wf.nlist.size(); is++){
+  //   //Only calculate for required states..
+  //   int k = wf.klist[is];
+  //   int l = ATI_l_k(k);
+  //   int n = wf.nlist[is];
+  //   int twoj = ATI_twoj_k(k);
+  //   if(n<n_min || l<l_min || l>l_max) continue;
+  //   if(n>n_max) continue;
+  //   std::string state=std::to_string(n)+ATI_l(l)+"_{"+std::to_string(twoj)+"/2}";
+  //   state_list.push_back(state);
+  //   Ink_list.push_back(-wf.en[is]);
+  //   kap_list.push_back(k);
+  //   //calculate chi_nk^2(k) for given nk
+  //   std::vector<float> chi2_k;
+  //   for(int ik=0; ik<N_hw; ik++){
+  //     //perform integral over r:
+  //     double fint=0, gint=0;
+  //     int ltil = ATI_l_k(-k);
+  //     for(int ir=0; ir<wf.ngp; ir++){
+  //       fint += wf.p[is][ir]*wf.r[ir]*jLqr[l-min_L][ik][ir]*wf.drdt[ir];
+  //       gint += wf.q[is][ir]*wf.r[ir]*jLqr[ltil-min_L][ik][ir]*wf.drdt[ir];
+  //     }
+  //     double tmp_chi = (pow(fint,2)+pow(gint,2))*pow(wf.h,2);
+  //     chi2_k.push_back(tmp_chi);
+  //   }
+  //   chi2_nk_k.push_back(chi2_k);
+  // }
+  // std::cout<<".. done!\n";
+  // double q_to_keV = (HARTREE_EV*CLIGHT)/1.e3;
+  //
+  // // XXX do for core + 'not' core ?? nah, prob don't need
+  // //Write out to text file (in gnuplot friendly form)
+  // std::ofstream ofile;
+  // std::string fname = "chi2-"+Z_str+"_"+label+".txt";
+  // ofile.open(fname);
+  // ofile<<"k/au k/eV en_f/eV ";
+  // for(size_t is=0; is<state_list.size(); is++)
+  //   ofile<<state_list[is]<<" ";
+  // ofile<<"\n";
+  // for(int ik=0; ik<N_hw; ik++){
+  //   double x=ik/(N_hw-1.);
+  //   double ef = hw_min*pow(hw_max/hw_min,x); //note: not hw!!
+  //   double k = sqrt(2.*ef);
+  //   ofile<<k<<" "<<k*q_to_keV<<" "<<ef*HARTREE_EV<<" ";
+  //   for(size_t is=0; is<state_list.size(); is++)
+  //     ofile<<chi2_nk_k[is][ik]<<" ";
+  //   ofile<<"\n";
+  // }
+  // ofile.close();
+  //
+  // //XXX if "is_in_core" XXX
+  // double xfill = 0.5; //XXX fr core, hard-coded!
+  //
+  // double factor = (16./3.)*M_PI*ALPHA;
+  //
+  // std::vector< std::vector<float> > s_nk_hw;
+  // s_nk_hw.resize(state_list.size(), std::vector<float>(N_hw)); //initialise
+  // for(int ihw=0; ihw<N_hw; ihw++){
+  //   double x=ihw/(N_hw-1.);
+  //   double hw = hw_min*pow(hw_max/hw_min,x);
+  //   for(size_t is=0; is<state_list.size(); is++){
+  //     double ef = hw - Ink_list[is];
+  //     if(ef<=0) continue;
+  //     double dj = (N_hw-1.)*log(ef/hw_min)/log(hw_max/hw_min);
+  //     int j = int(dj);
+  //     double B = dj-j;
+  //     double A = 1-B; //A of j, B of (j+1)
+  //     if(j<0 || j>= N_hw-1) std::cout<<"ERROR 308: j"<<j<<"\n";
+  //     double k = sqrt(2*ef);
+  //     double tmp_chi = A*chi2_nk_k[is][j] + B*chi2_nk_k[is][j+1];
+  //     double coef = factor * fabs(kap_list[is]) * xfill;
+  //     double sig = coef * (pow(k,3)/hw) * tmp_chi;
+  //     s_nk_hw[is][ihw]=sig;
+  //   }
+  // }
 
-  //pre-calculate the spherical Bessel function look-up table for efficiency
-  //XXX Only for the Born approximation
-  std::cout<<std::endl;
-  std::vector< std::vector< std::vector<float> > > jLqr;
-  int max_L = l_max+1; //+1 for g_nk case
-  int min_L = l_min-1;
-  if(min_L<0) min_L=0;
-  jLqr.resize(max_L-min_L+1, std::vector< std::vector<float> >
-    (N_hw, std::vector<float>(wf.ngp)));
-  for(int L=min_L; L<=max_L; L++){
-    std::cout<<"\rCalculating spherical Bessel look-up table for L="
-    <<L<<"/"<<max_L<<" .. "<<std::flush;
-    #pragma omp parallel for
-    for(int ik=0; ik<N_hw; ik++){
-      double x=ik/(N_hw-1.);
-      double ef = hw_min*pow(hw_max/hw_min,x); //note: not hw!!
-      double k = sqrt(2.*ef);
-      for(int ir=0; ir<wf.ngp; ir++){
-        jLqr[L-min_L][ik][ir] = gsl_sf_bessel_jl(L, k*wf.r[ir]);
-      }
-    }
-  }
-  std::cout<<"done\n";
 
-  bool skip_j=false;
-  bool every_5 = true;
+  double factor = (4./3.)*pow(M_PI,2)*ALPHA;
 
-  std::cout<<"Calculating Chi_nk^2(k) ..";
-  std::vector< std::vector<float> > chi2_nk_k;
-  std::vector<std::string> state_list;
-  std::vector<double> Ink_list;
-  std::vector<int> kap_list;
-  for(size_t is=0; is<wf.nlist.size(); is++){
-    //Only calculate for required states..
-    int k = wf.klist[is];
-    int l = ATI_l_k(k);
-    int n = wf.nlist[is];
-    if(every_5) if(n%5!=0) continue;
-    int twoj = ATI_twoj_k(k);
-    if(n==4 && l==2) continue; //XXX hard-coded exclude core!!
-    if(n<n_min || l<l_min || l>l_max)continue;
-    if(n>n_max) continue;
-    std::string state=std::to_string(n)+ATI_l(l)+"_{"+std::to_string(twoj)+"/2}";
-    if(skip_j){
-      if(l!=0 && k<0) continue;
-      state=std::to_string(n)+ATI_l(l);
-    }
-    state_list.push_back(state);
-    Ink_list.push_back(-wf.en[is]);
-    kap_list.push_back(k);
-    //calculate chi_nk^2(k) for given nk
-    std::vector<float> chi2_k;
-    for(int ik=0; ik<N_hw; ik++){
-      //perform integral over r:
-      double fint=0, gint=0;
-      int ltil = ATI_l_k(-k);
-      for(int ir=0; ir<wf.ngp; ir++){
-        fint += wf.p[is][ir]*wf.r[ir]*jLqr[l-min_L][ik][ir]*wf.drdt[ir];
-        gint += wf.q[is][ir]*wf.r[ir]*jLqr[ltil-min_L][ik][ir]*wf.drdt[ir];
-      }
-      double tmp_chi = (pow(fint,2)+pow(gint,2))*pow(wf.h,2);
-      chi2_k.push_back(tmp_chi);
-    }
-    chi2_nk_k.push_back(chi2_k);
-  }
-  std::cout<<".. done!\n";
-  //std::cout<<chi2_nk_k.size()<<" "<<chi2_nk_k[0].size()<<" ";
-  //convert from au to eV for momentum. XXX CHECK!!
-  double q_to_keV = (HARTREE_EV*CLIGHT)/1.e3;
+  // (1) Calculate each rad_int, as a function of energy
+  // (2) There is one for each state, summed over k' - just sum, too hard o/wise
+  // (3) If summing, need include the coef!
+  // (4) Only need a few (2?) l' for each l ! don't waste time solving cntm!
+  // (5) But, for each core & each hw, need re-solve cntm => order matters??
 
-  //Write out to text file (in gnuplot friendly form)
-  std::ofstream ofile;
-  std::string fname = "chi2-"+Z_str+"_"+label+".txt";
-  ofile.open(fname);
-  ofile<<"k/au k/eV en_f/eV ";
-  for(size_t is=0; is<state_list.size(); is++)
-    ofile<<state_list[is]<<" ";
-  ofile<<"\n";
-  for(int ik=0; ik<N_hw; ik++){
-    double x=ik/(N_hw-1.);
-    double ef = hw_min*pow(hw_max/hw_min,x); //note: not hw!!
-    double k = sqrt(2.*ef);
-    ofile<<k<<" "<<k*q_to_keV<<" "<<ef*HARTREE_EV<<" ";
-    for(size_t is=0; is<state_list.size(); is++)
-      ofile<<chi2_nk_k[is][ik]<<" ";
-    ofile<<"\n";
-  }
-  ofile.close();
-
-  double xfill = 0.5; //XXX fr core, hard-coded!
-
-  double factor = (16./3.)*M_PI*ALPHA;
-
-  std::vector< std::vector<float> > s_nk_hw;
-  s_nk_hw.resize(state_list.size(), std::vector<float>(N_hw)); //initialise
-  for(int ihw=0; ihw<N_hw; ihw++){
-    double x=ihw/(N_hw-1.);
-    double hw = hw_min*pow(hw_max/hw_min,x);
-    for(size_t is=0; is<state_list.size(); is++){
-      double ef = hw - Ink_list[is];
-      if(ef<=0) continue;
-      double dj = (N_hw-1.)*log(ef/hw_min)/log(hw_max/hw_min);
-      int j = int(dj);
-      double B = dj-j;
-      double A = 1-B; //A of j, B of (j+1)
-      if(j<0 || j>= N_hw-1) std::cout<<"ERROR 308: j"<<j<<"\n";
-
-      double k = sqrt(2*ef);
-      double tmp_chi = A*chi2_nk_k[is][j] + B*chi2_nk_k[is][j+1];
-      double coef = factor * fabs(kap_list[is]) * xfill;
-      double sig = coef * (pow(k,3)/hw) * tmp_chi;
-      s_nk_hw[is][ihw]=sig;
-    }
-  }
   //nb: only makes sense to sum the core!!
-  std::vector<float> s_hw(N_hw);
+  std::vector<float> s_core(N_hw);
   for(int ihw=0; ihw<N_hw; ihw++){
-    for(size_t is=0; is<state_list.size(); is++) s_hw[ihw]+=s_nk_hw[is][ihw];
+    for(size_t is=0; is<state_list.size(); is++) s_core[ihw]+=s_nk_hw[is][ihw];
   }
 
   //Write out to text file (in gnuplot friendly form)
@@ -354,39 +353,4 @@ int main(void){
   else printf ("\nt=%.1f hours.\n",total_time/3600.);
 
   return 0;
-}
-
-
-
-//******************************************************************************
-double CLkk(int L, int ka, int kb)
-/*
-Calculates the angular coeficient (averaged over all m)
-B. M. Roberts, V. A. Dzuba, V. V. Flambaum, M. Pospelov, and Y. V. Stadnik,
-Phys. Rev. D 93, 115037 (2016). [arXiv:1604.04559]
-*/
-{
-  int two_ja = ATI_twoj_k(ka);
-  int two_jb = ATI_twoj_k(kb);
-  double ja = 0.5*two_ja;
-  double jb = 0.5*two_jb;
-  int la = ATI_l_k(ka);
-  int lb = ATI_l_k(kb);
-
-  double tjB = WIG_3j(jb,L,ja,-0.5,0,0.5);
-  if(fabs(tjB)==0) return 0;
-  double B = 1./pow(tjB,2);
-
-  //(-1)^(ja etc) -> calc sign
-  int s1 = -1;
-  if((two_ja+two_jb-2*(la+lb))%4==0) s1=1;
-
-  double tj1 = WIG_3j(lb,la,L,0,0,0);
-  double A = (1./4)*s1*(2*L+1)*pow(tj1,2);
-  double X = s1*(two_ja+1)*(two_jb+1)*pow(tj1,2);
-  double tj2 = WIG_3j(lb,la,L,-1,1,0);
-  double Y = 8*sqrt(la*(la+1)*lb*(lb+1))*tj1*tj2;
-  double Z = -4*(ka+1)*(kb+1)*pow(tj2,2);
-
-  return (A*B)*(X+Y+Z);
 }
