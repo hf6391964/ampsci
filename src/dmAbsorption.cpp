@@ -280,7 +280,13 @@ int main(void){
     K_hw_nk.push_back(K_nk);
   }
 
-
+  //nb: only makes sense to sum the core!!
+  std::vector<float> s_core(N_hw);
+  for(int ihw=0; ihw<N_hw; ihw++){
+    for(size_t is=0; is<state_list.size(); is++){
+      s_core[ihw]+=K_hw_nk[is][ihw];
+    }
+  }
 
 
 
