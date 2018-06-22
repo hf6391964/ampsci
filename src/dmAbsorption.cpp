@@ -16,7 +16,10 @@ double Ckk(int ka, int kb)
 {
   double ja = 0.5*ATI_twoj_k(ka);
   double jb = 0.5*ATI_twoj_k(kb);
-  if(fabs(ja-jb)>1) return 0; //already checked, but for safety
+  if(fabs(ja-jb)>1){
+    std::cout<<"XXX\n\n";
+    return 0; //already checked, but for safety
+  }
   int la = ATI_l_k(ka);
   int lb = ATI_l_k(kb);
   if(abs(la-lb)!=1) return 0;
@@ -231,6 +234,19 @@ int main(void){
 
   std::vector< std::vector<double> > K_hw_nk;
 
+  for(size_t is=0; is<wf.nlist.size(); is++){
+    int k = wf.klist[is];
+    int l = ATI_l_k(k);
+    int n = wf.nlist[is];
+    int twoj = ATI_twoj_k(k);
+    //if(n<n_min || n>n_max || l<l_min || l>l_max) continue;
+    std::string state=std::to_string(n)+ATI_l(l)
+      +"_{"+std::to_string(twoj)+"/2}";
+    state_list.push_back(state);
+    Ink_list.push_back(-wf.en[is]);
+    kap_list.push_back(k);
+  }
+
   for(int ihw=0; ihw<N_hw; ihw++){
     std::vector<double> K_nk;
     double x  = double(ihw)/(N_hw-1.);
@@ -241,12 +257,12 @@ int main(void){
       int l = ATI_l_k(k);
       int n = wf.nlist[is];
       int twoj = ATI_twoj_k(k);
-      if(n<n_min || n>n_max || l<l_min || l>l_max) continue;
-      std::string state=std::to_string(n)+ATI_l(l)
-        +"_{"+std::to_string(twoj)+"/2}";
-      state_list.push_back(state);
-      Ink_list.push_back(-wf.en[is]);
-      kap_list.push_back(k);
+      //if(n<n_min || n>n_max || l<l_min || l>l_max) continue;
+      // std::string state=std::to_string(n)+ATI_l(l)
+      //   +"_{"+std::to_string(twoj)+"/2}";
+      // state_list.push_back(state);
+      // Ink_list.push_back(-wf.en[is]);
+      // kap_list.push_back(k);
       double ef = hw + wf.en[is];
       if(ef<=0 || ef>ecmax){
         K_nk.push_back(0);
@@ -273,20 +289,40 @@ int main(void){
         }
         tmp_Rint *= wf.h;
         tmp_K += pow(tmp_Rint,2)*ckk;
-        //std::cout<<n<<k<<" "<<hw<<" "<<ef<<" "<<tmp_K<<"\n";
+        //std::cout<<n<<k<<" "<<hw*HARTREE_EV<<" "<<ef<<" "<<tmp_K<<"\n";
       }
       K_nk.push_back(tmp_K);
     }
     K_hw_nk.push_back(K_nk);
+    //std::cout<<ihw<<" "<<K_nk.size()<<"\n";
+  }
+
+  //std::cout<<K_hw_nk.size()<<" "<<K_hw_nk[1].size()<<"\n";
+
+  //convert K to sigma:
+  for(int i=0; i<K_hw_nk.size(); i++){
+    double x  = double(i)/(N_hw-1.);
+    double hw = hw_min*pow(hw_max/hw_min,x);
+    for(int j=0; j<K_hw_nk[i].size(); j++){
+      K_hw_nk[i][j] *= factor*(hw);
+    }
   }
 
   //nb: only makes sense to sum the core!!
   std::vector<float> s_core(N_hw);
   for(int ihw=0; ihw<N_hw; ihw++){
-    for(size_t is=0; is<state_list.size(); is++){
-      s_core[ihw]+=K_hw_nk[is][ihw];
+    s_core[ihw] = 0;
+    int index=-1;
+    for(size_t is=0; is<wf.nlist.size(); is++){
+      int k = wf.klist[is];
+      int l = ATI_l_k(k);
+      int n = wf.nlist[is];
+      //if(n<n_min || n>n_max || l<l_min || l>l_max) continue;
+      index++;
+      s_core[ihw] += K_hw_nk[ihw][index];
     }
   }
+
 
 
 
@@ -297,29 +333,33 @@ int main(void){
   //   for(size_t is=0; is<state_list.size(); is++) s_core[ihw]+=s_nk_hw[is][ihw];
   // }
   //
-  // //Write out to text file (in gnuplot friendly form)
-  // fname = "sigma-"+Z_str+"_"+label+".txt";
-  // ofile.open(fname);
-  // ofile<<"hw/au hw/eV Total ";
-  // for(size_t is=0; is<state_list.size(); is++){
-  //   int k=kap_list[is];
-  //   if(k!=-1 && k<0) continue;
-  //   ofile<<state_list[is]<<" ";
-  // }
-  // ofile<<"\n";
-  // for(int ihw=0; ihw<N_hw; ihw++){
-  //   double x=ihw/(N_hw-1.);
-  //   double hw = hw_min*pow(hw_max/hw_min,x);
-  //   ofile<<hw<<" "<<hw*HARTREE_EV<<" ";
-  //   ofile<<s_hw[ihw]<<" ";
-  //   for(size_t is=0; is<state_list.size(); is++){
-  //     int k=kap_list[is];
-  //     if(k!=-1 && k<0) continue;
-  //     ofile<<s_nk_hw[is][ihw]<<" ";
-  //   }
-  //   ofile<<"\n";
-  // }
-  // ofile.close();
+  //Write out to text file (in gnuplot friendly form)
+  std::string fname = "sigmaD-"+Z_str+"_"+label+".txt";
+  std::ofstream ofile;
+  ofile.open(fname);
+  ofile<<"hw/au hw/eV Total ";
+  for(size_t is=0; is<state_list.size(); is++){
+    //int k=kap_list[is];
+    //if(k!=-1 && k<0) continue;
+    ofile<<state_list[is]<<" ";
+  }
+  ofile<<"\n";
+  for(int ihw=0; ihw<N_hw; ihw++){
+    double x=ihw/(N_hw-1.);
+    double hw = hw_min*pow(hw_max/hw_min,x);
+    ofile<<hw<<" "<<hw*HARTREE_EV<<" ";
+    ofile<<s_core[ihw]<<" ";
+    int index=-1;
+    for(size_t is=0; is<wf.nlist.size(); is++){
+      int k=kap_list[is];
+      //if(k!=-1 && k<0) continue;
+      //if(n<n_min || n>n_max || l<l_min || l>l_max) continue;
+      index++;
+      ofile<<K_hw_nk[ihw][index]<<" ";
+    }
+    ofile<<"\n";
+  }
+  ofile.close();
 
 
 
