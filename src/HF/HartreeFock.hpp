@@ -164,6 +164,9 @@ private:
 
   static constexpr int m_max_hf_its = 99;
 
+public:
+  EpsIts hf_valence_refine2(DiracSpinor &phi) const;
+
 private:
   void hf_core_approx(const double eps_target_HF);
   void KohnSham_core(const double eps_target_HF); // KohnSham
@@ -171,7 +174,7 @@ private:
   void hf_core_refine();
 
   EpsIts hf_valence_approx(DiracSpinor &phi, double eps_target);
-  EpsIts hf_valence_refine(DiracSpinor &phi);
+  EpsIts hf_valence_refine(DiracSpinor &phi) const;
   EpsIts hf_Brueckner(DiracSpinor &Fa, const MBPT::CorrelationPotential &Sigma);
 
   void hf_orbital(DiracSpinor &phi, double en, const std::vector<double> &vl,

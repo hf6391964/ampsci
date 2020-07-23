@@ -937,7 +937,7 @@ const std::vector<double> &HartreeFock::get_Hrad_mag(int l) const {
 //******************************************************************************
 
 //******************************************************************************
-EpsIts HartreeFock::hf_valence_refine(DiracSpinor &Fa) {
+EpsIts HartreeFock::hf_valence_refine(DiracSpinor &Fa) const {
   [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
   if (p_core->empty())
     return {0, 0};
@@ -1000,6 +1000,104 @@ EpsIts HartreeFock::hf_valence_refine(DiracSpinor &Fa) {
     printf("refine: %2i %2i | %3i eps=%6.1e  en=%11.8f\n", Fa.n, Fa.k, it, eps,
            Fa.en);
   }
+  return {eps, it};
+}
+
+EpsIts HartreeFock::hf_valence_refine2(DiracSpinor &Fa) const {
+  [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
+  if (p_core->empty())
+    return {0, 0};
+
+  const auto eps_target = m_eps_HF;
+
+  const auto damper = rampedDamp(0.1, 1.0, 0, 5);
+  double extra_damp = 0.0;
+
+  const auto &vrad_el = get_Hrad_el(Fa.l());
+  const auto &Hmag = get_Hrad_mag(Fa.l());
+  const auto vl = qip::add(*p_vnuc, m_vdir, vrad_el);
+
+  // const auto vx0 = vex_approx(Fa, *p_core);
+  // const auto vexFzero = vex_approx(Fa, *p_core) * Fa;
+
+  // DiracODE::boundState(Fa, Fa.en, vl, Hmag, m_alpha, 5);
+  // for (int i = 0; i < 10; ++i) {
+  //   auto vx0 = vex_approx(Fa, *p_core);
+  //   const auto v0 = qip::add(vl, vx0);
+  //   DiracODE::boundState(Fa, Fa.en, v0, Hmag, m_alpha, 5);
+  // }
+
+  const auto Fzero = Fa;
+  const auto vexFzero = vex_approx(Fa, *p_core) * Fa;
+
+  int it = 0;
+  double eps = 1.0;
+  // std::cout << "_"
+  //           << " " << Fa.en << " " << eps << "\n";
+
+  for (int i = 0; i < 30; ++i) {
+    auto vx0 = vex_approx(Fa, *p_core);
+    const auto v0 = qip::add(vl, vx0);
+    const auto VxFa = 1.0 * (calc_vexFa(Fa) - (vx0 * Fa));
+    auto en_prev = Fa.en;
+    auto old = Fa;
+    auto en = 0.5 * (Fa.en + Fzero.en);
+    std::cout << i << " " << Fa.en << " _\n";
+    DiracODE::boundState(Fa, en, v0, Hmag, m_alpha, 15, &VxFa, 1.0);
+    Fa += 1.0 * old;
+    Fa.normalise();
+    // Fa.en = (Fa.en + 1.0 * en_prev) / 2.0;
+    eps = ((en_prev - Fa.en) / Fa.en);
+    std::cout << i << " " << Fa.en << " " << eps << "\n";
+  }
+
+  // auto prev_en = Fa.en;
+  // double best_eps = 1.0;
+  // auto VxFa = DiracSpinor(Fa.n, Fa.k, rgrid);
+
+  // int worse_count = 0;
+  // for (; it <= m_max_hf_its; ++it) {
+  //   const auto a_damp = damper(it) + extra_damp;
+  //
+  //   VxFa = calc_vexFa(Fa);
+  //   if (m_VBr) { // Breit
+  //     VxFa += (*m_VBr)(Fa);
+  //   }
+  //   const auto oldphi = Fa;
+  //   const auto en = Fzero.en + (Fzero * VxFa - Fa * vexFzero) / (Fa * Fzero);
+  //   hf_orbital(Fa, en, vl, Hmag, VxFa, (*p_core));
+  //   eps = std::abs((prev_en - Fa.en) / Fa.en);
+  //   prev_en = Fa.en;
+  //
+  //   if (it > 20 && eps > 1.5 * best_eps) {
+  //     ++worse_count;
+  //     extra_damp = extra_damp > 0 ? 0 : 0.1;
+  //   } else {
+  //     worse_count = 0;
+  //   }
+  //   const bool converged = (eps <= eps_target && it > 0);
+  //   if (converged || worse_count > 2)
+  //     break;
+  //
+  //   if (eps < best_eps)
+  //     best_eps = eps;
+  //
+  //   if constexpr (print_each_eps) {
+  //     std::cout << __LINE__ << "| " << it << " " << eps << " " << Fa.en << "
+  //     "
+  //               << en - Fzero.en << " " << Fa * Fa << "\n";
+  //   }
+  //
+  //   Fa = (1.0 - a_damp) * Fa + a_damp * oldphi;
+  //   Fa.normalise();
+  //
+  // } // End HF its
+
+  // if constexpr (print_final_eps) {
+  //   printf("refine: %2i %2i | %3i eps=%6.1e  en=%11.8f\n", Fa.n, Fa.k, it,
+  //   eps,
+  //          Fa.en);
+  // }
   return {eps, it};
 }
 

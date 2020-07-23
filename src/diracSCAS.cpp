@@ -281,6 +281,14 @@ int main(int argc, char *argv[]) {
   // run each of the modules with the calculated wavefunctions
   Module::runModules(input, wf);
 
+  const auto &hf = *wf.getHF();
+  for (auto &Fv : wf.valence) {
+    auto [e, it] = hf.hf_valence_refine2(Fv);
+    std::cout << Fv.symbol() << " " << it << " " << e << "\n";
+    break;
+  }
+  wf.printValence(false);
+
   return 0;
 }
 

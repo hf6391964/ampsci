@@ -37,7 +37,8 @@ using namespace Adams;
 //******************************************************************************
 void boundState(DiracSpinor &psi, const double en0,
                 const std::vector<double> &v, const std::vector<double> &H_mag,
-                const double alpha, int log_dele)
+                const double alpha, int log_dele, const DiracSpinor *const VxFa,
+                double zion)
 // Solves local, spherical bound state dirac equation using Adams-Moulton
 // method. Based on method presented in book by W. R. Johnson:
 //   W. R. Johnson, Atomic Structure Theory (Springer, New York, 2007)
@@ -108,7 +109,7 @@ void boundState(DiracSpinor &psi, const double en0,
     // Also stores dg (gout-gin) for PT [used for PT to find better e]
     std::vector<double> dg(2 * Param::d_ctp + 1);
     Adams::trialDiracSolution(psi.f, psi.g, dg, t_en, psi.k, v, H_mag, rgrid,
-                              ctp, Param::d_ctp, t_pinf, alpha);
+                              ctp, Param::d_ctp, t_pinf, alpha, VxFa, zion);
 
     const int counted_nodes = Adams::countNodes(psi.f, t_pinf);
 
@@ -157,16 +158,16 @@ void boundState(DiracSpinor &psi, const double en0,
   psi.pinf = (std::size_t)t_pinf;
   psi.its = t_its;
 
+  // Explicitely set 'tail' to zero (we may be re-using orbital)
+  for (auto i = psi.pinf; i < rgrid.num_points; i++) {
+    psi.f[i] = 0;
+    psi.g[i] = 0;
+  }
   // normalises the orbital (and zero's after pinf)
   const double an = 1. / std::sqrt(anorm);
   for (auto i = 0ul; i < psi.pinf; i++) {
     psi.f[i] = an * psi.f[i];
     psi.g[i] = an * psi.g[i];
-  }
-  // Explicitely set 'tail' to zero (we may be re-using orbital)
-  for (auto i = psi.pinf; i < rgrid.num_points; i++) {
-    psi.f[i] = 0;
-    psi.g[i] = 0;
   }
 
   return;
@@ -336,14 +337,15 @@ void trialDiracSolution(std::vector<double> &f, std::vector<double> &g,
                         const std::vector<double> &v,
                         const std::vector<double> &H_mag, const Grid &gr,
                         const int ctp, const int d_ctp, const int pinf,
-                        const double alpha)
+                        const double alpha, const DiracSpinor *const VxFa,
+                        double zion)
 // Performs inward (from pinf) and outward (from r0) integrations for given
 // energy. Intergated in/out towards ctp +/- d_ctp [class. turn. point]
 // Then, joins solutions, including weighted meshing around ctp +/ d_ctp
 // Also: stores dg [the difference: (gout-gin)], which is used for PT
 {
   [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
-  DiracMatrix Hd(gr, v, ka, en, alpha, H_mag);
+  DiracMatrix Hd(gr, v, ka, en, alpha, H_mag, VxFa, zion);
   outwardAM(f, g, Hd, ctp + d_ctp);
   std::vector<double> f_in(gr.num_points), g_in(gr.num_points);
   inwardAM(f_in, g_in, Hd, ctp - d_ctp, pinf - 1);
@@ -520,7 +522,7 @@ void inwardAM(std::vector<double> &f, std::vector<double> &g,
   const auto ka2 = (double)(ka * ka);
 
   const auto lambda = std::sqrt(-en * (2. + en * alpha2));
-  const auto zeta = -v[pinf] * r[pinf];
+  const auto zeta = Hd.VxFa ? Hd.zion : -v[pinf] * r[pinf]; // XXX ?
   const auto zeta2 = zeta * zeta;
   const auto sigma = (1.0 + en * alpha2) * (zeta / lambda);
   const auto Ren = en + c2; // total relativistic energy
@@ -585,43 +587,56 @@ void adamsMoulton(std::vector<double> &f, std::vector<double> &g,
 
   const auto du = Hd.pgr->du;
   // create arrays for wf derivatives
-  const auto num_points = Hd.pgr->num_points;
-  std::vector<double> df(num_points), dg(num_points);
-  std::array<double, Param::AMO> am_coef;
-  int k1 = ni - inc * Param::AMO; // nb: k1 is iterated
-  for (auto i = 0; i < Param::AMO; i++) {
-    df[i] = inc * (Hd.a(k1) * f[k1] - Hd.b(k1) * g[k1]);
-    dg[i] = inc * (Hd.d(k1) * g[k1] - Hd.c(k1) * f[k1]);
-    am_coef[i] = du * Param::AMcoef.AMd * Param::AMcoef.AMa[i];
-    k1 += inc;
+  // const auto num_points = Hd.pgr->num_points;
+  // std::vector<double> df(num_points), dg(num_points);
+  std::array<double, Param::AMO> df, dg;
+  std::array<double, Param::AMO> am;
+  // int k1 = ni - inc * Param::AMO; // nb: k1 is iterated
+  for (auto i = 0, k1 = ni - inc * Param::AMO; i < Param::AMO; i++, k1 += inc) {
+    df[i] = (Hd.a(k1) * f[k1] - Hd.b(k1) * g[k1]);
+    dg[i] = (Hd.d(k1) * g[k1] - Hd.c(k1) * f[k1]);
+    if (Hd.VxFa) {
+      df[i] += -Hd.VxFa->g[k1] * Hd.pgr->drdu[k1]; // * du;
+      dg[i] += Hd.VxFa->f[k1] * Hd.pgr->drdu[k1];  //* du;
+    }
+    am[i] = du * inc * Param::AMcoef.AMd * Param::AMcoef.AMa[i];
+    // k1 += inc;
   }
 
   // integrates the function from ni to the c.t.p
-  const double a0 = du * Param::AMcoef.AMd * Param::AMcoef.AMaa;
-  int k2 = ni;
-  for (int i = 0; i < nosteps; i++) {
-    const double dai = inc * Hd.a(k2);
-    const double dbi = inc * Hd.b(k2);
-    const double dci = inc * Hd.c(k2);
-    const double ddi = inc * Hd.d(k2);
-    const double det_inv = 1. / (1. - a0 * a0 * (dbi * dci - dai * ddi));
-    double sp = f[k2 - inc];
-    double sq = -g[k2 - inc];
+  const double a0 = inc * du * Param::AMcoef.AMd * Param::AMcoef.AMaa;
+  // int k2 = ni;
+  for (int i = 0, k2 = ni; i < nosteps; i++, k2 += inc) {
+    const double a = Hd.a(k2);
+    const double b = Hd.b(k2);
+    const double c = Hd.c(k2);
+    const double d = Hd.d(k2);
+    const double det_inv = 1.0 / (1.0 - a0 * a0 * (b * c - a * d));
+    double sf = f[k2 - inc];
+    double sg = g[k2 - inc];
     for (int l = 0; l < Param::AMO; l++) {
-      sp += am_coef[l] * df[l];
-      sq -= am_coef[l] * dg[l];
+      sf += am[l] * df[l];
+      sg += am[l] * dg[l];
     }
-    f[k2] = (sp + a0 * (dbi * sq - ddi * sp)) * det_inv;
-    g[k2] = -(sq + a0 * (dci * sp - dai * sq)) * det_inv;
+    f[k2] = (sf - a0 * (b * sg + d * sf)) * det_inv;
+    g[k2] = (sg - a0 * (c * sf + a * sg)) * det_inv;
+
+    if (k2 == nf)
+      break;
+
     // loads next 'first' k values:
     for (int l = 0; l < (Param::AMO - 1); l++) {
       df[l] = df[l + 1];
       dg[l] = dg[l + 1];
     }
     // loads next 'first' deriv's:
-    df[Param::AMO - 1] = dai * f[k2] - dbi * g[k2];
-    dg[Param::AMO - 1] = ddi * g[k2] - dci * f[k2];
-    k2 += inc;
+    df[Param::AMO - 1] = a * f[k2] - b * g[k2];
+    dg[Param::AMO - 1] = d * g[k2] - c * f[k2];
+    if (Hd.VxFa) {
+      df[Param::AMO - 1] += -Hd.VxFa->g[k2] * Hd.pgr->drdu[k2]; // * du;
+      dg[Param::AMO - 1] += Hd.VxFa->f[k2] * Hd.pgr->drdu[k2];  // * du;
+    }
+    // k2 += inc;
   }
 
 } // END adamsmoulton
@@ -631,10 +646,13 @@ void adamsMoulton(std::vector<double> &f, std::vector<double> &g,
 DiracMatrix::DiracMatrix(const Grid &in_grid, const std::vector<double> &in_v,
                          const int in_k, const double in_en,
                          const double in_alpha,
-                         const std::vector<double> &in_Hmag)
+                         const std::vector<double> &in_Hmag,
+                         const DiracSpinor *const in_VxFa, double in_zion)
     : pgr(&in_grid),
       v(&in_v),
       Hmag(in_Hmag.empty() ? nullptr : &in_Hmag),
+      VxFa(in_VxFa),
+      zion(in_zion),
       k(in_k),
       en(in_en),
       alpha(in_alpha),
