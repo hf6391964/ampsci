@@ -6,8 +6,11 @@
 #include "Maths/LinAlg_MatrixVector.hpp"
 #include "Maths/NumCalc_quadIntegrate.hpp"
 #include "Wavefunction/DiracSpinor.hpp"
+#include "qip/Maths.hpp"
+#include "qip/Vector.hpp"
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -84,7 +87,6 @@ void boundState(DiracSpinor &psi, const double en0,
     std::cerr << "\nFail96 in Adams: bad state " << psi.symbol() << "\n";
     return;
   })
-  DEBUG(std::cerr << "Start: " << psi.symbol() << ", en=" << psi.en << "\n";)
 
   const auto &rgrid = *psi.rgrid;
 
@@ -127,7 +129,7 @@ void boundState(DiracSpinor &psi, const double en0,
           (counted_nodes > required_nodes) ? true : false;
       Adams::largeEnergyChange(&t_en, &sofar, Param::lfrac_de, toomany_nodes);
     }
-    t_eps = fabs((t_en - en_old) / en_old);
+    t_eps = std::abs((t_en - en_old) / en_old);
 
     DEBUG(std::cerr << " :: it=" << t_its << " nodes:" << counted_nodes << "/"
                     << required_nodes << " new_en = " << t_en
@@ -135,7 +137,7 @@ void boundState(DiracSpinor &psi, const double en0,
           std::cin.get();)
 
     auto getting_worse = (t_its > 10 && t_eps >= 1.2 * t_eps_prev &&
-                          correct_nodes && t_eps < 1.e-5);
+                          correct_nodes && t_eps < 1.0e-5);
     auto converged = (t_eps < eps_goal && correct_nodes);
     if (converged || getting_worse)
       break;
@@ -159,16 +161,9 @@ void boundState(DiracSpinor &psi, const double en0,
   psi.its = t_its;
 
   // Explicitely set 'tail' to zero (we may be re-using orbital)
-  for (auto i = psi.pinf; i < rgrid.num_points; i++) {
-    psi.f[i] = 0;
-    psi.g[i] = 0;
-  }
-  // normalises the orbital (and zero's after pinf)
-  const double an = 1. / std::sqrt(anorm);
-  for (auto i = 0ul; i < psi.pinf; i++) {
-    psi.f[i] = an * psi.f[i];
-    psi.g[i] = an * psi.g[i];
-  }
+  psi.zero_boundaries();
+  // normalises the orbital (alrady cal'd anorm)
+  psi *= (1.0 / std::sqrt(anorm));
 
   return;
 }
@@ -184,12 +179,9 @@ void regularAtOrigin(DiracSpinor &phi, const double en,
   const auto pinf = Adams::findPracticalInfinity(phi.en, v, gr->r, Param::cALR);
   Adams::DiracMatrix Hd(*gr, v, phi.k, phi.en, alpha, H_mag);
   Adams::outwardAM(phi.f, phi.g, Hd, pinf - 1);
-  // for safety: make sure zerod! (I may re-use existing orbitals!)
-  for (std::size_t i = pinf; i < gr->num_points; i++) {
-    phi.f[i] = 0;
-    phi.g[i] = 0;
-  }
   phi.pinf = pinf;
+  // for safety: make sure zerod! (I may re-use existing orbitals!)
+  phi.zero_boundaries();
 }
 
 //******************************************************************************
@@ -203,11 +195,9 @@ void regularAtInfinity(DiracSpinor &phi, const double en,
   const auto pinf = Adams::findPracticalInfinity(phi.en, v, gr->r, Param::cALR);
   Adams::DiracMatrix Hd(*gr, v, phi.k, phi.en, alpha, H_mag);
   Adams::inwardAM(phi.f, phi.g, Hd, 0, pinf - 1);
-  for (std::size_t i = pinf; i < gr->num_points; i++) {
-    phi.f[i] = 0;
-    phi.g[i] = 0;
-  }
   phi.pinf = pinf;
+  // for safety: make sure zerod! (I may re-use existing orbitals!)
+  phi.zero_boundaries();
 }
 
 //******************************************************************************
@@ -296,10 +286,7 @@ int findPracticalInfinity(const double en, const std::vector<double> &v,
   auto pinf = r.size() - 5;
   while ((en - v[pinf - 1]) * r[pinf - 1] * r[pinf - 1] + alr < 0) {
     --pinf;
-    DEBUG(if (pinf <= 1) {
-      std::cerr << "Fail290 in WF: pinf underflowed?\n";
-      std::cin.get();
-    })
+    assert(pinf > 1);
   }
   return (int)pinf + 5;
 }
@@ -320,12 +307,10 @@ int findClassicalTurningPoint(const double en, const std::vector<double> &v,
 int countNodes(const std::vector<double> &f, const int pinf)
 // Just counts the number of times orbital (f) changes sign
 {
-  double sp = f[1];
   int counted_nodes = 0;
   for (int i = 2; i < pinf; ++i) {
-    if (sp * f[i] < 0) { // ok if f[i]==0 ?? (-0<0?) XXX
+    if (f[i - 1] * f[i] < 0) { // ok if f[i]==0 ?? (-0<0?) XXX
       ++counted_nodes;
-      sp = f[i];
     }
   }
   return counted_nodes;
@@ -380,9 +365,9 @@ void joinInOutSolutions(std::vector<double> &f, std::vector<double> &g,
   // Join the in and outward solutions. "Meshed" around ctp +/- d_ctp
   for (int i = ctp - d_ctp; i <= ctp + d_ctp; i++) {
     //"Mesh" in the intermediate region, using weighted av.
-    auto b =
-        (i - ctp > 0) ? 1. - Param::weight(i - ctp) : Param::weight(i - ctp);
-    auto a = 1. - b;
+    const auto b =
+        (i - ctp > 0) ? 1.0 - Param::weight(i - ctp) : Param::weight(i - ctp);
+    const auto a = 1.0 - b;
     f[i] = a * f[i] + b * f_in[i] * rescale;
     g[i] = a * g[i] + b * g_in[i] * rescale;
   }
@@ -517,8 +502,8 @@ void inwardAM(std::vector<double> &f, std::vector<double> &g,
   const auto &v = *(Hd.v);
 
   const auto alpha2 = alpha * alpha;
-  const auto cc = 1. / alpha;
-  const auto c2 = 1. / alpha2;
+  const auto cc = 1.0 / alpha;
+  const auto c2 = 1.0 / alpha2;
   const auto ka2 = (double)(ka * ka);
 
   const auto lambda = std::sqrt(-en * (2. + en * alpha2));
@@ -536,30 +521,30 @@ void inwardAM(std::vector<double> &f, std::vector<double> &g,
             bx[i] * cc / ((i + 1) * lambda);
     if (i < (Param::nx - 1))
       bx[i + 1] =
-          (ka2 - std::pow((double(i + 1) - sigma), 2) - zeta2 * alpha2) *
+          (ka2 - qip::pow<2>((double(i + 1) - sigma)) - zeta2 * alpha2) *
           bx[i] / (2 * (i + 1) * lambda);
   }
 
   // Generates last `AMO' points for P and Q [actually AMO+1?]
-  const double f1 = std::sqrt(1. + en * alpha2 * 0.5);
+  const double f1 = std::sqrt(1.0 + en * alpha2 * 0.5);
   const double f2 = std::sqrt(-en * 0.5) * alpha;
   for (int i = pinf; i >= (pinf - Param::AMO); i--) {
-    const double rfac = std::pow(r[i], sigma) * exp(-lambda * r[i]);
-    double ps = 1.;
-    double qs = 0.;
-    double rk = 1.;
-    double xe = 1.;
+    const double rfac = std::pow(r[i], sigma) * std::exp(-lambda * r[i]);
+    double ps = 1.0;
+    double qs = 0.0;
+    double rk = 1.0;
+    double xe = 1.0;
     for (int k = 0; k < Param::nx; k++) {
       // this will loop until a) converge, or b) k=Param::nx
       rk *= r[i];
       ps += (ax[k] / rk);
       qs += (bx[k] / rk);
-      xe = std::fmax(std::fabs(ax[k] / ps), std::fabs(bx[k] / qs)) / rk;
+      xe = std::max(std::abs(ax[k] / ps), std::abs(bx[k] / qs)) / rk;
       if (xe < Param::nx_eps) {
         break;
       }
     }
-    DEBUG(if (xe > 1.e-3) std::cerr
+    DEBUG(if (xe > 1.0e-3) std::cerr
               << "WARNING: Asymp. expansion in inwardAM didn't converge: " << i
               << " " << xe << "\n";)
     f[i] = rfac * (f1 * ps + f2 * qs);
@@ -585,58 +570,45 @@ void adamsMoulton(std::vector<double> &f, std::vector<double> &g,
     return;
   }
 
-  const auto du = Hd.pgr->du;
-  // create arrays for wf derivatives
-  // const auto num_points = Hd.pgr->num_points;
-  // std::vector<double> df(num_points), dg(num_points);
+  // create arrays for wf derivatives + Adams-Moulton coeficients
+  const auto amDdu = inc * Hd.pgr->du * Param::AMcoef.AMd;
   std::array<double, Param::AMO> df, dg;
   std::array<double, Param::AMO> am;
-  // int k1 = ni - inc * Param::AMO; // nb: k1 is iterated
-  for (auto i = 0, k1 = ni - inc * Param::AMO; i < Param::AMO; i++, k1 += inc) {
-    df[i] = (Hd.a(k1) * f[k1] - Hd.b(k1) * g[k1]);
-    dg[i] = (Hd.d(k1) * g[k1] - Hd.c(k1) * f[k1]);
+  for (auto i = 0, ri = ni - inc * Param::AMO; i < Param::AMO; i++, ri += inc) {
+    df[i] = Hd.a(ri) * f[ri] - Hd.b(ri) * g[ri];
+    dg[i] = Hd.d(ri) * g[ri] - Hd.c(ri) * f[ri];
     if (Hd.VxFa) {
-      df[i] += -Hd.VxFa->g[k1] * Hd.pgr->drdu[k1]; // * du;
-      dg[i] += Hd.VxFa->f[k1] * Hd.pgr->drdu[k1];  //* du;
+      df[i] += -Hd.VxFa->g[ri] * Hd.pgr->drdu[ri]; // * du;
+      dg[i] += Hd.VxFa->f[ri] * Hd.pgr->drdu[ri];  //* du;
     }
-    am[i] = du * inc * Param::AMcoef.AMd * Param::AMcoef.AMa[i];
-    // k1 += inc;
+    am[i] = amDdu * Param::AMcoef.AMa[i];
   }
 
   // integrates the function from ni to the c.t.p
-  const double a0 = inc * du * Param::AMcoef.AMd * Param::AMcoef.AMaa;
-  // int k2 = ni;
-  for (int i = 0, k2 = ni; i < nosteps; i++, k2 += inc) {
-    const double a = Hd.a(k2);
-    const double b = Hd.b(k2);
-    const double c = Hd.c(k2);
-    const double d = Hd.d(k2);
-    const double det_inv = 1.0 / (1.0 - a0 * a0 * (b * c - a * d));
-    double sf = f[k2 - inc];
-    double sg = g[k2 - inc];
-    for (int l = 0; l < Param::AMO; l++) {
-      sf += am[l] * df[l];
-      sg += am[l] * dg[l];
-    }
-    f[k2] = (sf - a0 * (b * sg + d * sf)) * det_inv;
-    g[k2] = (sg - a0 * (c * sf + a * sg)) * det_inv;
-
-    if (k2 == nf)
-      break;
-
-    // loads next 'first' k values:
+  const double a0 = amDdu * Param::AMcoef.AMaa;
+  const auto a02 = a0 * a0;
+  for (int i = 0, ri = ni; i < nosteps; i++, ri += inc) {
+    const double a = Hd.a(ri);
+    const double b = Hd.b(ri);
+    const double c = Hd.c(ri);
+    const double d = Hd.d(ri);
+    const double det_inv = 1.0 / (1.0 - a02 * (b * c - a * d));
+    const double sf = f[ri - inc] + qip::inner_product(am, df);
+    const double sg = g[ri - inc] + qip::inner_product(am, dg);
+    f[ri] = (sf - a0 * (b * sg + d * sf)) * det_inv;
+    g[ri] = (sg - a0 * (c * sf + a * sg)) * det_inv;
+    // Shift the derivative along
     for (int l = 0; l < (Param::AMO - 1); l++) {
       df[l] = df[l + 1];
       dg[l] = dg[l + 1];
     }
-    // loads next 'first' deriv's:
-    df[Param::AMO - 1] = a * f[k2] - b * g[k2];
-    dg[Param::AMO - 1] = d * g[k2] - c * f[k2];
+    // gets new 'last' derivative
+    df[Param::AMO - 1] = a * f[ri] - b * g[ri];
+    dg[Param::AMO - 1] = d * g[ri] - c * f[ri];
     if (Hd.VxFa) {
-      df[Param::AMO - 1] += -Hd.VxFa->g[k2] * Hd.pgr->drdu[k2]; // * du;
-      dg[Param::AMO - 1] += Hd.VxFa->f[k2] * Hd.pgr->drdu[k2];  // * du;
+      df[Param::AMO - 1] += -Hd.VxFa->g[ri] * Hd.pgr->drdu[ri]; // * du;
+      dg[Param::AMO - 1] += Hd.VxFa->f[ri] * Hd.pgr->drdu[ri];  // * du;
     }
-    // k2 += inc;
   }
 
 } // END adamsmoulton
