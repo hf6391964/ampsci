@@ -53,13 +53,17 @@ public:
   const DiracSpinor *const VxFa;
   const double zion = 1.0;
   const int k;
-  const double en, alpha, c2;
+  const double en, alpha, cc;
 
   // update a and d for off-diag additional potential (magnetic form-fac, QED)
   double a(std::size_t i) const;
   double b(std::size_t i) const;
   double c(std::size_t i) const;
   double d(std::size_t i) const;
+  double dfdu(const std::vector<double> &f, const std::vector<double> &g,
+              std::size_t i) const;
+  double dgdu(const std::vector<double> &f, const std::vector<double> &g,
+              std::size_t i) const;
 };
 
 struct TrackEnGuess {

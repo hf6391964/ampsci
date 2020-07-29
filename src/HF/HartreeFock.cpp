@@ -1003,15 +1003,16 @@ EpsIts HartreeFock::hf_valence_refine(DiracSpinor &Fa) const {
   return {eps, it};
 }
 
+//-----------------------------
 EpsIts HartreeFock::hf_valence_refine2(DiracSpinor &Fa) const {
   [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
   if (p_core->empty())
     return {0, 0};
 
-  const auto eps_target = m_eps_HF;
+  // const auto eps_target = m_eps_HF;
 
-  const auto damper = rampedDamp(0.1, 1.0, 0, 5);
-  double extra_damp = 0.0;
+  // const auto damper = rampedDamp(0.1, 1.0, 0, 5);
+  // double extra_damp = 0.0;
 
   const auto &vrad_el = get_Hrad_el(Fa.l());
   const auto &Hmag = get_Hrad_mag(Fa.l());
@@ -1026,29 +1027,50 @@ EpsIts HartreeFock::hf_valence_refine2(DiracSpinor &Fa) const {
   //   const auto v0 = qip::add(vl, vx0);
   //   DiracODE::boundState(Fa, Fa.en, v0, Hmag, m_alpha, 5);
   // }
+  {
+    const auto v0 = qip::scale(vl, 0.95); // screw up, to test!
+    DiracODE::boundState(Fa, Fa.en, v0, Hmag, m_alpha, 5);
+  }
 
   const auto Fzero = Fa;
   const auto vexFzero = vex_approx(Fa, *p_core) * Fa;
 
+  // auto vx01 = vex_approx(Fa, *p_core);
+  // for (auto i = 0; i < 2000; ++i) {
+  //   std::cout << rgrid->r[i] << " " << vl[i] << " " << vx01[i] << "\n";
+  // }
+  // std::cin.get();
+
   int it = 0;
   double eps = 1.0;
-  // std::cout << "_"
-  //           << " " << Fa.en << " " << eps << "\n";
-
-  for (int i = 0; i < 30; ++i) {
+  std::cout << "_"
+            << " " << Fa.en << " " << eps << "\n";
+  auto en_prev = Fa.en;
+  for (int i = 0; i < 100; ++i) {
     auto vx0 = vex_approx(Fa, *p_core);
-    const auto v0 = qip::add(vl, vx0);
-    const auto VxFa = 1.0 * (calc_vexFa(Fa) - (vx0 * Fa));
-    auto en_prev = Fa.en;
+    // qip::scale(vex_approx(Fa, *p_core), 0.9);
+    // const auto v0 = qip::add(vl, vx0);
+    // const auto VxFa = 1.0 * (calc_vexFa(Fa) - (vx0 * Fa));
+    double x = 0.9;
+    const auto v0 = qip::add(vl, qip::scale(vx0, x));
+    const auto VxFa = (1 - x) * (vx0 * Fa);
+
     auto old = Fa;
-    auto en = 0.5 * (Fa.en + Fzero.en);
-    std::cout << i << " " << Fa.en << " _\n";
-    DiracODE::boundState(Fa, en, v0, Hmag, m_alpha, 15, &VxFa, 1.0);
-    Fa += 1.0 * old;
-    Fa.normalise();
+    auto en_g =
+        Fzero.en; // 0.5 * (Fzero.en + Fa.en); //(2.0 * Fa.en + en_prev) / 3.0;
+    en_prev = Fa.en;
+    // auto en = Fa.en;
+    DiracODE::boundState(Fa, en_g, v0, Hmag, m_alpha, 15, &VxFa, 1.0);
+
     // Fa.en = (Fa.en + 1.0 * en_prev) / 2.0;
-    eps = ((en_prev - Fa.en) / Fa.en);
+    eps = std::abs((en_prev - Fa.en) / Fa.en);
     std::cout << i << " " << Fa.en << " " << eps << "\n";
+    if (eps < 1.0e-8 || i == 99) {
+      std::cout << i << " " << Fa.en << " " << eps << "\n";
+      break;
+    }
+    Fa += old;
+    Fa.normalise();
   }
 
   // auto prev_en = Fa.en;

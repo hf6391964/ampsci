@@ -414,13 +414,22 @@ void outwardAM(std::vector<double> &f, std::vector<double> &g,
     LinAlg::SqMatrix em(Param::AMO);
     const auto oid_du = Param::AMcoef.OId * du;
     for (int i = 0; i < Param::AMO; i++) {
-      const auto az = -v[i + i0] * r[i + i0] * alpha;
+      const std::size_t ir = static_cast<std::size_t>(i + i0);
+      const auto az = -v[ir] * r[ir] * alpha;
       ga[i] = std::sqrt(ka * ka - az * az);
-      const auto dror = drduor[i + i0];
-      coefa[i] = oid_du * (Hd.a(i + i0) - ga[i] * dror);
-      coefb[i] = oid_du * Hd.b(i + i0);
-      coefc[i] = oid_du * Hd.c(i + i0);
-      coefd[i] = oid_du * (Hd.d(i + i0) - ga[i] * dror);
+      const auto dror = drduor[ir];
+      coefa[i] = oid_du * (Hd.a(ir) - ga[i] * dror);
+      coefb[i] = -oid_du * Hd.b(ir);
+      coefc[i] = -oid_du * Hd.c(ir);
+      coefd[i] = oid_du * (Hd.d(ir) - ga[i] * dror);
+      // if (Hd.VxFa && g[ir] != 0 && f[ir] != 0) {
+      //   // OK ? needed?
+      //   coefb[i] -=
+      //       oid_du * alpha * (Hd.VxFa->g[ir] / g[ir]) * Hd.pgr->drdu[ir];
+      //   coefc[i] -=
+      //       oid_du * alpha * (Hd.VxFa->f[ir] / f[ir]) * Hd.pgr->drdu[ir];
+      // }
+
       for (int j = 0; j < Param::AMO; j++) {
         em[i][j] = Param::AMcoef.OIe[i][j];
       }
@@ -447,10 +456,11 @@ void outwardAM(std::vector<double> &f, std::vector<double> &g,
     // P(r) = r^gamma u(r)
     std::array<double, Param::AMO> us;
     for (int i = 0; i < Param::AMO; i++) {
-      us[i] = 0;
-      for (int j = 0; j < Param::AMO; j++) {
-        us[i] += fm[i][j] * s[j];
-      }
+      us[i] = qip::inner_product(s, fm[i]);
+      // us[i] = 0;
+      // for (int j = 0; j < Param::AMO; j++) {
+      //   us[i] += fm[i][j] * s[j];
+      // }
     }
 
     // writes v(r) in terms of coefs + u(r)
@@ -461,6 +471,8 @@ void outwardAM(std::vector<double> &f, std::vector<double> &g,
       for (int j = 0; j < Param::AMO; j++) {
         vs[i] += em[i][j] * (coefc[j] * us[j] - Param::AMcoef.OIa[j] * v0);
       }
+      // vs[i] = qip::inner_product(coefc, us, em[i]) -
+      //         v0 * qip::inner_product(Param::AMcoef.OIa, em[i]);
     }
 
     // writes wavefunction: P= r^gamma u(r) etc..
@@ -508,6 +520,7 @@ void inwardAM(std::vector<double> &f, std::vector<double> &g,
 
   const auto lambda = std::sqrt(-en * (2. + en * alpha2));
   const auto zeta = Hd.VxFa ? Hd.zion : -v[pinf] * r[pinf]; // XXX ?
+  // std::cout << zeta << " " << Hd.zion << " " << -v[pinf] * r[pinf] << "\n";
   const auto zeta2 = zeta * zeta;
   const auto sigma = (1.0 + en * alpha2) * (zeta / lambda);
   const auto Ren = en + c2; // total relativistic energy
@@ -570,17 +583,15 @@ void adamsMoulton(std::vector<double> &f, std::vector<double> &g,
     return;
   }
 
+  auto du = Hd.pgr->du; // 1.0; // Hd.pgr->du * Param::AMcoef.AMd;
+
   // create arrays for wf derivatives + Adams-Moulton coeficients
   const auto amDdu = inc * Hd.pgr->du * Param::AMcoef.AMd;
   std::array<double, Param::AMO> df, dg;
   std::array<double, Param::AMO> am;
   for (auto i = 0, ri = ni - inc * Param::AMO; i < Param::AMO; i++, ri += inc) {
-    df[i] = Hd.a(ri) * f[ri] - Hd.b(ri) * g[ri];
-    dg[i] = Hd.d(ri) * g[ri] - Hd.c(ri) * f[ri];
-    if (Hd.VxFa) {
-      df[i] += -Hd.VxFa->g[ri] * Hd.pgr->drdu[ri]; // * du;
-      dg[i] += Hd.VxFa->f[ri] * Hd.pgr->drdu[ri];  //* du;
-    }
+    df[i] = Hd.dfdu(f, g, ri);
+    dg[i] = Hd.dgdu(f, g, ri);
     am[i] = amDdu * Param::AMcoef.AMa[i];
   }
 
@@ -593,22 +604,45 @@ void adamsMoulton(std::vector<double> &f, std::vector<double> &g,
     const double c = Hd.c(ri);
     const double d = Hd.d(ri);
     const double det_inv = 1.0 / (1.0 - a02 * (b * c - a * d));
-    const double sf = f[ri - inc] + qip::inner_product(am, df);
-    const double sg = g[ri - inc] + qip::inner_product(am, dg);
-    f[ri] = (sf - a0 * (b * sg + d * sf)) * det_inv;
-    g[ri] = (sg - a0 * (c * sf + a * sg)) * det_inv;
+    const double det_inv2 = 1.0 / (du * du * (a * d - b * c));
+    double sf = f[ri - inc] + qip::inner_product(am, df);
+    double sg = g[ri - inc] + qip::inner_product(am, dg);
+    // if (Hd.VxFa) {
+    //   // ???
+    //   // sf -= a0 * Hd.dfdu(f, g, ri - inc);
+    //   // sg -= a0 * Hd.dgdu(f, g, ri - inc);
+    //   sf += a0 * Hd.alpha * Hd.VxFa->g[ri] * Hd.pgr->drdu[ri];
+    //   sg -= a0 * Hd.alpha * Hd.VxFa->f[ri] * Hd.pgr->drdu[ri];
+    //   // for (std::size_t ii = 0; ii < am.size(); ++ii) {
+    //   //   auto rr = ri - inc * am.size() + ii + 1;
+    //   //   sf += am[ii] * Hd.alpha * Hd.VxFa->g[ri - inc] * Hd.pgr->drdu[ri -
+    //   //   inc]; sg -= am[ii] * Hd.alpha * Hd.VxFa->f[ri - inc] *
+    //   //   Hd.pgr->drdu[ri - inc];
+    //   // }
+    // }
+    f[ri] = (sf - a0 * (d * sf - b * sg)) * det_inv;
+    g[ri] = (sg - a0 * (-c * sf + a * sg)) * det_inv;
+    if (Hd.VxFa) {
+      // not quite!?
+      f[ri] +=
+          Hd.alpha * du * (d * Hd.VxFa->g[ri] + b * Hd.VxFa->f[ri]) * det_inv2;
+      g[ri] +=
+          Hd.alpha * du * (-c * Hd.VxFa->g[ri] - a * Hd.VxFa->f[ri]) * det_inv2;
+    }
     // Shift the derivative along
     for (int l = 0; l < (Param::AMO - 1); l++) {
       df[l] = df[l + 1];
       dg[l] = dg[l + 1];
     }
     // gets new 'last' derivative
-    df[Param::AMO - 1] = a * f[ri] - b * g[ri];
-    dg[Param::AMO - 1] = d * g[ri] - c * f[ri];
-    if (Hd.VxFa) {
-      df[Param::AMO - 1] += -Hd.VxFa->g[ri] * Hd.pgr->drdu[ri]; // * du;
-      dg[Param::AMO - 1] += Hd.VxFa->f[ri] * Hd.pgr->drdu[ri];  // * du;
-    }
+    df.back() = Hd.dfdu(f, g, ri);
+    dg.back() = Hd.dgdu(f, g, ri);
+    // df.back() = Hd.a(ri) * f[ri] + Hd.b(ri) * g[ri];
+    // dg.back() = Hd.c(ri) * f[ri] + Hd.d(ri) * g[ri];
+    // if (Hd.VxFa) {
+    //   df.back() -= Hd.alpha * Hd.VxFa->g[ri] * Hd.pgr->drdu[ri];
+    //   dg.back() += Hd.alpha * Hd.VxFa->f[ri] * Hd.pgr->drdu[ri];
+    // }
   }
 
 } // END adamsmoulton
@@ -628,24 +662,34 @@ DiracMatrix::DiracMatrix(const Grid &in_grid, const std::vector<double> &in_v,
       k(in_k),
       en(in_en),
       alpha(in_alpha),
-      c2(1.0 / in_alpha / in_alpha) {}
+      cc(1.0 / in_alpha) {}
 
 // update a and d for off-diag additional potential (magnetic form-fac, QED)
 double DiracMatrix::a(std::size_t i) const {
   const auto h_mag = (Hmag == nullptr) ? 0.0 : (*Hmag)[i];
   return (double(-k)) * pgr->drduor[i] + h_mag * pgr->drdu[i];
-  // return (double(-k)) * pgr->drduor[i];
 }
 double DiracMatrix::b(std::size_t i) const {
-  return -alpha * (en + 2.0 * c2 - (*v)[i]) * pgr->drdu[i];
+  return (alpha * en + 2.0 * cc - alpha * (*v)[i]) * pgr->drdu[i];
 }
 double DiracMatrix::c(std::size_t i) const {
-  return alpha * (en - (*v)[i]) * pgr->drdu[i];
+  return alpha * ((*v)[i] - en) * pgr->drdu[i];
 }
 double DiracMatrix::d(std::size_t i) const {
   const auto h_mag = (Hmag == nullptr) ? 0.0 : (*Hmag)[i];
-  // return double(k) * pgr->drduor[i];
   return double(k) * pgr->drduor[i] - h_mag * pgr->drdu[i];
+}
+
+double DiracMatrix::dfdu(const std::vector<double> &f,
+                         const std::vector<double> &g, std::size_t i) const {
+  const auto exch = VxFa ? -alpha * VxFa->g[i] * pgr->drdu[i] : 0.0;
+  return a(i) * f[i] + b(i) * g[i] + exch;
+}
+
+double DiracMatrix::dgdu(const std::vector<double> &f,
+                         const std::vector<double> &g, std::size_t i) const {
+  const auto exch = VxFa ? alpha * VxFa->f[i] * pgr->drdu[i] : 0.0;
+  return c(i) * f[i] + d(i) * g[i] + exch;
 }
 
 } // namespace Adams
