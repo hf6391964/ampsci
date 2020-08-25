@@ -287,6 +287,8 @@ int DiracSpinor::max_kindex(const std::vector<DiracSpinor> &orbs) {
 }
 
 //******************************************************************************
+AtomData::nkappa DiracSpinor::nk() const { return {n, k}; }
+//******************************************************************************
 std::pair<double, std::string>
 DiracSpinor::check_ortho(const std::vector<DiracSpinor> &a,
                          const std::vector<DiracSpinor> &b) {

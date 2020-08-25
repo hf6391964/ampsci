@@ -126,4 +126,23 @@ constexpr int kappaFromIndex(int i) {
 constexpr int twojFromIndex(int i) { return (i % 2 == 0) ? i + 1 : i; }
 constexpr int lFromIndex(int i) { return (i % 2 == 0) ? i / 2 : (i + 1) / 2; }
 
+//******************************************************************************
+struct nkappa {
+  int n;
+  int k;
+
+  std::string symbol() const { return std::to_string(n) + kappa_symbol(k); }
+  static std::string symbol(const nkappa &nk) { return nk.symbol(); }
+  //
+  friend bool operator==(const nkappa &l, const nkappa &r) {
+    return l.n == r.n && l.k == r.k;
+  }
+  friend bool operator!=(const nkappa &l, const nkappa &r) { return !(l == r); }
+  friend bool operator<(const nkappa &l, const nkappa &r) {
+    return l.n == r.n ? indexFromKappa(l.k) < indexFromKappa(r.k) : l.n < r.n;
+  }
+  friend bool operator>(const nkappa &l, const nkappa &r) { return r < l; }
+  friend bool operator<=(const nkappa &l, const nkappa &r) { return !(r < l); }
+  friend bool operator>=(const nkappa &l, const nkappa &r) { return !(l < r); }
+};
 } // namespace AtomData

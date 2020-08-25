@@ -4,6 +4,9 @@
 #include <utility>
 #include <vector>
 class Grid;
+namespace AtomData {
+struct nkappa;
+}
 
 //******************************************************************************
 /*!
@@ -87,6 +90,8 @@ public:
   int parity() const { return m_parity; }
   //! kappa index (see Angular)
   int k_index() const { return m_k_index; }
+
+  AtomData::nkappa nk() const;
 
   //! Single-electron term symbol (e.g., 6s_1/2). Gnuplot=true => 6s_{1/2}
   std::string symbol(bool gnuplot = false) const;
