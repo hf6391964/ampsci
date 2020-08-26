@@ -61,11 +61,17 @@ public:
   //! Returns a pointer to (const) y^k_ab(r), if k valid. Else, returns nullptr
   const std::vector<double> *ptr_yk_ab(const int k, const DiracSpinor &Fa,
                                        const DiracSpinor &Fb) const {
-    const auto [min, max] = k_minmax(Fa, Fb);
-    if (k >= min && k <= max) {
-      return &get_yk_ab(k, Fa, Fb);
-    }
-    return nullptr;
+    // const auto [min, max] = k_minmax(Fa, Fb);
+    // if (k >= min && k <= max) {
+    //   return &get_yk_ab(k, Fa, Fb);
+    // }
+    // return nullptr;
+    const auto &[kmin, kmax] = k_minmax(Fa, Fb);
+    const auto ik = std::size_t(k - kmin);
+    const auto yab = ptr_y_ab(Fa, Fb);
+    if (yab == nullptr || k < kmin || k > kmax || ik >= yab->size())
+      return nullptr;
+    return &(*yab)[ik];
   }
 
   const std::vector<double> &operator()(const int k, const DiracSpinor &Fa,
@@ -78,6 +84,10 @@ public:
   //! NOTE: Fa MUST be member of a_orbitals, Fb of b_or
   const std::vector<std::vector<double>> &get_y_ab(const DiracSpinor &Fa,
                                                    const DiracSpinor &Fb) const;
+
+  const std::vector<std::vector<double>> *ptr_y_ab(const DiracSpinor &Fa,
+                                                   const DiracSpinor &Fb) const;
+
   const std::vector<std::vector<double>> &
   operator()(const DiracSpinor &Fa, const DiracSpinor &Fb) const {
     return get_y_ab(Fa, Fb);

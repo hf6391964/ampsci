@@ -234,6 +234,16 @@ bool operator<=(const DiracSpinor &lhs, const DiracSpinor &rhs) {
 bool operator>=(const DiracSpinor &lhs, const DiracSpinor &rhs) {
   return !(lhs < rhs);
 }
+
+//******************************************************************************
+AtomData::nkappa DiracSpinor::nk() const { return {n, k}; }
+// bool operator==(const AtomData::nkappa &l, const DiracSpinor &r) {
+//   return l == r.nk();
+// }
+// bool operator==(const DiracSpinor &l, const AtomData::nkappa &r) {
+//   return l.nk() == r;
+// }
+
 //******************************************************************************
 // static
 std::string DiracSpinor::state_config(const std::vector<DiracSpinor> &orbs) {
@@ -286,8 +296,6 @@ int DiracSpinor::max_kindex(const std::vector<DiracSpinor> &orbs) {
              : std::max_element(cbegin(orbs), cend(orbs), comp_ki)->k_index();
 }
 
-//******************************************************************************
-AtomData::nkappa DiracSpinor::nk() const { return {n, k}; }
 //******************************************************************************
 std::pair<double, std::string>
 DiracSpinor::check_ortho(const std::vector<DiracSpinor> &a,

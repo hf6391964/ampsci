@@ -77,6 +77,15 @@ inline int min_lambda_tj(int tja, int tjb, int tjc, int tjd) {
 inline int max_lambda_tj(int tja, int tjb, int tjc, int tjd) {
   return std::min((tja + tjd), (tjb + tjc)) / 2;
 }
+
+//! @brief Minimum 'k' allowed for C^k_ac*C^k_bd
+inline int min_k_CkCk(int tja, int tjb, int tjc, int tjd) {
+  return std::max(std::abs(tja - tjc), std::abs(tjb - tjd)) / 2;
+}
+//! @brief Minimum 'k' allowed for C^k_ac*C^k_bd
+inline int max_k_CkCk(int tja, int tjb, int tjc, int tjd) {
+  return std::min((tja + tjc), (tjb + tjd)) / 2;
+}
 //******************************************************************************
 //! @brief Returns true if a is even
 constexpr bool evenQ(int a) { return (a % 2 == 0); }

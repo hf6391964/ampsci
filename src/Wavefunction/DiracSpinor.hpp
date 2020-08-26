@@ -4,9 +4,10 @@
 #include <utility>
 #include <vector>
 class Grid;
-namespace AtomData {
-struct nkappa;
-}
+// namespace AtomData {
+// struct nkappa;
+// }
+#include "Physics/AtomData.hpp" // nkappa
 
 //******************************************************************************
 /*!
@@ -142,6 +143,13 @@ public:
   friend bool operator>(const DiracSpinor &lhs, const DiracSpinor &rhs);
   friend bool operator<=(const DiracSpinor &lhs, const DiracSpinor &rhs);
   friend bool operator>=(const DiracSpinor &lhs, const DiracSpinor &rhs);
+
+  friend bool operator==(const AtomData::nkappa &l, const DiracSpinor &r) {
+    return l == r.nk();
+  }
+  friend bool operator==(const DiracSpinor &l, const AtomData::nkappa &r) {
+    return l.nk() == r;
+  }
 
   // Custom comparitors
   static bool comp_l(const DiracSpinor &lhs, const DiracSpinor &rhs) {

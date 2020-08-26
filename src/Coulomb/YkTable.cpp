@@ -75,6 +75,18 @@ YkTable::get_y_ab(const DiracSpinor &Fa, const DiracSpinor &Fb) const {
   return (m_aisb && ib > ia) ? m_y_abkr[ib][ia] : m_y_abkr[ia][ib];
 }
 
+const std::vector<std::vector<double>> *
+YkTable::ptr_y_ab(const DiracSpinor &Fa, const DiracSpinor &Fb) const {
+  const auto a = std::find(m_a_orbs->cbegin(), m_a_orbs->cend(), Fa);
+  const auto b =
+      Fa == Fb ? a : std::find(m_b_orbs->cbegin(), m_b_orbs->cend(), Fb);
+  if (a == m_a_orbs->cend() || b == m_b_orbs->cend())
+    return nullptr;
+  const auto ia = std::size_t(a - m_a_orbs->cbegin());
+  const auto ib = std::size_t(b - m_b_orbs->cbegin());
+  return (m_aisb && ib > ia) ? &m_y_abkr[ib][ia] : &m_y_abkr[ia][ib];
+}
+
 //******************************************************************************
 void YkTable::update_y_ints() {
   resize_y();
