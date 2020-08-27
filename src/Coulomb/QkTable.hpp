@@ -20,26 +20,32 @@ class DiracSpinor;
 namespace Coulomb {
 
 class QkTable {
-  using Real = double; // make template
+  using Real = float; // make template
   using Nk = AtomData::nkappa;
   using Nkabcd = std::array<Nk, 4>;
 
-  /*
-  #include "Coulomb/QkTable.hpp"
-    Coulomb::QkTable(&core, &excited, &excited, &core);
-    // Coulomb::QkTable(&excited, &core, &excited, &core);
-    // Coulomb::QkTable(&wf.basis);
-  */
-  std::vector<std::vector<Real>> m_Rabcd_k{};
-  std::vector<Nkabcd> m_keys{};
+  // map:
   std::map<Nkabcd, std::vector<Real>> m_Rmap_k{};
-  // m_Rabcd_k should be always same size as m_keys!
+  // store vector of pointers into map, so that I can random access the map
+  std::vector<std::pair<const Nkabcd, std::vector<Real>> *> m_pQk{};
+  Angular::Ck_ab m_Ck{};
+  Angular::SixJ m_6j{};
+
+  const bool b_is_d;
+  const bool a_is_c;
+  const bool c_is_d; // required for exchange
+  const bool all_same;
 
 public:
   QkTable(const std::vector<DiracSpinor> *as,
           const std::vector<DiracSpinor> *bs = nullptr,
           const std::vector<DiracSpinor> *cs = nullptr,
-          const std::vector<DiracSpinor> *ds = nullptr) {
+          const std::vector<DiracSpinor> *ds = nullptr)
+      : b_is_d(!bs || bs == ds),
+        a_is_c(!cs || as == cs),
+        c_is_d(!ds || cs == ds),
+        all_same(b_is_d && a_is_c && (!bs || as == bs)) {
+
     assert(as != nullptr);
     if (!bs)
       bs = as;
@@ -48,91 +54,112 @@ public:
     if (!ds)
       ds = cs;
 
-    m_keys.reserve(144789);
-    m_Rabcd_k.reserve(144789);
+    // Find maximum (2j), and fill the 3j and 6j symbol tables:
+    const auto mtja = DiracSpinor::max_tj(*as);
+    const auto mtjb = DiracSpinor::max_tj(*bs);
+    const auto mtjc = DiracSpinor::max_tj(*cs);
+    const auto mtjd = DiracSpinor::max_tj(*ds);
+    const auto max_tj = std::max({mtja, mtjb, mtjc, mtjd});
+    m_Ck.fill_maxK_twojmax(max_tj, max_tj);
+    m_6j.fill(max_tj, max_tj);
 
+    // First loop through and 'size' the arrays, without calculating anything.
+    // Since, we can't do this part in parallel!
+    std::cout << "Creating Qk lookup table Q_abcd:\n";
+    if (all_same) {
+      std::cout << "a=b=c=d = " << DiracSpinor::state_config(*as) << "\n";
+    } else {
+      if (a_is_c)
+        std::cout << "a=c, ";
+      if (b_is_d)
+        std::cout << "b=d, ";
+      if (c_is_d)
+        std::cout << "c=d, ";
+      std::cout << "a = " << DiracSpinor::state_config(*as) << "\n";
+      std::cout << "b = " << DiracSpinor::state_config(*bs) << "\n";
+      std::cout << "c = " << DiracSpinor::state_config(*cs) << "\n";
+      std::cout << "d = " << DiracSpinor::state_config(*ds) << "\n";
+    }
+
+    // Creat the map: (but don't fill it yet)
+    // Creating must be in seriel - parallelise the Q calculation below
     {
-      IO::ChronoTimer t1("perm");
-      IO::ChronoTimer t2("find");
-      IO::ChronoTimer t3("rest");
-      IO::ChronoTimer t4("tot");
-      t1.stop();
-      t2.stop();
-      t3.stop();
-
-      // First loop through and 'size' the arrays, without calculating anything.
-      // Since, we can't do this part in parallel!
+      IO::ChronoTimer tt("Create");
       for (const auto &Fa : *as) {
         for (const auto &Fb : *bs) {
+          if (all_same && Fb < Fa)
+            continue;
           for (const auto &Fc : *cs) {
+            if (a_is_c && Fc < Fa)
+              continue;
             for (const auto &Fd : *ds) {
-              // 1. Check if already calc'd
-              t1.start();
-              const auto abcd = permute(Fa.nk(), Fb.nk(), Fc.nk(), Fd.nk());
-              t1.stop();
-              t2.start();
-              // const auto pRk = find_Rk(abcd);
-              const auto pRk = m_Rmap_k.find(abcd);
-              t2.stop();
-              if (pRk != m_Rmap_k.end())
+              if ((all_same && Fd < Fa) || (b_is_d && Fd < Fb))
                 continue;
-              // If so, continue.
-              // If not, add new key and R vector place
-              t3.start();
-              // m_keys.push_back(abcd);
-              // auto rk = m_Rabcd_k.emplace_back();
-              m_Rmap_k.insert({abcd, {}});
-              t3.stop();
+              // Not all combinations will allow non-zero results: skip those
+              const auto [kmin, kmax] = minmaxk(Fa.k, Fb.k, Fc.k, Fd.k);
+              if (kmax < kmin)
+                continue;
+              // permute puts in to a<{b,c,d} and b<d order
+              const auto abcd = permute(Fa.nk(), Fb.nk(), Fc.nk(), Fd.nk());
+              // adds if new perumation; does nothing if not
+              m_Rmap_k[abcd];
             }
           }
         }
       }
     }
 
+    // store vector of pointers into map, so that I can random access the map
+    // ANY change to the map may invalidate these pointers (but changes to the
+    // _values_ in the map are fine)
+    // Random access into the map allows us to loop over the map in parallel
+    m_pQk.reserve(m_Rmap_k.size());
+    for (auto &pair : m_Rmap_k) {
+      m_pQk.emplace_back(&pair);
+    }
+
+    // Fill the Table:
     YkTable ykbd(as->front().rgrid, bs, ds);
-    // note: below, not guarenteed we won't need y_{ac} !!
+    {
+      IO::ChronoTimer tt("fill");
+#pragma omp parallel for
+      for (auto i = 0ul; i < m_Rmap_k.size(); ++i) {
+        auto &[key, Rk] = *m_pQk[i];
+        const auto &[a, b, c, d] = key;
+        // Look up in the orbitals
+        const auto &Fa = *find_orb(a, as, bs, cs, ds);
+        const auto &Fb = *find_orb(b, as, bs, cs, ds);
+        const auto &Fc = *find_orb(c, as, bs, cs, ds);
+        const auto &Fd = *find_orb(d, as, bs, cs, ds);
 
-    for (auto &[key, Rk] : m_Rmap_k) {
-      // const auto &abcd = m_keys[i];
-      const auto &[a, b, c, d] = key;
-      // Look up in the orbitals
-      const auto &Fa = *find_orb(a, as, bs, cs, ds);
-      const auto &Fb = *find_orb(b, as, bs, cs, ds);
-      const auto &Fc = *find_orb(c, as, bs, cs, ds);
-      const auto &Fd = *find_orb(d, as, bs, cs, ds);
-
-      assert(Rk.empty());
-      const auto [kmin, kmax] = minmaxk(key);
-      if (kmax >= kmin) {
-        const auto num_ks = std::size_t((kmax - kmin) / 2) + 1;
-        Rk.reserve(num_ks); // re-size?
-      }
-      for (int k = kmin; k <= kmax; k += 2) {
-        auto ybd = ykbd.ptr_yk_ab(k, Fb, Fd);
-        if (ybd == nullptr)
-          ybd = ykbd.ptr_yk_ab(k, Fd, Fb);
-        // depends if we calculated y_{ac} or y_{bd}
-        if (ybd != nullptr) {
-          Rk.push_back(Coulomb::Rk_abcd(Fa, Fc, *ybd));
-        } else {
-          auto yac = ykbd.ptr_yk_ab(k, Fa, Fc);
-          if (yac == nullptr)
-            yac = ykbd.ptr_yk_ab(k, Fc, Fa);
-          assert(yac != nullptr);
-          Rk.push_back(Coulomb::Rk_abcd(Fb, Fd, *yac));
+        assert(Rk.empty());
+        const auto [kmin, kmax] = minmaxk(key);
+        if (kmax >= kmin) {
+          const auto num_ks = std::size_t((kmax - kmin) / 2) + 1;
+          Rk.reserve(num_ks); // re-size?
         }
-        auto cc = Angular::Ck_kk(k, a.k, c.k) * Angular::Ck_kk(k, b.k, d.k);
-        std::cout << Fa.shortSymbol() << "," << Fb.shortSymbol() << ","
-                  << Fc.shortSymbol() << "," << Fd.shortSymbol() << " " << k
-                  << " " << cc * Rk.back() << "\n";
-        if (cc == 0.0) {
-          std::cout << " *** \n";
-          std::cin.get();
+        for (int k = kmin; k <= kmax; k += 2) {
+          // depending on {a,b,c,d}, may have y_bd or y_ac
+          // Further, may be {bd} or {db} -- flaw in YkTable
+          auto ybd = ykbd.ptr_yk_ab(k, Fb, Fd);
+          if (ybd == nullptr)
+            ybd = ykbd.ptr_yk_ab(k, Fd, Fb);
+          if (ybd != nullptr) {
+            Rk.push_back(static_cast<Real>(
+                Coulomb::Qk_abcd(Fa, Fb, Fc, Fd, k, *ybd, m_Ck)));
+          } else {
+            auto yac = ykbd.ptr_yk_ab(k, Fa, Fc);
+            if (yac == nullptr)
+              yac = ykbd.ptr_yk_ab(k, Fc, Fa);
+            assert(yac != nullptr);
+            Rk.push_back(static_cast<Real>(
+                Coulomb::Qk_abcd(Fb, Fa, Fd, Fc, k, *yac, m_Ck)));
+          }
+          assert(Rk.back() != Real(0.0));
         }
       }
     }
-    std::cout << m_Rmap_k.size() << "\n";
-    std::cin.get();
+    std::cout << m_Rmap_k.size() << " Q_abcd integrals calculated (x k)\n";
   }
 
   //****************************************************************************
@@ -167,7 +194,7 @@ public:
     return minmaxk(abcd[0].k, abcd[1].k, abcd[2].k, abcd[3].k);
   }
   static std::pair<int, int> minmaxk(int ka, int kb, int kc, int kd) {
-    // min of (a,c), (b,d)
+    // min/max allowed k for (a,k,c), (b,k,d)
     const auto tja = Angular::twoj_k(ka);
     const auto tjb = Angular::twoj_k(kb);
     const auto tjc = Angular::twoj_k(kc);
@@ -199,22 +226,6 @@ public:
   }
 
   //****************************************************************************
-  std::vector<Real> *find_Rk(const Nkabcd &abcd) {
-
-    auto compare = [&abcd](const Nkabcd &el) {
-      return abcd[0] == el[0] && abcd[1] == el[1] && abcd[2] == el[2] &&
-             abcd[3] == el[3];
-    };
-
-    auto it = std::find_if(cbegin(m_keys), cend(m_keys), compare);
-    if (it == cend(m_keys))
-      return nullptr;
-    const auto index = std::size_t(std::distance(cbegin(m_keys), it));
-    assert(index < m_Rabcd_k.size());
-    return &(m_Rabcd_k[index]);
-  }
-
-  //****************************************************************************
   // Returns the "smallest first" Coulomb symmetry permutation of
   // {a,b,c,d}
   std::array<Nk, 4> permute(const Nk &a, const Nk &b, const Nk &c,
@@ -235,9 +246,9 @@ public:
       return (a < c) ? std::array{d, a, b, c} : std::array{d, c, b, a};
     }
     assert(false);
-    // XXX Check - what happens when 'min' is not unique?
+    // Check - what happens when 'min' is not unique?
     // Must still be fine
   }
-}; // namespace Coulomb
+};
 
 } // namespace Coulomb
