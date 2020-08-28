@@ -1,28 +1,25 @@
 #pragma once
 #include "Angular/Angular_tables.hpp"
-// #include "Wavefunction/DiracSpinor.hpp"
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <map>
-#include <memory>
-#include <unordered_map>
-#include <utility>
-#include <vector>
-class Grid;
-class DiracSpinor;
 #include "Coulomb/Coulomb.hpp"
 #include "Coulomb/YkTable.hpp"
 #include "IO/ChronoTimer.hpp"
 #include "Physics/AtomData.hpp"
 #include "Wavefunction/DiracSpinor.hpp"
+#include <algorithm>
+#include <array>
+#include <cassert>
+#include <map>
+#include <memory>
+#include <utility>
+#include <vector>
 
 namespace Coulomb {
 
 class QkTable {
-  using Real = float; // make template
+  using Real = double; // make template
   using Nk = AtomData::nkappa;
   using Nkabcd = std::array<Nk, 4>;
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 
   // map:
   std::map<Nkabcd, std::vector<Real>> m_Rmap_k{};
@@ -160,6 +157,37 @@ public:
       }
     }
     std::cout << m_Rmap_k.size() << " Q_abcd integrals calculated (x k)\n";
+  }
+
+  //****************************************************************************
+  const std::vector<Real> *get_Q(const DiracSpinor &Fa, const DiracSpinor &Fb,
+                                 const DiracSpinor &Fc, const DiracSpinor &Fd) {
+    //
+    const auto abcd = permute(Fa.nk(), Fb.nk(), Fc.nk(), Fd.nk());
+    // m_Rmap_k[abcd];
+    const auto Qk = m_Rmap_k.find(abcd);
+    if (Qk == m_Rmap_k.cend())
+      return nullptr;
+    return &Qk->second;
+  }
+
+  Real get_Qk(const DiracSpinor &Fa, const DiracSpinor &Fb,
+              const DiracSpinor &Fc, const DiracSpinor &Fd, int k) {
+    //
+    const auto abcd = permute(Fa.nk(), Fb.nk(), Fc.nk(), Fd.nk());
+    // m_Rmap_k[abcd];
+    const auto Qks = m_Rmap_k.find(abcd);
+    if (Qks == m_Rmap_k.cend())
+      return 0.0;
+
+    const auto [kmin, kmax] = minmaxk(Fa.k, Fb.k, Fc.k, Fd.k);
+    auto tk = kmin;
+    for (const auto &Qk : Qks->second) {
+      if (tk == k)
+        return Qk;
+      tk += 2;
+    }
+    return 0.0;
   }
 
   //****************************************************************************

@@ -1,5 +1,6 @@
 #include "Angular/Angular_test.hpp"
 #include "Coulomb/Coulomb_test.hpp"
+#include "Coulomb/QkTable_test.hpp"
 #include "DiracODE/DiracODE_test.hpp"
 #include "HF/Breit_test.hpp"
 #include "HF/ExternalField_test.hpp"
@@ -58,6 +59,7 @@ static const std::vector<std::pair<std::string, bool (*)(std::ostream &obuff)>>
         {"LinAlg", &LinAlg},
         {"BSplineBasis", &BSplineBasis},
         {"Coulomb", &Coulomb},
+        {"QkTable", &QkTable},
         {"CorrelationPotential", &CorrelationPotential},
         {"DiagramRPA", &DiagramRPA}
         //
@@ -81,7 +83,7 @@ int main(int argc, char *argv[]) {
   input.check("UnitTests",
               {"default", "DiracODE", "HartreeFock", "Breit", "MixedStates",
                "ExternalField", "RadPot", "Angular", "LinAlg", "BSplineBasis",
-               "Coulomb", "CorrelationPotential", "DiagramRPA"});
+               "Coulomb", "QkTable", "CorrelationPotential", "DiagramRPA"});
 
   const auto default_tf = input.get("UnitTests", "default", true);
 
