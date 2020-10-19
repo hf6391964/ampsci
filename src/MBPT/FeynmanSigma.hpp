@@ -170,10 +170,11 @@ private:
               int kA, int kB, int ka,
               const std::vector<ComplexGMatrix> *const = nullptr) const;
 
-  [[nodiscard]] GMatrix sumkl_gqgqg(const ComplexGMatrix &gA,
-                                    const ComplexGMatrix &gB,
-                                    const ComplexGMatrix &gG, int kv, int kA,
-                                    int kB, int kG, int kmax) const;
+  [[nodiscard]] GMatrix
+  sumkl_gqgqg(const ComplexGMatrix &gA, const ComplexGMatrix &gB,
+              const ComplexGMatrix &gG, int kv, int kA, int kB, int kG,
+              int kmax, const std::vector<ComplexGMatrix> *const = nullptr,
+              const std::vector<ComplexGMatrix> *const = nullptr) const;
 
   double Lkl_abcd(int k, int l, int ka, int kb, int kc, int kd) const;
 
@@ -210,7 +211,7 @@ private:
   std::unique_ptr<ComplexGMatrix> m_drj = nullptr;
   std::unique_ptr<Grid> m_wgridD = nullptr;
   // only use every nth point on Im(w) grid for exchange
-  std::size_t m_wX_stride{1}; // XXX input?
+  std::size_t m_wX_stride{4}; // XXX input?
 
   std::vector<std::vector<ComplexGMatrix>> m_qpq_wk{};
 
@@ -218,10 +219,10 @@ private:
 
   const bool m_print_each_k = false;
 
-  ExchangeMethod m_ex_method = ExchangeMethod::Goldstone;
+  // ExchangeMethod m_ex_method = ExchangeMethod::Goldstone;
   // ExchangeMethod m_ex_method = ExchangeMethod::w1;
   // ExchangeMethod m_ex_method = ExchangeMethod::none;
-  // ExchangeMethod m_ex_method = ExchangeMethod::w1w2;
+  ExchangeMethod m_ex_method = ExchangeMethod::w1w2;
 };
 
 } // namespace MBPT

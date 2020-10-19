@@ -356,7 +356,7 @@ void FeynmanSigma::setup_omega_grid() {
     wmax_core *= -1;
 
   // maximum Im(w): based on core energy.
-  const auto wmax = 2.0 * wratio * wmax_core;
+  const auto wmax = 5.0 * wratio * wmax_core;
 
   const std::size_t wsteps = Grid::calc_num_points_from_du(
       w0, wmax, std::log(wratio), GridType::logarithmic);
@@ -711,18 +711,16 @@ FeynmanSigma::form_QPQ_wk(int max_k, GrMethod pol_method, double omre,
   const auto pi_wk = make_pi_wk(max_k, pol_method, omre, wgrid);
   std::cout << "." << std::flush;
 
-  std::cout << "." << std::flush;
-
   const auto num_ks = std::size_t(max_k + 1);
 #pragma omp parallel for
   for (auto iw = 0ul; iw < wgrid.num_points; ++iw) {
     qpq[iw].reserve(num_ks);
     for (auto k = 0ul; k < num_ks; ++k) {
-      // q*p*q => q*X*p*q, x = [1-Pi*Q]^(-1)
+
       const auto &qk = get_qk(int(k));
       const auto &pi = pi_wk[iw][k];
       if (m_screen_Coulomb) {
-        // This way: works!
+        // q*p*q => q*X*p*q, X = [1+i pi*q]^(-1)
         const auto X = X_PiQ(pi, qk);
         qpq[iw].emplace_back(qk * X * pi * qk);
       } else {
@@ -856,12 +854,10 @@ GMatrix FeynmanSigma::FeynmanEx_w1w2(int kv, double en_r) const {
   // If Im(w) grid is -ve, we integrate "wrong" way around contour; extra -ve
   const auto sw = wgrid.r[0] > 0.0 ? 1.0 : -1.0;
 
-  std::cout << std::endl;
+  // std::cout << std::endl;
 
   const auto num_kappas = std::size_t(m_max_kappaindex + 1);
 
-  // const std::size_t num_para_threads =
-  //     use_omp ? num_kappas * num_kappas / 4 : 1;
   const std::size_t num_para_threads =
       use_omp ? std::min(num_kappas * num_kappas,
                          std::size_t(4 * omp_get_max_threads()))
@@ -870,7 +866,14 @@ GMatrix FeynmanSigma::FeynmanEx_w1w2(int kv, double en_r) const {
   // Store parts of Sx seperately, for more efficient parallelisation
   std::vector<GMatrix> Sxs(num_para_threads, {m_subgrid_points, m_include_G});
 
-  const auto wmax = 40.0;
+  const auto wmax = 500.0;
+
+  std::cout << std::endl;
+  for (auto iw1 = 0ul; iw1 < wgrid.num_points; iw1 += m_wX_stride) {
+    if (wgrid.r[iw1] < wmax)
+      std::cout << wgrid.r[iw1] << ", ";
+  }
+  std::cout << std::endl;
 
 #pragma omp parallel for num_threads(num_para_threads) collapse(2)
   for (auto iA = 0ul; iA < num_kappas; ++iA) {   // alpha
@@ -905,6 +908,11 @@ GMatrix FeynmanSigma::FeynmanEx_w1w2(int kv, double en_r) const {
             if (std::abs(wgrid.r[iw2]) > wmax)
               continue;
 
+            const auto *const qpqw1 =
+                m_screen_Coulomb ? &m_qpq_wk[iw1] : nullptr;
+            const auto *const qpqw2 =
+                m_screen_Coulomb ? &m_qpq_wk[iw2] : nullptr;
+
             // This seems to be a very expensive random number generator...
 
             // note: sumkl_gqgqg is the slow part: generateing Green's
@@ -917,8 +925,8 @@ GMatrix FeynmanSigma::FeynmanEx_w1w2(int kv, double en_r) const {
                   Green(kB, evpw1 + ev_p_w2, States::both, m_Green_method);
               const auto &gG_p =
                   Green(kG, ev_p_w2, States::both, m_Green_method);
-              const auto gqgqg_p =
-                  sumkl_gqgqg(gA, gB_p, gG_p, kv, kA, kB, kG, max_k);
+              const auto gqgqg_p = sumkl_gqgqg(gA, gB_p, gG_p, kv, kA, kB, kG,
+                                               max_k, qpqw1, qpqw2);
               Sc_i += (dw1 * dw2) * (gqgqg_p);
             }
 
@@ -935,8 +943,8 @@ GMatrix FeynmanSigma::FeynmanEx_w1w2(int kv, double en_r) const {
               const auto &gG_m =
                   Green(kG, ev_m_w2, States::both, m_Green_method);
 
-              const auto gqgqg_m =
-                  sumkl_gqgqg(gA, gB_m, gG_m, kv, kA, kB, kG, max_k);
+              const auto gqgqg_m = sumkl_gqgqg(gA, gB_m, gG_m, kv, kA, kB, kG,
+                                               max_k, qpqw1, qpqw2);
               // -ve for 'm', since we go wrong direction around w2 contour??
               Sc_i += (dw1 * (-dw2)) * (gqgqg_m);
             }
@@ -957,7 +965,8 @@ GMatrix FeynmanSigma::FeynmanEx_w1w2(int kv, double en_r) const {
 
   // sw?
   const double dw_const = sw * double(m_wX_stride) * wgrid.du / (2.0 * M_PI);
-  Sx *= 2.0 * (dw_const * dw_const / tjvp1);
+  // XXX Extra 2*Pi ????? XXX
+  Sx *= 2.0 * (dw_const * dw_const / tjvp1); // / (2.0 * M_PI);
 
   // devide through by dri, drj [these included in q's, but want
   // differential operator for sigma] or.. include one of these in
@@ -1074,29 +1083,34 @@ GMatrix FeynmanSigma::FeynmanEx_1(int kv, double env) const {
 //******************************************************************************
 
 //******************************************************************************
-GMatrix FeynmanSigma::sumkl_gqgqg(const ComplexGMatrix &gA,
-                                  const ComplexGMatrix &gB,
-                                  const ComplexGMatrix &gG, int kv, int kA,
-                                  int kB, int kG, int kmax) const {
+GMatrix
+FeynmanSigma::sumkl_gqgqg(const ComplexGMatrix &gA, const ComplexGMatrix &gB,
+                          const ComplexGMatrix &gG, int kv, int kA, int kB,
+                          int kG, int kmax,
+                          const std::vector<ComplexGMatrix> *const qpq1,
+                          const std::vector<ComplexGMatrix> *const qpq2) const {
   [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
   // EXCHANGE part, used in w1w2 version
 
   auto gqgqg = GMatrix(m_subgrid_points, m_include_G);
+  const ComplexDouble I{0.0, 1.0};
 
   for (int k = 0; k <= kmax; k++) { // k (k1)
-    const auto &qk = get_qk(k);
+    // q -> ~q~ = q + (-i)qpq~  / XXX Check!?
+    const auto &qk = qpq1 ? get_qk(k) - I * (*qpq1)[k] : get_qk(k);
 
     for (int l = 0; l <= kmax; l++) { // l (k2)
-      const auto &ql = get_qk(l);
+      // q -> ~q~ = q + (-i)qpq~  / XXX Check!?
+      const auto &ql = qpq2 ? get_qk(l) - I * (*qpq2)[l] : get_qk(l);
 
       // tensor_5_product adds the real part of below to result
       // Sum_ij [ factor * a1j * bij * cj2 * (d_1i * e_i2) ]
       const auto Lkl = Lkl_abcd(k, l, kv, kB, kA, kG);
       if (Lkl != 0.0) {
         const auto s = Angular::neg1pow(k + l);
-        // const auto sLkl = ComplexDouble{s * Lkl, 0.0};
+        const auto sLkl = ComplexDouble{s * Lkl, 0.0};
         // // XXX extra factor of i ??: - pretty sure this is wrong
-        const auto sLkl = ComplexDouble{0.0, s * Lkl};
+        // const auto sLkl = ComplexDouble{0.0, s * Lkl};
         tensor_5_product(&gqgqg, sLkl, qk, gB, gG, gA, ql);
       }
     } // l
@@ -1157,6 +1171,7 @@ void FeynmanSigma::tensor_5_product(
     GMatrix *result, const ComplexDouble &factor, const ComplexGMatrix &a,
     const ComplexGMatrix &b, const ComplexGMatrix &c, const ComplexGMatrix &d,
     const ComplexGMatrix &e) const {
+  [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
   // Adds real part of below to result
   // Sum_ij [ factor * a1j * bij * cj2 * (d_1i * e_i2) ]
   const auto size = result->size;
@@ -1191,6 +1206,7 @@ void FeynmanSigma::tensor_5_product(
 //******************************************************************************
 double FeynmanSigma::Lkl_abcd(int k, int l, int ka, int kb, int kc,
                               int kd) const {
+  [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
 
   const auto &Ck = m_yeh.Ck();
 
