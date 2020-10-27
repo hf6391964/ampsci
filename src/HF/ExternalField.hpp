@@ -38,6 +38,8 @@ from scratch. Then, dV(Fa,Fb) returns the correction to the matrix element:
 */
 
 class ExternalField {
+  friend class DoubleCorePol;
+
 public:
   ExternalField(const DiracOperator::TensorOperator *const h,
                 const HF::HartreeFock *const hf);

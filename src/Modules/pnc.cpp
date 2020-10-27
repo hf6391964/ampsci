@@ -1,6 +1,7 @@
 #include "pnc.hpp"
 #include "DiracOperator/DiracOperator.hpp"
 #include "DiracOperator/Operators.hpp"
+#include "HF/DoubleCorePol.hpp"
 #include "HF/ExternalField.hpp"
 #include "HF/MixedStates.hpp"
 #include "IO/UserInput.hpp"
@@ -123,6 +124,18 @@ void calculatePNC(const IO::UserInputBlock &input, const Wavefunction &wf) {
                                (se_h1 + se_h2 + se_d1 + se_d2));
   printf("\neps(sos/SEs): %.0e, %.0e  %.1e\n", eps_sos1, eps_sos2, eps_sos);
   printf("eps(SEs)    : %.0e, %.0e  %.1e\n", eps_se1, eps_se2, eps_se);
+
+  // TEST DCP:
+  HF::DoubleCorePol dcp(&dVE1, &dVpnc);
+  const auto omega = dVE1.get_omega();
+  const auto twom = std::min(Fa.twoj(), Fb.twoj());
+  const auto c_dcp = dcp.rme3js(Fa.twoj(), Fb.twoj(), twom);
+  dcp.solve_TDHFcore(omega, 1);
+  std::cout << c_dcp * dcp.dV(Fa, Fb) << "\n";
+  dcp.solve_TDHFcore(omega, 10);
+  std::cout << c_dcp * dcp.dV(Fa, Fb) << "\n";
+  // dcp.solve_TDHFcore(omega, 10);
+  // std::cout << dcp.dV(aA, aB) << "\n";
 }
 
 //******************************************************************************
