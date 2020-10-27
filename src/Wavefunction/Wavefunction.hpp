@@ -90,6 +90,10 @@ public: // const methods: "views" into WF object
     return m_pHF->excludeExchangeQ();
   }
 
+  //! Returns 0.5*( max(e_core) + min(e_valence)) - energy half way between
+  //! core/valence
+  double en_coreval() const;
+
   //! Returns ptr to (const) Correlation Potential, Sigma
   const MBPT::CorrelationPotential *getSigma() const { return m_Sigma.get(); }
   //! Returns ptr to (const) Hartree Fock (class)
@@ -197,7 +201,8 @@ public: // const methods: "views" into WF object
   //! Calculates radiative potential. Stores in vnuc, and Hmag
   void radiativePotential(double x_simple, double x_Ueh, double x_SEe_h,
                           double x_SEe_l, double x_SEm, double rcut,
-                          double scale_rN, const std::vector<double> &x_spd);
+                          double scale_rN, const std::vector<double> &x_spd,
+                          bool do_readwrite = true);
 
   //! Calculates + populates basis [see BSplineBasis]
   void formBasis(const SplineBasis::Parameters &params);

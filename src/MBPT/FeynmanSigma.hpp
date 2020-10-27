@@ -9,7 +9,6 @@ namespace HF {
 class HartreeFock;
 }
 
-//! Many-body perturbation theory
 namespace MBPT {
 
 enum class States { core, excited, both };
@@ -42,13 +41,8 @@ inline std::string_view ParseEnum(ExchangeMethod method) {
   return "unkown";
 }
 
-// XXX Gmatrix should know its kappa!
-
 //******************************************************************************
-/*!
-@brief
-@details
-*/
+
 class FeynmanSigma final : public CorrelationPotential {
 public:
   FeynmanSigma(const HF::HartreeFock *const in_hf,
@@ -62,7 +56,8 @@ public:
 
 protected:
   // Fills the correlation potential for given kappa
-  void fill_Sigma_k(GMatrix *Sigma, const int kappa, const double en) final;
+  void fill_Sigma_k(GMatrix *Sigma, const int kappa,
+                    const double en) override final;
 
 public:
   //!@brief
@@ -144,11 +139,9 @@ private:
                                      const DiracSpinor &xI,
                                      const double w) const;
 
-  std::vector<ComplexGMatrix>
-  OneMinusPiQInv(const std::vector<std::vector<ComplexGMatrix>> &pi_wk) const;
-
-  ComplexGMatrix OneMinusPiQInv_single(const ComplexGMatrix &pik,
-                                       const ComplexGMatrix &qk) const;
+  // X = [1 + i pi*q]^{-1}
+  ComplexGMatrix X_PiQ(const ComplexGMatrix &pik,
+                       const ComplexGMatrix &qk) const;
 
   std::vector<std::vector<ComplexGMatrix>> make_pi_wk(int max_k,
                                                       GrMethod pol_method,
@@ -211,11 +204,11 @@ private:
   std::unique_ptr<ComplexGMatrix> m_drj = nullptr;
   std::unique_ptr<Grid> m_wgridD = nullptr;
   // only use every nth point on Im(w) grid for exchange
-  std::size_t m_wX_stride{2}; // XXX input?
+  std::size_t m_wX_stride{1}; // XXX input?
 
   std::vector<std::vector<ComplexGMatrix>> m_qpq_wk{};
 
-  int m_k_cut = 8; // XXX Make input?
+  int m_k_cut = 10; // XXX Make input?
 
   const bool m_print_each_k = false;
 

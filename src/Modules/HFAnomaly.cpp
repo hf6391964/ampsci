@@ -116,11 +116,11 @@ void HFAnomaly(const IO::UserInputBlock &input, const Wavefunction &wf) {
     wfA.basis = wf.basis; // OK??
 
     const auto hpt2 = generateOperator(
-        {"MatrixElements::hfs", {"F(r)=pointlike"}}, wfA, false);
+        {"MatrixElements::hfs", "F(r)=pointlike;"}, wfA, false);
     const auto hbl2 =
-        generateOperator({"MatrixElements::hfs", {"F(r)=ball"}}, wfA, false);
+        generateOperator({"MatrixElements::hfs", "F(r)=ball;"}, wfA, false);
     const auto hsp2 = generateOperator(
-        {"MatrixElements::hfs", {"F(r)=VolotkaBW"}}, wfA, false);
+        {"MatrixElements::hfs", "F(r)=VolotkaBW;"}, wfA, false);
 
     std::unique_ptr<MBPT::DiagramRPA> rpap2{nullptr}, rpab2{nullptr},
         rpas2{nullptr};
@@ -142,8 +142,8 @@ void HFAnomaly(const IO::UserInputBlock &input, const Wavefunction &wf) {
               << ", r_rms = " << nuc.r_rms << "\n";
     std::cout << "      A(point)      e(ball)   e(SP)   | 1D2(ball) "
                  "1D2(SP) [%]\n";
-    for (std::size_t i = 0; i < wf.valence.size(); ++i) {
-      const auto &Fv = wf.valence[i];
+    for (std::size_t i = 0; i < wfA.valence.size(); ++i) {
+      const auto &Fv = wfA.valence[i];
       const auto [pt0, bl0, sp0] = As[i];
       auto point = DiracOperator::Hyperfine::hfsA(hpt2.get(), Fv);
       auto ball = DiracOperator::Hyperfine::hfsA(hbl2.get(), Fv);
@@ -340,12 +340,12 @@ void HF_rmag(const IO::UserInputBlock &input, const Wavefunction &wf) {
         // Halfing interval:
         if ((d12a < d12_targ && d12_targ < d12) ||
             (d12 < d12_targ && d12_targ < d12a)) {
-          r2a = r2a;
+          // r2a = r2a;
           r2b = r2;
           r2 = 0.5 * (r2a + r2b);
         } else if ((d12b < d12_targ && d12_targ < d12) ||
                    (d12 < d12_targ && d12_targ < d12b)) {
-          r2b = r2b;
+          // r2b = r2b;
           r2a = r2;
           r2 = 0.5 * (r2a + r2b);
         } else {
@@ -413,11 +413,11 @@ static void calc_thing(const DiracSpinor &Fv, double e_targ, double r0,
 
     // Halfing interval:
     if ((bwa < e_targ && e_targ < bw) || (bw < e_targ && e_targ < bwa)) {
-      ra = ra;
+      // ra = ra;
       rb = r;
       r = 0.5 * (ra + rb);
     } else if ((bwb < e_targ && e_targ < bw) || (bw < e_targ && e_targ < bwb)) {
-      rb = rb;
+      // rb = rb;
       ra = r;
       r = 0.5 * (ra + rb);
     } else {
@@ -455,8 +455,8 @@ void calculateBohrWeisskopf(const IO::UserInputBlock &input,
   else
     BW_in.add("F(r)=VolotkaBW");
 
-  auto hp = generateOperator(point_in, wf);
-  auto hb = generateOperator(ball_in, wf);
+  auto hp = generateOperator(point_in, wf, false);
+  auto hb = generateOperator(ball_in, wf, false);
   auto hw = generateOperator(BW_in, wf);
 
   // nb: can only do diagram RPA for hfs

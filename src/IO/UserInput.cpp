@@ -12,6 +12,12 @@
 namespace IO {
 
 //******************************************************************************
+UserInputBlock::UserInputBlock(const std::string &in_block_name,
+                               const std::string &in_input_options)
+    : m_block_name(in_block_name),
+      m_input_options(FRW::splitInput_bySemiColon(in_input_options)) {}
+
+//******************************************************************************
 void UserInputBlock::print() const {
   const bool small_block = m_input_options.size() < 4;
   const bool empty = m_input_options.empty();
@@ -40,7 +46,7 @@ void UserInputBlock::print() const {
 UserInputBlock
 UserInputBlock::subBlock(const std::string &sub_block_name,
                          const std::vector<std::string> &options) const {
-  UserInputBlock sub_block(sub_block_name, {});
+  UserInputBlock sub_block(sub_block_name);
   for (const auto &option : options) {
     for (const auto &input_line : m_input_options) {
       if (input_line.substr(0, option.length() + 1) == option + "=")
@@ -106,13 +112,17 @@ UserInput::UserInput(const std::string &infile) : m_filename(infile) {
   const auto inp = IO::FRW::splitInput_byBraces(IO::FRW::readInputFile(infile));
   for (const auto &item : inp) {
     const auto block_name = item.first;
-    auto option_vector = IO::FRW::splitInput_bySemiColon(item.second);
+    const auto option_vector = IO::FRW::splitInput_bySemiColon(item.second);
 
     // If block already exists, adds options to that block.
     // Otherwise, adds new block:
-    auto exists =
+    // (Unless its a module/matrix element block, in which case add as a new
+    // block)... horrible hack...
+    const auto exists =
         std::find_if(begin(m_blocks), end(m_blocks), [block_name](auto &block) {
-          return block.name() == block_name;
+          return block.name() == block_name          //
+                 && (block_name.find("Module") == 0) //
+                 && (block_name.find("MatrixElements") == 0);
         });
 
     if (exists != end(m_blocks)) {
