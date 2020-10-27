@@ -63,23 +63,18 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><em><em>Atomic Many-body Perturbation theory in the Screened <a class="el" href="namespaceCoulomb.html" title="Functions (+classes) for computing Coulomb integrals. ">Coulomb</a> Interaction</em></em></p>
-<p>Solves the Dirac equation for single-valence atomic systems using the Hartree-Fock + correlation potential method (Dzuba-Flambaum-Sushkov method). Fully relativistic, includes electron correlations (all-orders screening and hole-particle interaction), finite-nuclear size, Breit interaction, radiative QED effects, and RPA for matrix elements. QED is included via the Ginges-Flambaum radiative potential method. Can solve for continuum states with high energy. Calculates ionisation cross sections with high values for energy/momentum transfer. Parallelised using openMP.</p>
+<p>Solves the Dirac equation for single-valence atomic systems using the Hartree-Fock + correlation potential method (Dzuba-Flambaum-Sushkov method). Fully relativistic, includes electron correlations (all-orders screening and hole-particle interaction), finite-nuclear size, Breit interaction, radiative QED effects, and RPA for matrix elements (with structure radiation/renormalisation). QED is included via the Ginges-Flambaum radiative potential method. Can solve for continuum states with high energy. Calculates ionisation cross sections with high values for energy/momentum transfer. Parallelised using openMP.</p>
 <p>Designed to be fast, accurate, and easy to use. The "modules" system (see documentation) makes it simple to add your own routines to use the atomic wavefunctions to calculate whatever properties you may be interested in.</p>
 <ul>
 <li>The code is on GitHub: <a href="https://github.com/benroberts999/ampsci">github.com/benroberts999/ampsci</a></li>
-<li>This file is best viewed with a markdown reader (or on GitHub)</li>
+<li><p class="startli">This file is best viewed with a markdown reader (or on GitHub)</p>
+<p class="startli"><a href="https://benroberts999.github.io/ampsci/"></a> <a href="https://benroberts999.github.io/ampsci/ampsci.pdf"></a> <a href="https://github.com/benroberts999/ampsci/actions"></a> <a href="https://github.com/benroberts999/ampsci/actions"></a></p>
+</li>
 </ul>
-<div class="image">
-<object type="image/svg+xml" data="https://github.com/benroberts999/ampsci/workflows/Build/badge.svg" alt="Build"></object>
-</div>
- <div class="image">
-<object type="image/svg+xml" data="https://github.com/benroberts999/ampsci/workflows/Tests/badge.svg" alt="Tests"></object>
-</div>
-<p> <a href="https://benroberts999.github.io/ampsci/"></a> <a href="https://benroberts999.github.io/ampsci/ampsci.pdf"></a></p>
 <h2>Documentation</h2>
 <p>There are four documentation types provided:</p><ul>
 <li>All documentation available online: <a href="https://benroberts999.github.io/ampsci/">benroberts999.github.io/ampsci/</a></li>
-<li>also can be found in doc/ directory</li>
+<li>Also can be found in doc/ directory</li>
 </ul>
 <ol type="1">
 <li>README (this document)<ul>
@@ -91,11 +86,8 @@ $(function() {
 <li>Best viewed with a markdown reader or on GitHub</li>
 </ul>
 </li>
-<li>See also: <em>doc/ampsci.in.example</em> &ndash; an example input file for Cs<ul>
-<li>copy to main directory + remove the '.example'</li>
-<li><em>$cp ./doc/ampsci.in.example ./ampsci.in</em></li>
-</ul>
-</li>
+<li>See also: <em>doc/examples/ampsci.in</em> &ndash; an example/template input file</li>
+<li>In <em>doc/examples/</em> there are several example input files, with the expected output; use these to test if everything is working</li>
 </ul>
 </li>
 <li>Physics documentation: <em>ampsci.pdf</em> &ndash; Description of physics/methods used in the code<ul>
@@ -108,7 +100,7 @@ $(function() {
 </li>
 </ul>
 </li>
-<li>Code documentation &ndash; details on classes/function in the code<ul>
+<li>Code documentation &ndash; details on classes/functions in the code<ul>
 <li>Available online: <a href="https://benroberts999.github.io/ampsci/">benroberts999.github.io/ampsci/</a></li>
 <li>Auto-generated (Doxygen), so be wary of mistakes/typos etc.</li>
 <li>You can generate this by running '<em>$make doxy</em>', which produces html documentation (see doc/html/index.html), and a pdf version (doc/documentation.pdf) &ndash; but it's much easier to view this online</li>
@@ -126,7 +118,7 @@ $(function() {
 <li>The file <em>Makefile</em> has some basic compilation options. It's currently set up to work on most linux systems; you may need to change a few options for others (see below)</li>
 <li>Tested with g++ and clang++ on linux and mac (requires c++17)<ul>
 <li>Works+tested with g++7 and newer (best w/ g++9)</li>
-<li>Works+tested with clang++-6 and newer (best w/ clang++-9)</li>
+<li>Works+tested with clang++6 and newer (best w/ clang++9)</li>
 </ul>
 </li>
 </ul>
@@ -179,16 +171,13 @@ $(function() {
 <h2>ampsci (main program)</h2>
 <ul>
 <li>Input taken from a plain text file.</li>
-<li>An example input file is included: doc/ampsci.in.example<ul>
-<li>e.g.: <em>$ cp ./doc/ampsci.in.example ./ampsci.in</em></li>
-</ul>
-</li>
-<li>You may re-name this file (e.g., to "filename.txt"), then run as:<ul>
+<li>Several example input files are given in: <em>doc/examples/</em>, along with their expected output; use these to test if everything is working.</li>
+<li>You may re-name the input files (e.g., to "filename.txt"), then run as:<ul>
 <li><em>$ ./ampsci filename.txt</em></li>
 <li>If no input filename is given, program will assume input filename is 'ampsci.in':</li>
 </ul>
 </li>
-<li>Note: input file uses c++-like format + line comments; tell your editor that the file is a cpp file to get nice colourisation and auto commenting</li>
+<li>Note: input file uses c++-like format, including c++-style comments</li>
 <li>See <em>doc/ampsci_input.md</em> for a full list of input options + descriptions</li>
 <li>See <em>ampsci.pdf</em> for a description of the physics, and for references to the works where the methods implemented here were developed.<ul>
 <li>Available on GitHub: <a href="https://benroberts999.github.io/ampsci/ampsci.pdf">benroberts999.github.io/ampsci/ampsci.pdf</a></li>
@@ -219,22 +208,15 @@ $(function() {
 <li><em>$./periodicTable c</em> &ndash; Prints values for some handy physical constants</li>
 </ul>
 <p>Note: ground-state electron configurations are "guessed", and can sometimes be incorrect.</p>
-<p><a class="el" href="namespaceNuclear.html" title="Data and useful functions. Radii all in Fermi (fm, e-15m) ">Nuclear</a> radius data mostly comes from:</p><ul>
-<li>I. Angeli and K. P. Marinova, At. Data Nucl. Data Tables 99, 69 (2013). <a href="https://doi.org/10.1016/j.adt.2011.12.006">https://doi.org/10.1016/j.adt.2011.12.006</a></li>
+<p><a class="el" href="namespaceNuclear.html" title="Data and useful functions. Radii all in Fermi (fm, e-15m) ">Nuclear</a> data mostly comes from:</p><ul>
+<li>Radius data: I. Angeli and K. P. Marinova, At. Data Nucl. Data Tables 99, 69 (2013). <a href="https://doi.org/10.1016/j.adt.2011.12.006">doi:10.1016/j.adt.2011.12.006</a></li>
+<li>Magnetic moments: N. Stone, At. Data Nucl. Data Tables 90, 75 (2005). <a href="https://doi.org/10.1016/j.adt.2005.04.001">doi:10.1016/j.adt.2005.04.001</a></li>
+<li>Note: data was scraped from the tables, and contains many transcription errors. Provided for convenience, but it is up to you to double check that the values are correct/up-to-date</li>
 </ul>
 <p>Units:</p><ul>
 <li>r_rms: root-mean-square radius, in fm.</li>
-<li>c: half-density radius (assuming Fermi nuclear distro)</li>
+<li>c: half-density radius (assuming Fermi nuclear distro, with t=2.3)</li>
 <li>mu: magnetic moment (in nuclear magnetons)</li>
-</ul>
-<h3>dmeXSection</h3>
-<ul>
-<li>Calculates the cross-section and event rates for ionisation of atoms by scattering of DM particle.<ul>
-<li>B.M. Roberts, V.V. Flambaum <a href="https://link.aps.org/doi/10.1103/PhysRevD.100.063017" title="pay-walled">Phys.Rev.D 100, 063017 (2019)</a>; <a href="https://arxiv.org/abs/1904.07127" title="free download">arXiv:1904.07127</a>.</li>
-<li>B.M.Roberts, V.A.Dzuba, V.V.Flambaum, M.Pospelov, Y.V.Stadnik, <a href="https://link.aps.org/doi/10.1103/PhysRevD.93.115037" title="pay-walled">Phys.Rev.D 93, 115037 (2016)</a>; <a href="https://arxiv.org/abs/1604.04559" title="free download">arXiv:1604.04559</a>.</li>
-</ul>
-</li>
-<li>see _'doc/dmeXSection_input'_ for details</li>
 </ul>
 <h3>wigner</h3>
 <ul>
@@ -251,7 +233,17 @@ $(function() {
 </ul>
 </li>
 <li>3j symbols must start with '('; 6,9j with '{', and CG with '&lt;' (this is how code knows which symbol to calculate).</li>
-<li>but, each number can be separated by any symbol (space, comma etc.) </li>
+<li>but, each number can be separated by any symbol (space, comma etc.)</li>
+</ul>
+<h3>dmeXSection</h3>
+<ul>
+<li>Calculates the cross-section and event rates for ionisation of atoms by scattering of DM particle.<ul>
+<li>B.M. Roberts, V.V. Flambaum <a href="https://link.aps.org/doi/10.1103/PhysRevD.100.063017" title="pay-walled">Phys.Rev.D 100, 063017 (2019)</a>; <a href="https://arxiv.org/abs/1904.07127" title="free download">arXiv:1904.07127</a>.</li>
+<li>B.M.Roberts, V.A.Dzuba, V.V.Flambaum, M.Pospelov, Y.V.Stadnik, <a href="https://link.aps.org/doi/10.1103/PhysRevD.93.115037" title="pay-walled">Phys.Rev.D 93, 115037 (2016)</a>; <a href="https://arxiv.org/abs/1604.04559" title="free download">arXiv:1604.04559</a>.</li>
+</ul>
+</li>
+<li>Old, and has not been tested for a long time; use with caution</li>
+<li>see _'doc/dmeXSection_input'_ for details </li>
 </ul>
 </div></div><!-- contents -->
 <!-- start footer part -->

@@ -8,7 +8,7 @@ var searchData=
   ['radialf',['RadialF',['../classDiracOperator_1_1RadialF.html',1,'DiracOperator']]],
   ['radialhamiltonian',['RadialHamiltonian',['../classRadialHamiltonian.html',1,'']]],
   ['radialintegral',['radialIntegral',['../classDiracOperator_1_1TensorOperator.html#adcac3ff73d5cbd6b4170199e2ea4c48a',1,'DiracOperator::TensorOperator']]],
-  ['radiativepotential',['RadiativePotential',['../namespaceRadiativePotential.html',1,'RadiativePotential'],['../classWavefunction.html#a081140df1355d07d709b4b57edda4058',1,'Wavefunction::radiativePotential()']]],
+  ['radiativepotential',['RadiativePotential',['../namespaceRadiativePotential.html',1,'RadiativePotential'],['../classWavefunction.html#ae502bffea2e5beb47699501668c65570',1,'Wavefunction::radiativePotential()']]],
   ['rampeddamp',['rampedDamp',['../namespaceHF.html#a121bb2089d2095069144fdb8bd22f2d4',1,'HF']]],
   ['readinputfile',['readInputFile',['../namespaceIO_1_1FRW.html#ad133d9b6ce9a4bd4baab7562c31fd14b',1,'IO::FRW']]],
   ['real',['real',['../classLinAlg_1_1ComplexSqMatrix.html#acbf324fa13aadf426f542b849d8c784d',1,'LinAlg::ComplexSqMatrix']]],

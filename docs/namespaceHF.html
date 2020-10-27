@@ -103,6 +103,7 @@ Method&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="na
 <tr class="memdesc:af1afd931bb590af54fea7df3e134c9c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convers string (name) of method (<a class="el" href="classHF_1_1HartreeFock.html" title="Solves relativistic Hartree-Fock equations. ">HartreeFock</a>, Hartree etc.) to enum. <br /></td></tr>
 <tr class="separator:af1afd931bb590af54fea7df3e134c9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1db3db0a43960380fd0fe2096b8c7ec"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceHF.html#ac1db3db0a43960380fd0fe2096b8c7ec">vex_approx</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;core, int k_cut=99, double lambda_cut=0.003)</td></tr>
+<tr class="memdesc:ac1db3db0a43960380fd0fe2096b8c7ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forms approx (localised) exchange potential, from scratch.  <a href="#ac1db3db0a43960380fd0fe2096b8c7ec">More...</a><br /></td></tr>
 <tr class="separator:ac1db3db0a43960380fd0fe2096b8c7ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca9706ff70b262673500f51577a48bd5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceHF.html#aca9706ff70b262673500f51577a48bd5">vexFa</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;core, int k_cut=99)</td></tr>
 <tr class="memdesc:aca9706ff70b262673500f51577a48bd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates V_exch * Fa, for any orbital Fa (calculates <a class="el" href="namespaceCoulomb.html" title="Functions (+classes) for computing Coulomb integrals. ">Coulomb</a> integral from scratch).  <a href="#aca9706ff70b262673500f51577a48bd5">More...</a><br /></td></tr>
@@ -340,7 +341,8 @@ constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>print_each_
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Forms approx (localised) exchange potential, from scratch</p>
+
+<p>Forms approx (localised) exchange potential, from scratch. </p>
 <p>Needs existing orbital Fa, and the core orbitals. k_cut is max multipolarity to sum over for exchange term [can limit to ~1 (e.g.) for speed when high accuracy is not required] </p>
 
 </div>

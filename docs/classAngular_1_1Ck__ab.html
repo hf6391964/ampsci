@@ -77,12 +77,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a74a09e3f030fe46b33b8a9d061f34c5f"><td class="memItemLeft" align="right" valign="top"><a id="a74a09e3f030fe46b33b8a9d061f34c5f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Ck_ab</b> (const int in_max_K=0, const int in_max_twoj=0)</td></tr>
-<tr class="separator:a74a09e3f030fe46b33b8a9d061f34c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada842433e7a284382faf6b1564b66bd9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAngular_1_1Ck__ab.html#ada842433e7a284382faf6b1564b66bd9">fill_maxK_twojmax</a> (const int in_max_K, const int in_max_twoj)</td></tr>
-<tr class="memdesc:ada842433e7a284382faf6b1564b66bd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extends existing look-up table to new maximum K and twoj.  <a href="#ada842433e7a284382faf6b1564b66bd9">More...</a><br /></td></tr>
-<tr class="separator:ada842433e7a284382faf6b1564b66bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b3844bd8de8afd2ede48a8a90ff6bc8"><td class="memItemLeft" align="right" valign="top"><a id="a6b3844bd8de8afd2ede48a8a90ff6bc8"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Ck_ab</b> (const int in_max_twoj=0)</td></tr>
+<tr class="separator:a6b3844bd8de8afd2ede48a8a90ff6bc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05a42bf60f04f8e45721ac9bad3e1a51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAngular_1_1Ck__ab.html#a05a42bf60f04f8e45721ac9bad3e1a51">fill</a> (const int in_max_twoj)</td></tr>
+<tr class="memdesc:a05a42bf60f04f8e45721ac9bad3e1a51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extends existing look-up table to new twoj.  <a href="#a05a42bf60f04f8e45721ac9bad3e1a51">More...</a><br /></td></tr>
+<tr class="separator:a05a42bf60f04f8e45721ac9bad3e1a51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75c60ab5abd43d704e24bd0e13afacf9"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAngular_1_1Ck__ab.html#a75c60ab5abd43d704e24bd0e13afacf9">get_Ckab_mutable</a> (int k, int ka, int kb)</td></tr>
 <tr class="memdesc:a75c60ab5abd43d704e24bd0e13afacf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">'mutable' getters will calculate values if they don't exist yet  <a href="#a75c60ab5abd43d704e24bd0e13afacf9">More...</a><br /></td></tr>
 <tr class="separator:a75c60ab5abd43d704e24bd0e13afacf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -124,38 +124,28 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>max_k</b> () const</td
 <li>TildeCk_ab := <img class="formulaInl" alt="$(-1)^{ja+1/2} C^k_{ab}$" src="form_3.png"/> [symmetric]</li>
 <li>Slightly faster than calculating on-the-fly, but adds some overhead <dl class="section user"><dt>Construction</dt><dd></dd></dl>
 </li>
-<li>Needs max k and two*j values. Will build look-up tables for all possible symbols. <dl class="section user"><dt>Usage</dt><dd></dd></dl>
+<li>Needs maximum two*j values. Will build look-up tables for all possible symbols. <dl class="section user"><dt>Usage</dt><dd></dd></dl>
 </li>
 <li>Note: Functions take k and kappa_a, kappa_b as input! </li>
 </ul>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ada842433e7a284382faf6b1564b66bd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada842433e7a284382faf6b1564b66bd9">&#9670;&nbsp;</a></span>fill_maxK_twojmax()</h2>
+<a id="a05a42bf60f04f8e45721ac9bad3e1a51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05a42bf60f04f8e45721ac9bad3e1a51">&#9670;&nbsp;</a></span>fill()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Angular::Ck_ab::fill_maxK_twojmax </td>
+          <td class="memname">void Angular::Ck_ab::fill </td>
           <td>(</td>
           <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>in_max_K</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>in_max_twoj</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>in_max_twoj</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Extends existing look-up table to new maximum K and twoj. </p>
+<p>Extends existing look-up table to new twoj. </p>
 <p>nb: called on construction automatically, you only need to call this if you need to extend the table after original construction (rare) </p>
 
 </div>

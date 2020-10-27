@@ -127,11 +127,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>open_binary</b> (std:
 <tr class="memitem:a7d43b9af8637f1b18a3816c7cf07ed31"><td class="memItemLeft" align="right" valign="top"><a id="a7d43b9af8637f1b18a3816c7cf07ed31"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>file_exists</b> (const std::string &amp;fileName)</td></tr>
 <tr class="separator:a7d43b9af8637f1b18a3816c7cf07ed31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2bf695482756f54691e558954a604ef"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Types&gt; </td></tr>
+<tr class="memitem:aa2bf695482756f54691e558954a604ef"><td class="memTemplParams" colspan="2"><a id="aa2bf695482756f54691e558954a604ef"></a>
+template&lt;typename T , typename... Types&gt; </td></tr>
 <tr class="memitem:aa2bf695482756f54691e558954a604ef"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceIO_1_1FRW.html#aa2bf695482756f54691e558954a604ef">rw_binary</a> (std::fstream &amp;stream, RoW row, std::vector&lt; T &gt; &amp;value, Types &amp;... values)</td></tr>
+<tr class="memdesc:aa2bf695482756f54691e558954a604ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function (variadic): reads/writes data from/to binary file. Works for trivial (PoD) types, and std::string only (but not checked) Overload for vectors. <br /></td></tr>
 <tr class="separator:aa2bf695482756f54691e558954a604ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a236b924d992075c0619de79a18d76511"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Types&gt; </td></tr>
+<tr class="memitem:a236b924d992075c0619de79a18d76511"><td class="memTemplParams" colspan="2"><a id="a236b924d992075c0619de79a18d76511"></a>
+template&lt;typename T , typename... Types&gt; </td></tr>
 <tr class="memitem:a236b924d992075c0619de79a18d76511"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceIO_1_1FRW.html#a236b924d992075c0619de79a18d76511">rw_binary</a> (std::fstream &amp;stream, RoW row, T &amp;value, Types &amp;... values)</td></tr>
+<tr class="memdesc:a236b924d992075c0619de79a18d76511"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function (variadic): reads/writes data from/to binary file. Works for trivial (PoD) types, and std::string only (but not checked) <br /></td></tr>
 <tr class="separator:a236b924d992075c0619de79a18d76511"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf5c41221120f6f6b0a8a6a6e11af123"><td class="memTemplParams" colspan="2"><a id="adf5c41221120f6f6b0a8a6a6e11af123"></a>
 template&lt;typename T &gt; </td></tr>
@@ -147,94 +151,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>binary_str_rw</b> (st
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions to help read-write data to files, including binary files. </p>
-</div><h2 class="groupheader">Function Documentation</h2>
-<a id="aa2bf695482756f54691e558954a604ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa2bf695482756f54691e558954a604ef">&#9670;&nbsp;</a></span>rw_binary() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , typename... Types&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void IO::FRW::rw_binary </td>
-          <td>(</td>
-          <td class="paramtype">std::fstream &amp;&#160;</td>
-          <td class="paramname"><em>stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">RoW&#160;</td>
-          <td class="paramname"><em>row</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Types &amp;...&#160;</td>
-          <td class="paramname"><em>values</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Function (variadic): reads/writes data from/to binary file. Works for trivial (PoD) types, and std::string only (but not checked) Overload for vectors </p>
-
-</div>
-</div>
-<a id="a236b924d992075c0619de79a18d76511"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a236b924d992075c0619de79a18d76511">&#9670;&nbsp;</a></span>rw_binary() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , typename... Types&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void IO::FRW::rw_binary </td>
-          <td>(</td>
-          <td class="paramtype">std::fstream &amp;&#160;</td>
-          <td class="paramname"><em>stream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">RoW&#160;</td>
-          <td class="paramname"><em>row</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T &amp;&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Types &amp;...&#160;</td>
-          <td class="paramname"><em>values</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Function (variadic): reads/writes data from/to binary file. Works for trivial (PoD) types, and std::string only (but not checked) </p>
-
-</div>
-</div>
-</div><!-- contents -->
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

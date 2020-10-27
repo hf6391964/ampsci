@@ -96,13 +96,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a76526f61d547809a0137c1f7c8000564"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-calculates y^k integrals involving single orbital Fn. <br /></td></tr>
 <tr class="separator:a76526f61d547809a0137c1f7c8000564"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa6c4560d3fe5a602e4c148f06b60e6d"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; double &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#afa6c4560d3fe5a602e4c148f06b60e6d">get_yk_ab</a> (const int k, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
+<tr class="memdesc:afa6c4560d3fe5a602e4c148f06b60e6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns single y^k_ab(r) [by const ref].  <a href="#afa6c4560d3fe5a602e4c148f06b60e6d">More...</a><br /></td></tr>
 <tr class="separator:afa6c4560d3fe5a602e4c148f06b60e6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1417918ba1156a76cc332c4a816519bc"><td class="memItemLeft" align="right" valign="top"><a id="a1417918ba1156a76cc332c4a816519bc"></a>
 const std::vector&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a1417918ba1156a76cc332c4a816519bc">ptr_yk_ab</a> (const int k, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
 <tr class="memdesc:a1417918ba1156a76cc332c4a816519bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to (const) y^k_ab(r), if k valid. Else, returns nullptr. <br /></td></tr>
 <tr class="separator:a1417918ba1156a76cc332c4a816519bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f7d575ba22c8b08aff27dc615e66ee8"><td class="memItemLeft" align="right" valign="top"><a id="a3f7d575ba22c8b08aff27dc615e66ee8"></a>
-const std::vector&lt; double &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (const int k, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
+const std::vector&lt; double &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a3f7d575ba22c8b08aff27dc615e66ee8">operator()</a> (const int k, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
+<tr class="memdesc:a3f7d575ba22c8b08aff27dc615e66ee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload for <a class="el" href="classCoulomb_1_1YkTable.html#afa6c4560d3fe5a602e4c148f06b60e6d" title="Returns single y^k_ab(r) [by const ref]. ">get_yk_ab()</a> <br /></td></tr>
 <tr class="separator:a3f7d575ba22c8b08aff27dc615e66ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8ccf301321fcf33f8619dd3b0a8ca17"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::vector&lt; double &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#af8ccf301321fcf33f8619dd3b0a8ca17">get_y_ab</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
 <tr class="memdesc:af8ccf301321fcf33f8619dd3b0a8ca17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns vector of y^k_ab(r) for each k [by const ref].  <a href="#af8ccf301321fcf33f8619dd3b0a8ca17">More...</a><br /></td></tr>
@@ -114,13 +116,22 @@ const std::vector&lt; std::vector&lt; double &gt; &gt; &amp;&#160;</td><td class
 const <a class="el" href="classAngular_1_1Ck__ab.html">Angular::Ck_ab</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a9b16e0632b0fd49001fa9ad988fac161">Ck</a> () const</td></tr>
 <tr class="memdesc:a9b16e0632b0fd49001fa9ad988fac161"><td class="mdescLeft">&#160;</td><td class="mdescRight">Access C^k angular tables (have public access to const methods only) <br /></td></tr>
 <tr class="separator:a9b16e0632b0fd49001fa9ad988fac161"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2950785d367cd94c0ee63a8d0277251"><td class="memItemLeft" align="right" valign="top"><a id="ad2950785d367cd94c0ee63a8d0277251"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>extend_Ck</b> (const int max_K, const int max_twoj)</td></tr>
-<tr class="separator:ad2950785d367cd94c0ee63a8d0277251"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ff64316e4287a9e929de06f60c80f6f"><td class="memItemLeft" align="right" valign="top"><a id="a8ff64316e4287a9e929de06f60c80f6f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>extend_Ck</b> (const int max_twoj)</td></tr>
+<tr class="separator:a8ff64316e4287a9e929de06f60c80f6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7af3ef760e11da837e8110d7a3c5ecb"><td class="memItemLeft" align="right" valign="top"><a id="ae7af3ef760e11da837e8110d7a3c5ecb"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#ae7af3ef760e11da837e8110d7a3c5ecb">max_tj</a> () const</td></tr>
 <tr class="memdesc:ae7af3ef760e11da837e8110d7a3c5ecb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns maximum value of 2j in {a} and {b} orbitals. <br /></td></tr>
 <tr class="separator:ae7af3ef760e11da837e8110d7a3c5ecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01f92a21e4338bb86494ac441b029e19"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a01f92a21e4338bb86494ac441b029e19">Qk</a> (const int k, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fc, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fd) const</td></tr>
+<tr class="memdesc:a01f92a21e4338bb86494ac441b029e19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns Qk, Pk, Wk - uses existing yk table half the <a class="el" href="namespaceCoulomb.html" title="Functions (+classes) for computing Coulomb integrals. ">Coulomb</a> integral.  <a href="#a01f92a21e4338bb86494ac441b029e19">More...</a><br /></td></tr>
+<tr class="separator:a01f92a21e4338bb86494ac441b029e19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f9e617c108e81faaa6a7933e2445291"><td class="memItemLeft" align="right" valign="top"><a id="a8f9e617c108e81faaa6a7933e2445291"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>Pk</b> (const int k, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fc, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fd) const</td></tr>
+<tr class="separator:a8f9e617c108e81faaa6a7933e2445291"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d60bec87562a33b9e2b438efe83c0f0"><td class="memItemLeft" align="right" valign="top"><a id="a7d60bec87562a33b9e2b438efe83c0f0"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>Wk</b> (const int k, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fc, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fd) const</td></tr>
+<tr class="separator:a7d60bec87562a33b9e2b438efe83c0f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -128,6 +139,23 @@ Static Public Member Functions</h2></td></tr>
 static std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a891470d07e173505019494215627e416">k_minmax</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;b)</td></tr>
 <tr class="memdesc:a891470d07e173505019494215627e416"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns min and max k (multipolarity) allowed for C^k_ab. <br /></td></tr>
 <tr class="separator:a891470d07e173505019494215627e416"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ee3a22b1736ba584365b3f60722e38c"><td class="memItemLeft" align="right" valign="top"><a id="a2ee3a22b1736ba584365b3f60722e38c"></a>
+static std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a2ee3a22b1736ba584365b3f60722e38c">k_minmax_Q</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;b, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;c, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;d)</td></tr>
+<tr class="memdesc:a2ee3a22b1736ba584365b3f60722e38c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns min and max k (multipolarity) allowed for Q^k_abcd, Wk, Pk. For Q (and Q only), parity rule is included, so you may safely call k+=2. <br /></td></tr>
+<tr class="separator:a2ee3a22b1736ba584365b3f60722e38c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac764911c462e7a2ac9f4a8c85d9f06eb"><td class="memItemLeft" align="right" valign="top"><a id="ac764911c462e7a2ac9f4a8c85d9f06eb"></a>
+static std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#ac764911c462e7a2ac9f4a8c85d9f06eb">k_minmax_P</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;b, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;c, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;d)</td></tr>
+<tr class="memdesc:ac764911c462e7a2ac9f4a8c85d9f06eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">DOES NOT contain parity rules (6j only) - so NOT safe to call k+=2. <br /></td></tr>
+<tr class="separator:ac764911c462e7a2ac9f4a8c85d9f06eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d3007c0b14880eb917f991bdc3d3f07"><td class="memItemLeft" align="right" valign="top"><a id="a4d3007c0b14880eb917f991bdc3d3f07"></a>
+static std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a4d3007c0b14880eb917f991bdc3d3f07">k_minmax_W</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;b, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;c, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;d)</td></tr>
+<tr class="memdesc:a4d3007c0b14880eb917f991bdc3d3f07"><td class="mdescLeft">&#160;</td><td class="mdescRight">DOES NOT contain parity rules (6j only) - so NOT safe to call k+=2. <br /></td></tr>
+<tr class="separator:a4d3007c0b14880eb917f991bdc3d3f07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addf16fcdf5f799268ca412df78c31b83"><td class="memTemplParams" colspan="2"><a id="addf16fcdf5f799268ca412df78c31b83"></a>
+template&lt;class A , class B , class C , class D , class E , class F &gt; </td></tr>
+<tr class="memitem:addf16fcdf5f799268ca412df78c31b83"><td class="memTemplItemLeft" align="right" valign="top">static double&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#addf16fcdf5f799268ca412df78c31b83">sixj</a> (A a, B b, C c, D d, E e, F f)</td></tr>
+<tr class="memdesc:addf16fcdf5f799268ca412df78c31b83"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Magic" sixj symbol calculator. Integers (for k) and Spinors <br /></td></tr>
+<tr class="separator:addf16fcdf5f799268ca412df78c31b83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Calculates + stores Hartree Y functions + <a class="el" href="namespaceAngular.html" title="Calculate wigner 3,6,9-J symbols + Clebsh-Gordon coefs etc.. ">Angular</a> (w/ look-up) </p>
@@ -204,8 +232,58 @@ static std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bo
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns single y^k_ab(r) [by const ref]</p>
+
+<p>Returns single y^k_ab(r) [by const ref]. </p>
 <p>NOTE: Fa MUST be member of a_orbitals, Fb of b_or </p>
+
+</div>
+</div>
+<a id="a01f92a21e4338bb86494ac441b029e19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01f92a21e4338bb86494ac441b029e19">&#9670;&nbsp;</a></span>Qk()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double Coulomb::YkTable::Qk </td>
+          <td>(</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>k</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;&#160;</td>
+          <td class="paramname"><em>Fa</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;&#160;</td>
+          <td class="paramname"><em>Fb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;&#160;</td>
+          <td class="paramname"><em>Fc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;&#160;</td>
+          <td class="paramname"><em>Fd</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns Qk, Pk, Wk - uses existing yk table half the <a class="el" href="namespaceCoulomb.html" title="Functions (+classes) for computing Coulomb integrals. ">Coulomb</a> integral. </p>
+<p>These are only safe to call if Y^k_ab {a}={b} i.e., constructed with a single set of states! NOTE: There is no safety check, undefined behaviour otherwise. </p>
 
 </div>
 </div>

@@ -4,7 +4,7 @@ var searchData=
   ['r0pinfratio',['r0pinfratio',['../classDiracSpinor.html#a60e28a589d1bcaf4f3d58e7afd42d00e',1,'DiracSpinor']]],
   ['radial_5frhs',['radial_rhs',['../classDiracOperator_1_1TensorOperator.html#aab44aa615ffdb7a98fe9ad64917e1a49',1,'DiracOperator::TensorOperator']]],
   ['radialintegral',['radialIntegral',['../classDiracOperator_1_1TensorOperator.html#adcac3ff73d5cbd6b4170199e2ea4c48a',1,'DiracOperator::TensorOperator']]],
-  ['radiativepotential',['radiativePotential',['../classWavefunction.html#a081140df1355d07d709b4b57edda4058',1,'Wavefunction']]],
+  ['radiativepotential',['radiativePotential',['../classWavefunction.html#ae502bffea2e5beb47699501668c65570',1,'Wavefunction']]],
   ['rampeddamp',['rampedDamp',['../namespaceHF.html#a121bb2089d2095069144fdb8bd22f2d4',1,'HF']]],
   ['readinputfile',['readInputFile',['../namespaceIO_1_1FRW.html#ad133d9b6ce9a4bd4baab7562c31fd14b',1,'IO::FRW']]],
   ['real',['real',['../classLinAlg_1_1ComplexSqMatrix.html#acbf324fa13aadf426f542b849d8c784d',1,'LinAlg::ComplexSqMatrix']]],

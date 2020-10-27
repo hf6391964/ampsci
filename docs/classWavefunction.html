@@ -108,6 +108,10 @@ double&#160;</td><td class="memItemRight" valign="bottom"><b>get_rrms</b> () con
 <tr class="memitem:a6d78460329b281438a3831c297cc3198"><td class="memItemLeft" align="right" valign="top"><a id="a6d78460329b281438a3831c297cc3198"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>exclude_exchangeQ</b> () const</td></tr>
 <tr class="separator:a6d78460329b281438a3831c297cc3198"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5356b0233f99c603e4cdd4f576d1c56a"><td class="memItemLeft" align="right" valign="top"><a id="a5356b0233f99c603e4cdd4f576d1c56a"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#a5356b0233f99c603e4cdd4f576d1c56a">en_coreval</a> () const</td></tr>
+<tr class="memdesc:a5356b0233f99c603e4cdd4f576d1c56a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns 0.5*( max(e_core) + min(e_valence)) - energy half way between core/valence. <br /></td></tr>
+<tr class="separator:a5356b0233f99c603e4cdd4f576d1c56a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14c3fda343f20bd25d7083dd77216ae2"><td class="memItemLeft" align="right" valign="top"><a id="a14c3fda343f20bd25d7083dd77216ae2"></a>
 const <a class="el" href="classMBPT_1_1CorrelationPotential.html">MBPT::CorrelationPotential</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#a14c3fda343f20bd25d7083dd77216ae2">getSigma</a> () const</td></tr>
 <tr class="memdesc:a14c3fda343f20bd25d7083dd77216ae2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns ptr to (const) Correlation Potential, Sigma. <br /></td></tr>
@@ -117,6 +121,7 @@ const <a class="el" href="classHF_1_1HartreeFock.html">HF::HartreeFock</a> *&#16
 <tr class="memdesc:a0d02f0eb51f8ea97b3aa367afa60035d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns ptr to (const) Hartree Fock (class) <br /></td></tr>
 <tr class="separator:a0d02f0eb51f8ea97b3aa367afa60035d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab672b0491827eeb68f136cbea761a086"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#ab672b0491827eeb68f136cbea761a086">getState</a> (int n, int k, bool *is_valence=nullptr) const</td></tr>
+<tr class="memdesc:ab672b0491827eeb68f136cbea761a086"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds requested state; returns nullptr if not found.  <a href="#ab672b0491827eeb68f136cbea761a086">More...</a><br /></td></tr>
 <tr class="separator:ab672b0491827eeb68f136cbea761a086"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d2a48e73e1019c79b026e10850e54f7"><td class="memItemLeft" align="right" valign="top"><a id="a6d2a48e73e1019c79b026e10850e54f7"></a>
 const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>firstCoreState</b> (int k) const</td></tr>
@@ -213,10 +218,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#a06dc0029ecd5bf449db3dc85782687ed">SOEnergyShift</a> ()</td></tr>
 <tr class="memdesc:a06dc0029ecd5bf449db3dc85782687ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Second-order <a class="el" href="namespaceMBPT.html" title="Many-body perturbation theory. ">MBPT</a> energy shifts, calculates + prints. <br /></td></tr>
 <tr class="separator:a06dc0029ecd5bf449db3dc85782687ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a081140df1355d07d709b4b57edda4058"><td class="memItemLeft" align="right" valign="top"><a id="a081140df1355d07d709b4b57edda4058"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#a081140df1355d07d709b4b57edda4058">radiativePotential</a> (double x_simple, double x_Ueh, double x_SEe_h, double x_SEe_l, double x_SEm, double rcut, double scale_rN, const std::vector&lt; double &gt; &amp;x_spd)</td></tr>
-<tr class="memdesc:a081140df1355d07d709b4b57edda4058"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates radiative potential. Stores in vnuc, and Hmag. <br /></td></tr>
-<tr class="separator:a081140df1355d07d709b4b57edda4058"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae502bffea2e5beb47699501668c65570"><td class="memItemLeft" align="right" valign="top"><a id="ae502bffea2e5beb47699501668c65570"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#ae502bffea2e5beb47699501668c65570">radiativePotential</a> (double x_simple, double x_Ueh, double x_SEe_h, double x_SEe_l, double x_SEm, double rcut, double scale_rN, const std::vector&lt; double &gt; &amp;x_spd, bool do_readwrite=true)</td></tr>
+<tr class="memdesc:ae502bffea2e5beb47699501668c65570"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates radiative potential. Stores in vnuc, and Hmag. <br /></td></tr>
+<tr class="separator:ae502bffea2e5beb47699501668c65570"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10b4000c0b43b5437b9cb7acae829c90"><td class="memItemLeft" align="right" valign="top"><a id="a10b4000c0b43b5437b9cb7acae829c90"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#a10b4000c0b43b5437b9cb7acae829c90">formBasis</a> (const SplineBasis::Parameters &amp;params)</td></tr>
 <tr class="memdesc:a10b4000c0b43b5437b9cb7acae829c90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates + populates basis [see BSplineBasis]. <br /></td></tr>
@@ -266,6 +271,7 @@ const std::vector&lt; double &gt; &amp;&#160;</td><td class="memItemRight" valig
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a246fe3a9ade2de69d291b9a85d320819"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#a246fe3a9ade2de69d291b9a85d320819">orthonormaliseOrbitals</a> (std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;in_orbs, int num_its=1)</td></tr>
+<tr class="memdesc:a246fe3a9ade2de69d291b9a85d320819"><td class="mdescLeft">&#160;</td><td class="mdescRight">(approximately) OrthoNormalises a set of any orbitals.  <a href="#a246fe3a9ade2de69d291b9a85d320819">More...</a><br /></td></tr>
 <tr class="separator:a246fe3a9ade2de69d291b9a85d320819"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a452b9f8d6b08205f4b241389fc953c78"><td class="memItemLeft" align="right" valign="top"><a id="a452b9f8d6b08205f4b241389fc953c78"></a>
 static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#a452b9f8d6b08205f4b241389fc953c78">orthonormaliseWrt</a> (<a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;psi_v, const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;in_orbs)</td></tr>
@@ -355,7 +361,8 @@ std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Finds requested state; returns nullptr if not found</p>
+
+<p>Finds requested state; returns nullptr if not found. </p>
 <p>is_valence is optional out-parameter; tells you where orb was found </p>
 
 </div>
@@ -424,7 +431,8 @@ std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><
   </tr>
 </table>
 </div><div class="memdoc">
-<p>(approximately) OrthoNormalises a set of any orbitals.</p>
+
+<p>(approximately) OrthoNormalises a set of any orbitals. </p>
 <p>Note: only updates orbs, not energies </p>
 
 </div>

@@ -83,36 +83,36 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aed24c13f579e1ef5c3a2690ec2015f9d"><td class="memItemLeft" align="right" valign="top"><a id="aed24c13f579e1ef5c3a2690ec2015f9d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Hyperfine</b> (double muN, double IN, double rN, const <a class="el" href="classGrid.html">Grid</a> &amp;rgrid, const Func_R2_R &amp;hfs_F=sphericalBall_F())</td></tr>
 <tr class="separator:aed24c13f579e1ef5c3a2690ec2015f9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02eab902b2574b521d87958f9793dfd4"><td class="memItemLeft" align="right" valign="top"><a id="a02eab902b2574b521d87958f9793dfd4"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1Hyperfine.html#a02eab902b2574b521d87958f9793dfd4">name</a> () const final</td></tr>
-<tr class="memdesc:a02eab902b2574b521d87958f9793dfd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns "name" of operator (e.g., '<a class="el" href="classDiracOperator_1_1E1.html" title="Electric dipole operator: -|e|r = -er. ">E1</a>') <br /></td></tr>
-<tr class="separator:a02eab902b2574b521d87958f9793dfd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a082d4814907a00f8b20c47ada3de35c9"><td class="memItemLeft" align="right" valign="top"><a id="a082d4814907a00f8b20c47ada3de35c9"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1Hyperfine.html#a082d4814907a00f8b20c47ada3de35c9">units</a> () const final</td></tr>
-<tr class="memdesc:a082d4814907a00f8b20c47ada3de35c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns units of operator (usually au, may be MHz, etc.) <br /></td></tr>
-<tr class="separator:a082d4814907a00f8b20c47ada3de35c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45fe389398431682d34ce1ddad37117c"><td class="memItemLeft" align="right" valign="top"><a id="a45fe389398431682d34ce1ddad37117c"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1Hyperfine.html#a45fe389398431682d34ce1ddad37117c">angularF</a> (const int ka, const int kb) const final</td></tr>
-<tr class="memdesc:a45fe389398431682d34ce1ddad37117c"><td class="mdescLeft">&#160;</td><td class="mdescRight">angularF: links radiation integral to RME. RME = &lt;a||h||b&gt; = angularF(a,b) * radial_int(a,b) <br /></td></tr>
-<tr class="separator:a45fe389398431682d34ce1ddad37117c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad04a8ed95460522cc532c5357ac3f66b"><td class="memItemLeft" align="right" valign="top"><a id="ad04a8ed95460522cc532c5357ac3f66b"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1Hyperfine.html#ad04a8ed95460522cc532c5357ac3f66b">name</a> () const override final</td></tr>
+<tr class="memdesc:ad04a8ed95460522cc532c5357ac3f66b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns "name" of operator (e.g., '<a class="el" href="classDiracOperator_1_1E1.html" title="Electric dipole operator: -|e|r = -er. ">E1</a>') <br /></td></tr>
+<tr class="separator:ad04a8ed95460522cc532c5357ac3f66b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6413a192a95bd46c28b8651a048914bb"><td class="memItemLeft" align="right" valign="top"><a id="a6413a192a95bd46c28b8651a048914bb"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1Hyperfine.html#a6413a192a95bd46c28b8651a048914bb">units</a> () const override final</td></tr>
+<tr class="memdesc:a6413a192a95bd46c28b8651a048914bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns units of operator (usually au, may be MHz, etc.) <br /></td></tr>
+<tr class="separator:a6413a192a95bd46c28b8651a048914bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17b1f956604d73d4475a78d703fb3279"><td class="memItemLeft" align="right" valign="top"><a id="a17b1f956604d73d4475a78d703fb3279"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1Hyperfine.html#a17b1f956604d73d4475a78d703fb3279">angularF</a> (const int ka, const int kb) const override final</td></tr>
+<tr class="memdesc:a17b1f956604d73d4475a78d703fb3279"><td class="mdescLeft">&#160;</td><td class="mdescRight">angularF: links radiation integral to RME. RME = &lt;a||h||b&gt; = angularF(a,b) * radial_int(a,b) <br /></td></tr>
+<tr class="separator:a17b1f956604d73d4475a78d703fb3279"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92dbdf4e546c996dd9f1c6e66e464535"><td class="memItemLeft" align="right" valign="top"><a id="a92dbdf4e546c996dd9f1c6e66e464535"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>hfsA</b> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa) const</td></tr>
 <tr class="separator:a92dbdf4e546c996dd9f1c6e66e464535"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8f5e62a7a7d61ba78f0dced9113cd67"><td class="memItemLeft" align="right" valign="top"><a id="af8f5e62a7a7d61ba78f0dced9113cd67"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>de_F</b> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, double jF) const</td></tr>
 <tr class="separator:af8f5e62a7a7d61ba78f0dced9113cd67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6eaaebc764f156847aaafe90aded097d"><td class="memItemLeft" align="right" valign="top"><a id="a6eaaebc764f156847aaafe90aded097d"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>angularCff</b> (int, int) const final</td></tr>
-<tr class="separator:a6eaaebc764f156847aaafe90aded097d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a289296f6bf7a8bb6dbc4b3d4608de8d0"><td class="memItemLeft" align="right" valign="top"><a id="a289296f6bf7a8bb6dbc4b3d4608de8d0"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>angularCgg</b> (int, int) const final</td></tr>
-<tr class="separator:a289296f6bf7a8bb6dbc4b3d4608de8d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae45675c2712917b47892b8d930fdf447"><td class="memItemLeft" align="right" valign="top"><a id="ae45675c2712917b47892b8d930fdf447"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>angularCfg</b> (int, int) const final</td></tr>
-<tr class="separator:ae45675c2712917b47892b8d930fdf447"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1ffaa93c5e519a9a8717d23f19d2f60"><td class="memItemLeft" align="right" valign="top"><a id="ab1ffaa93c5e519a9a8717d23f19d2f60"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>angularCgf</b> (int, int) const final</td></tr>
-<tr class="separator:ab1ffaa93c5e519a9a8717d23f19d2f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30a24a832c5ee04b059ee7409bb541e3"><td class="memItemLeft" align="right" valign="top"><a id="a30a24a832c5ee04b059ee7409bb541e3"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>angularCff</b> (int, int) const override final</td></tr>
+<tr class="separator:a30a24a832c5ee04b059ee7409bb541e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a88e631a1002b8706564e1f64bc96b2"><td class="memItemLeft" align="right" valign="top"><a id="a3a88e631a1002b8706564e1f64bc96b2"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>angularCgg</b> (int, int) const override final</td></tr>
+<tr class="separator:a3a88e631a1002b8706564e1f64bc96b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbad9332e80e62882d64c07fa1f2d5f0"><td class="memItemLeft" align="right" valign="top"><a id="adbad9332e80e62882d64c07fa1f2d5f0"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>angularCfg</b> (int, int) const override final</td></tr>
+<tr class="separator:adbad9332e80e62882d64c07fa1f2d5f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf71c6c13cf439343d7a49fe04a3dad8"><td class="memItemLeft" align="right" valign="top"><a id="adf71c6c13cf439343d7a49fe04a3dad8"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>angularCgf</b> (int, int) const override final</td></tr>
+<tr class="separator:adf71c6c13cf439343d7a49fe04a3dad8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDiracOperator_1_1TensorOperator"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDiracOperator_1_1TensorOperator')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDiracOperator_1_1TensorOperator.html">DiracOperator::TensorOperator</a></td></tr>
 <tr class="memitem:a5753b23a35bc5f4903ca3feb3265f028 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="a5753b23a35bc5f4903ca3feb3265f028"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a5753b23a35bc5f4903ca3feb3265f028">isZero</a> (const int ka, int kb) const</td></tr>

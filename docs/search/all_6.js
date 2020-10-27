@@ -19,6 +19,7 @@ var searchData=
   ['get_5fimaginary',['get_imaginary',['../classMBPT_1_1GreenMatrix.html#aafac667c43cb1bb702406298745390eb',1,'MBPT::GreenMatrix']]],
   ['get_5flambdakab',['get_Lambdakab',['../classAngular_1_1Ck__ab.html#aeb58f9bbc6a61aebbd89de46bf5b5c69',1,'Angular::Ck_ab']]],
   ['get_5flist',['get_list',['../classIO_1_1UserInput.html#adaa162952687bf37e426e52fba30b442',1,'IO::UserInput::get_list(const std::string &amp;in_block, const std::string &amp;option, const std::vector&lt; T &gt; &amp;default_value) const'],['../classIO_1_1UserInput.html#a4c7a5f063436ee58a08c36ecd92b2c0e',1,'IO::UserInput::get_list(const std::string &amp;in_block, const std::string &amp;option) const']]],
+  ['get_5fomega',['get_omega',['../classHF_1_1ExternalField.html#ade48263430a3964b0d4b4e9a0776cb0e',1,'HF::ExternalField']]],
   ['get_5freal',['get_real',['../classMBPT_1_1GreenMatrix.html#afb31e6e16cc268c1f41ea13b2900dc19',1,'MBPT::GreenMatrix']]],
   ['get_5fspline',['get_spline',['../classBSplines.html#a4b7b81f262e0de29af9fb46a5eace3fa',1,'BSplines']]],
   ['get_5fspline_5fderiv',['get_spline_deriv',['../classBSplines.html#a46b0161387ed74c3a317e9d8cd1eb76c',1,'BSplines']]],

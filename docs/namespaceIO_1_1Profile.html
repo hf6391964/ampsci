@@ -69,6 +69,9 @@ $(function() {
 <div class="title">IO::Profile Namespace Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Simple thread-safe scope-based profiler function.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -82,7 +85,7 @@ constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>do_profile<
 <tr class="separator:acede6c559ec05c2e458a6b8f82faaf60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Simple thread-safe scope-based profiler function.</p>
+<div class="textblock"><p>Simple thread-safe scope-based profiler function. </p>
 <p>Must compile with the pre-processor macro IOPROFILER defined for the pofiler to be used. If not, it does nothing.</p>
 <p>Use: add following line to scope you wish to profile:</p><ul>
 <li>[[maybe_unused]] auto sp = <a class="el" href="namespaceIO_1_1Profile.html#aef015ef99bf63878c9844e5c398bd4b3">IO::Profile::safeProfiler</a>(<b>func</b>);</li>

@@ -87,6 +87,7 @@ std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>read_write_qed</b> (const std::vector&lt; double &gt; &amp;r, std::vector&lt; double &gt; &amp;Hel, std::vector&lt; double &gt; &amp;Hmag, const std::string &amp;fname, IO::FRW::RoW rw)</td></tr>
 <tr class="separator:ae1963500face99c65d2f09280f802d14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf65a66f8535a6cf7268c0836d8cb574"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceRadiativePotential.html#abf65a66f8535a6cf7268c0836d8cb574">vSimpleExp</a> (double r, double, double z, double alpha)</td></tr>
+<tr class="memdesc:abf65a66f8535a6cf7268c0836d8cb574"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple V(r) = -(Z^2*alpha) * Exp(-r/lc), lc = hbar / (mc) = alpha.  <a href="#abf65a66f8535a6cf7268c0836d8cb574">More...</a><br /></td></tr>
 <tr class="separator:abf65a66f8535a6cf7268c0836d8cb574"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e8bbdb67f92550e32454c195959edd7"><td class="memItemLeft" align="right" valign="top"><a id="a3e8bbdb67f92550e32454c195959edd7"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceRadiativePotential.html#a3e8bbdb67f92550e32454c195959edd7">vUehling</a> (double r, double rN, double z, double alpha)</td></tr>
@@ -151,7 +152,8 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="na
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Simple V(r) = -(Z^2*alpha) * Exp(-r/lc), lc = hbar / (mc) = alpha</p>
+
+<p>Simple V(r) = -(Z^2*alpha) * Exp(-r/lc), lc = hbar / (mc) = alpha. </p>
 <p>Note: Does NOT include Ak factor - must be included from input! Does not include FNS effects (rN ignored) </p>
 
 </div>

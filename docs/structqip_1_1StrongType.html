@@ -182,7 +182,9 @@ constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt
 <tr class="memitem:aaee73c9a5d1b28ed0d485c3931660cb8"><td class="memItemLeft" align="right" valign="top"><a id="aaee73c9a5d1b28ed0d485c3931660cb8"></a>
 constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;=</b> (const <a class="el" href="structqip_1_1StrongType.html">StrongT</a> &amp;lhs, const <a class="el" href="structqip_1_1StrongType.html">StrongT</a> &amp;rhs)</td></tr>
 <tr class="separator:aaee73c9a5d1b28ed0d485c3931660cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6a7ed020707f2124134be46aefc4dbe"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structqip_1_1StrongType.html#ab6a7ed020707f2124134be46aefc4dbe">operator==</a> (const <a class="el" href="structqip_1_1StrongType.html">StrongT</a> &amp;lhs, const BaseT &amp;&amp;rhs)</td></tr>
+<tr class="memitem:ab6a7ed020707f2124134be46aefc4dbe"><td class="memItemLeft" align="right" valign="top"><a id="ab6a7ed020707f2124134be46aefc4dbe"></a>
+constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structqip_1_1StrongType.html#ab6a7ed020707f2124134be46aefc4dbe">operator==</a> (const <a class="el" href="structqip_1_1StrongType.html">StrongT</a> &amp;lhs, const BaseT &amp;&amp;rhs)</td></tr>
+<tr class="memdesc:ab6a7ed020707f2124134be46aefc4dbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides operators for direct comparison w/ BaseT literal (rvalue). Note: Does not allow comparison with BaseT lvalue. <br /></td></tr>
 <tr class="separator:ab6a7ed020707f2124134be46aefc4dbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c200942b597e64238fbe1017e51df43"><td class="memItemLeft" align="right" valign="top"><a id="a0c200942b597e64238fbe1017e51df43"></a>
 constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="structqip_1_1StrongType.html">StrongT</a> &amp;lhs, const BaseT &amp;&amp;rhs)</td></tr>
@@ -234,47 +236,7 @@ struct qip::StrongType&lt; enumV, BaseT &gt;</h3>
 <div class="fragment"><div class="line"><span class="keyword">using</span> MyType = <a class="code" href="structqip_1_1StrongType.html">qip::StrongType&lt;EnumClass::value, BaseType&gt;</a>;</div></div><!-- fragment --><p>The newly-defined Strong Type will, for the most part, behave just like an instance of the underlying base type would. In particular, the usual arithmetic operations (+, -, *, /, +=, *= etc.) are all defined, and they work with iostreams. The main difference is that all implicit conversions are banned.</p>
 <h2>Examples</h2>
 <p>Usage is best shown with examples. Consider this dummy problem, where we define strong types for Energy, Mass, and Velocity.</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;StrongType.hpp&quot;</span></div><div class="line"><span class="keyword">enum class</span> MechanicsTypes { energy, mass, velocity };</div><div class="line"><span class="comment">// Use of enum class ensures each StrongType is unique</span></div><div class="line"></div><div class="line"><span class="keyword">using</span> Energy   = <a class="code" href="structqip_1_1StrongType.html">qip::StrongType&lt;MechanicsTypes::energy, double&gt;</a>;</div><div class="line"><span class="keyword">using</span> Mass     = <a class="code" href="structqip_1_1StrongType.html">qip::StrongType&lt;MechanicsTypes::mass, double&gt;</a>;</div><div class="line"><span class="keyword">using</span> Velocity = <a class="code" href="structqip_1_1StrongType.html">qip::StrongType&lt;MechanicsTypes::velocity, double&gt;</a>;</div></div><!-- fragment --> </div><h2 class="groupheader">Friends And Related Function Documentation</h2>
-<a id="ab6a7ed020707f2124134be46aefc4dbe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6a7ed020707f2124134be46aefc4dbe">&#9670;&nbsp;</a></span>operator==</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;auto enumV, typename BaseT &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr bool operator== </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structqip_1_1StrongType.html">StrongT</a> &amp;&#160;</td>
-          <td class="paramname"><em>lhs</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const BaseT &amp;&amp;&#160;</td>
-          <td class="paramname"><em>rhs</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Provides operators for direct comparison w/ BaseT literal (rvalue). Note: Does not allow comparison with BaseT lvalue </p>
-
-</div>
-</div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;StrongType.hpp&quot;</span></div><div class="line"><span class="keyword">enum class</span> MechanicsTypes { energy, mass, velocity };</div><div class="line"><span class="comment">// Use of enum class ensures each StrongType is unique</span></div><div class="line"></div><div class="line"><span class="keyword">using</span> Energy   = <a class="code" href="structqip_1_1StrongType.html">qip::StrongType&lt;MechanicsTypes::energy, double&gt;</a>;</div><div class="line"><span class="keyword">using</span> Mass     = <a class="code" href="structqip_1_1StrongType.html">qip::StrongType&lt;MechanicsTypes::mass, double&gt;</a>;</div><div class="line"><span class="keyword">using</span> Velocity = <a class="code" href="structqip_1_1StrongType.html">qip::StrongType&lt;MechanicsTypes::velocity, double&gt;</a>;</div></div><!-- fragment --> </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>qip/<a class="el" href="StrongType_8hpp_source.html">StrongType.hpp</a></li>
 </ul>
 </div><!-- contents -->

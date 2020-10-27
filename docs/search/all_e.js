@@ -1,7 +1,7 @@
 var searchData=
 [
   ['occ_5ffrac',['occ_frac',['../classDiracSpinor.html#a058fc45a4c06b9a5ecd688a65fbbd0e3',1,'DiracSpinor']]],
-  ['operator_28_29',['operator()',['../classHF_1_1Breit.html#a5725c4cea63a74e83d0da798e1816ac0',1,'HF::Breit']]],
+  ['operator_28_29',['operator()',['../classCoulomb_1_1YkTable.html#a3f7d575ba22c8b08aff27dc615e66ee8',1,'Coulomb::YkTable::operator()()'],['../classHF_1_1Breit.html#a5725c4cea63a74e83d0da798e1816ac0',1,'HF::Breit::operator()()']]],
   ['operator_2a',['operator*',['../classLinAlg_1_1ComplexSqMatrix.html#ac26bcce7f1b8caa216a5f48433382819',1,'LinAlg::ComplexSqMatrix']]],
   ['operator_2a_3d',['operator*=',['../classLinAlg_1_1ComplexSqMatrix.html#aeb1d9b5a978c5c6d8bd74b9f7b491624',1,'LinAlg::ComplexSqMatrix::operator*=()'],['../classMBPT_1_1GreenMatrix.html#a294a9cf7e760dd60db6c6dc363f453ad',1,'MBPT::GreenMatrix::operator*=()'],['../structqip_1_1StrongType.html#a73cf1eab908492279061a56b980897f9',1,'qip::StrongType::operator*=(const StrongT &amp;rhs)'],['../structqip_1_1StrongType.html#aca775aa46944977625bc3246e88420fc',1,'qip::StrongType::operator*=(const BaseT &amp;rhs)']]],
   ['operator_2b_2b',['operator++',['../structqip_1_1StrongType.html#af0a6a2bf55a1975597495ad677f4a6e8',1,'qip::StrongType']]],

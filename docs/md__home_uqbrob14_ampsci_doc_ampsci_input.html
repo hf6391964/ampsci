@@ -73,18 +73,22 @@ $(function() {
 <li>In general, the input file will have the following format:</li>
 </ul>
 <div class="fragment"><div class="line">Atom { &lt;input_options&gt; }</div><div class="line">Nucleus { &lt;input_options&gt; }</div><div class="line"><a class="code" href="classGrid.html">Grid</a> { &lt;input_options&gt; }</div><div class="line">HartreeFock { &lt;input_options&gt; }</div><div class="line"><span class="comment">//Optional modules:</span></div><div class="line">Module::firstModule { &lt;input_options&gt; }</div><div class="line">Module::secondModule { &lt;input_options&gt; }</div></div><!-- fragment --><ul>
-<li>Most options have a default, and can be left blank, explicitly set to 'default', or removed entirely.</li>
-<li>The curly-braces denote the start/end of each block. <em>Don't</em> use any other curly-braces (nested braces are not allowed)</li>
+<li>Most options have a default; these may be left blank, explicitly set to 'default', or removed entirely.</li>
+<li>The curly-braces denote the start/end of each block. <em>Don't</em> use any other curly-braces (nested curly-braces are not allowed)</li>
 <li>Uses c++ style comments. Any commented-out line will not be read. White-space is ignored.</li>
-<li>For example, the following four inputs are all equivalent</li>
+<li>For example, the following inputs are all equivalent</li>
 </ul>
-<div class="fragment"><div class="line">Atom {</div><div class="line">  Z = Cs;</div><div class="line">  A;</div><div class="line">}</div><div class="line">Atom {</div><div class="line">  Z = Cs;</div><div class="line"><span class="comment">//  A;</span></div><div class="line">}</div><div class="line">Atom { Z = Cs; }</div><div class="line">Atom{Z=Cs;A=<span class="keywordflow">default</span>;}</div></div><!-- fragment --><ul>
+<div class="fragment"><div class="line">Atom {</div><div class="line">  Z = Cs;</div><div class="line">  A;</div><div class="line">}</div><div class="line">Atom {</div><div class="line">  Z = Cs;</div><div class="line"><span class="comment">//  A;</span></div><div class="line">}</div><div class="line">Atom { Z = Cs; }</div><div class="line">Atom { Z = 55; A = 133; }</div><div class="line">Atom{Z=Cs;A=<span class="keywordflow">default</span>;}</div></div><!-- fragment --><ul>
 <li>All available inputs for each input block are listed below<ul>
-<li>Inputs are taken in as either text, boolean (true/false), integers, or real numbers.</li>
-<li>These will be denoted by [t], [b], [i], [r]</li>
+<li>Inputs are taken in as either text, boolean (true/false), integers, or real numbers, or a "sub-block"</li>
+<li>These will be denoted by [t], [b], [i], [r], [sub-block]</li>
+<li>A sub-block is a bracketed list of sub-options, e.g.<ul>
+<li>options = [a=1; b=2;];</li>
 </ul>
 </li>
-<li>Program will <em>usually</em> warn you if an incorrect option is given, and print all the available options to the screen.</li>
+</ul>
+</li>
+<li>Program will <em>usually</em> warn you if an incorrect option is given, and print all the available options to the screen &ndash; you can use this fact to get the code to print all the available options for each block.</li>
 </ul>
 <hr/>
  <h1>Each input block:</h1>
@@ -97,7 +101,7 @@ $(function() {
 </ul>
 </li>
 </ul>
-<p>## HartreeFock </p><div class="fragment"><div class="line">HartreeFock {</div><div class="line">  core;        <span class="comment">//[t] default = [] (no core)</span></div><div class="line">  valence;     <span class="comment">//[t] default = none</span></div><div class="line">  sortOutput;  <span class="comment">//[b] default = true</span></div><div class="line">  method;      <span class="comment">//[t] default = HartreeFock</span></div><div class="line">  Breit;       <span class="comment">//[r] default = 0.0</span></div><div class="line">  convergence; <span class="comment">//[r] default = 1.0e-12</span></div><div class="line">}</div></div><!-- fragment --><ul>
+<p>## HartreeFock </p><div class="fragment"><div class="line">HartreeFock {</div><div class="line">  core;        <span class="comment">//[t] default = [] (no core)</span></div><div class="line">  valence;     <span class="comment">//[t] default = none</span></div><div class="line">  sortOutput;  <span class="comment">//[b] default = false</span></div><div class="line">  method;      <span class="comment">//[t] default = HartreeFock</span></div><div class="line">  Breit;       <span class="comment">//[r] default = 0.0</span></div><div class="line">  convergence; <span class="comment">//[r] default = 1.0e-12</span></div><div class="line">}</div></div><!-- fragment --><ul>
 <li>core: Core configuration. Format: "[Atom],extra"<ul>
 <li>'Extra' is comma-separated list of 'nLm' terms (eg: '1s2,2s2,2p6')</li>
 <li>'[Atom]' is optional, can just list all configurations</li>
@@ -243,11 +247,16 @@ $(function() {
 <li>The 'Spectrum' is similar to basis, but also includes correlation corrections (if Sigma exists)</li>
 <li>Useful, since we often need a small basis to compute <a class="el" href="namespaceMBPT.html" title="Many-body perturbation theory. ">MBPT</a> terms, but a large basis to complete other sum-over-states calculations. <div class="fragment"><div class="line">Spectrum {</div><div class="line">  <span class="comment">// exact same inputs as Basis{}</span></div><div class="line">}</div></div><!-- fragment --></li>
 </ul>
-<h2>Modules and MatrixElements</h2>
-<p>Modules and MatrixElements work in essentially the same way. Each MatrixElements/Modules block will be run in order. You can comment-out just the block name, and the block will be skipped.</p>
-<p>MatrixElements blocks calculate reduced matrix elements of given operator, Modules can do anything.</p>
-<p>For MatrixElements, there are some options that apply for any operator; and then there are some options specific to each operator</p>
-<div class="fragment"><div class="line">MatrixElements::ExampleOperator { <span class="comment">//this is not a real operator..</span></div><div class="line">  <span class="comment">// Options that apply to all operators:</span></div><div class="line">  printBoth;      <span class="comment">//[t] default = false</span></div><div class="line">  onlyDiagonal;   <span class="comment">//[t] default = false</span></div><div class="line">  radialIntegral; <span class="comment">//[b] default = false</span></div><div class="line">  rpa;            <span class="comment">//[b] default = true</span></div><div class="line">  rpa_diagram;    <span class="comment">//[b] default = false</span></div><div class="line">  omega;          <span class="comment">//[r] default = 0.0;  or [t] (&#39;each&#39;)</span></div><div class="line">  A_vertex;       <span class="comment">//[r] default = 0.0 - for QED vertex</span></div><div class="line">  b_vertex;       <span class="comment">//[r] default = 1.0</span></div><div class="line">}</div></div><!-- fragment --><ul>
+<h2>Modules</h2>
+<p>Each Modules block will be run in order. You can comment-out just the block name, and the block will be skipped.</p>
+<h3><a class="el" href="namespaceModule.html#a55c4b7766fbc4c805ae6bd65bf9b8783" title="Calculates matrix elements of any tensor operator, with RPA. ">Module::matrixElements</a></h3>
+<p><a class="el" href="namespaceModule.html" title="Modules are run using calculated atomic wavefunctions. ">Module</a> to calculate Matrix Elements. For matrixElements, there are some options that apply for any operator; and then there are some options specific to each operator; these operator-specific options are given as a [] bracketed list of options ("sub-block")</p>
+<div class="fragment"><div class="line"><a class="code" href="namespaceModule.html#a55c4b7766fbc4c805ae6bd65bf9b8783">Module::matrixElements</a> {</div><div class="line">  <span class="keyword">operator</span>;       <span class="comment">//[t] default = &quot;&quot;</span></div><div class="line">  options;        <span class="comment">//[sub-block], default = &quot;&quot;</span></div><div class="line">  printBoth;      <span class="comment">//[t] default = false</span></div><div class="line">  onlyDiagonal;   <span class="comment">//[t] default = false</span></div><div class="line">  radialIntegral; <span class="comment">//[b] default = false</span></div><div class="line">  rpa;            <span class="comment">//[b] default = true</span></div><div class="line">  rpa_diagram;    <span class="comment">//[b] default = false</span></div><div class="line">  omega;          <span class="comment">//[r] default = 0.0;  or [t] (&#39;each&#39;)</span></div><div class="line">  A_vertex;       <span class="comment">//[r] default = 0.0 - for QED vertex</span></div><div class="line">  b_vertex;       <span class="comment">//[r] default = 1.0</span></div><div class="line">}</div></div><!-- fragment --><ul>
+<li>operator: name of operator; see list below</li>
+<li>options: list any operator-specific options (most will be blank)<ul>
+<li><em>see below</em></li>
+</ul>
+</li>
 <li>printBoth: Print &lt;a|h|b&gt; and &lt;b|h|a&gt; ? false by default. (For <em>some</em> operators, e.g., involving derivatives, this is a good test of numerical error. For most operators, values will be trivially the same; reduced matrix elements, sign may be different.)</li>
 <li>onlyDiagonal: If true, will only print diagonal MEs &lt;a|h|a&gt;</li>
 <li>radialIntegral: if true, calculates the radial integral (definition depends on specific operator)</li>
@@ -257,10 +266,11 @@ $(function() {
 <li>A_vertex, b_vertex: Effective QED vertex func: A * alpha * exp(-b * r / alpha)</li>
 </ul>
 <h3>Available operators:</h3>
-<div class="fragment"><div class="line">MatrixElements::E1 { <span class="comment">//Electric dipole operator:</span></div><div class="line">  gauge; <span class="comment">//[t] lform, vform. default = lform</span></div><div class="line">}</div></div><!-- fragment --><div class="fragment"><div class="line">MatrixElements::Ek { <span class="comment">//Electric multipole operator:</span></div><div class="line">  k; <span class="comment">//[i] default = 1</span></div><div class="line">}</div></div><!-- fragment --><ul>
+<p>Here I list the available operators, and their possible options. Remember; the program will print out the full list of available options if you ask it to.</p>
+<div class="fragment"><div class="line"><span class="keyword">operator</span> = E1; <span class="comment">//Electric dipole operator:</span></div><div class="line">options = [</div><div class="line">  gauge; <span class="comment">//[t] lform, vform. default = lform</span></div><div class="line">];</div></div><!-- fragment --><div class="fragment"><div class="line"><span class="keyword">operator</span> = Ek; <span class="comment">//Electric multipole operator:</span></div><div class="line">options = [</div><div class="line">  k; <span class="comment">//[i] default = 1</span></div><div class="line">];</div></div><!-- fragment --><ul>
 <li>k=1 =&gt; E1, dipole. k=2 =&gt; E2, quadrupole etc.</li>
 </ul>
-<div class="fragment"><div class="line">MatrixElements::r { <span class="comment">//scalar r</span></div><div class="line">  power; <span class="comment">//[r] default = 1. Will calc &lt;|r^n|&gt;.</span></div><div class="line">}</div></div><!-- fragment --><div class="fragment"><div class="line">MatrixElements::pnc {<span class="comment">// spin-independent (Qw) PNC operator.</span></div><div class="line">  <span class="comment">// Output given in units of i(-Q/N)e-11</span></div><div class="line">  <a class="code" href="namespacePhysConst.html#af3948ef083a64b0a3ff75aa6e8ddf8e9">c</a>; <span class="comment">//[r] half-density radius. By default, uses rrms from Z,A [see nucleus]</span></div><div class="line">  t; <span class="comment">//[r] skin thickness. default = 2.3</span></div><div class="line">}</div></div><!-- fragment --><div class="fragment"><div class="line">MatrixElements::Hrad_el {</div><div class="line">  <span class="comment">// QED electric part (Euhling+electric SE)</span></div><div class="line">}</div></div><!-- fragment --><ul>
+<div class="fragment"><div class="line"><span class="keyword">operator</span> = r; <span class="comment">//scalar r</span></div><div class="line">options = [</div><div class="line">  power; <span class="comment">//[r] default = 1. Will calc &lt;|r^n|&gt;.</span></div><div class="line">];</div></div><!-- fragment --><div class="fragment"><div class="line"><span class="keyword">operator</span> = pnc; <span class="comment">// spin-independent (Qw) PNC operator.</span></div><div class="line">options = [</div><div class="line">  <a class="code" href="namespacePhysConst.html#af3948ef083a64b0a3ff75aa6e8ddf8e9">c</a>; <span class="comment">//[r] half-density radius. By default, uses rrms from Z,A [see nucleus]</span></div><div class="line">  t; <span class="comment">//[r] skin thickness. default = 2.3</span></div><div class="line">];</div></div><!-- fragment --><div class="fragment"><div class="line"><span class="keyword">operator</span> = Hrad_el; <span class="comment">// QED electric part (Euhling+electric SE)</span></div></div><!-- fragment --><ul>
 <li>Takes similar arguments as RadPot (except for scale_l and core_qed)<ul>
 <li>Simple, Ueh, SE_h, SE_l, rcut, scale_rN (but not SE_mag)</li>
 </ul>
@@ -271,7 +281,8 @@ $(function() {
 </li>
 <li>Typically used with onlyDiagonal=true, and radialIntegral=true (get energy shifts)</li>
 </ul>
-<div class="fragment"><div class="line">MatrixElements::Hrad_mag {</div><div class="line">  <span class="comment">// QED magnetic part (magnetic SE form-factor)</span></div><div class="line">}</div></div><!-- fragment --><ul>
+<div class="fragment"><div class="line"><span class="keyword">operator</span> = Hrad_mag; <span class="comment">// QED magnetic part (magnetic SE form-factor)</span></div></div><!-- fragment --><ul>
+<li>QED magnetic part (magnetic SE form-factor)</li>
 <li>Takes similar arguments as RadPot (except for scale_l and core_qed)<ul>
 <li>SE_mag, rcut, scale_rN (but not Simple, Ueh, SE_h, SE_l,)</li>
 </ul>
@@ -282,29 +293,68 @@ $(function() {
 </li>
 <li>Typically used with onlyDiagonal=true, and radialIntegral=true (get energy shifts)</li>
 </ul>
-<div class="fragment"><div class="line">MatrixElements::hfs { <span class="comment">// Magnetic dipole hyperfine structure constant A</span></div><div class="line">  mu;     <span class="comment">//[r] Nuc. mag. moment. Will be looked up by default</span></div><div class="line">  I;      <span class="comment">//[r] Nuc. spin. Will be looked up by default</span></div><div class="line">  rrms;   <span class="comment">//[r] Nuc. rms radius. Will be looked up by default</span></div><div class="line">  F(r);   <span class="comment">//[t] Bohr-Weisskopf function. ball, shell, pointlike, VolotkaBW, doublyOddBW</span></div><div class="line">  printF; <span class="comment">//[b] default = false. Will write F(r)/r^2 to text file</span></div><div class="line">  <span class="comment">// -----</span></div><div class="line">  <span class="comment">// the following are only used for &quot;VolotkaBW/doublyOddBW&quot;</span></div><div class="line">  <span class="comment">// both are optional (will be deduced otherwise)</span></div><div class="line">  <a class="code" href="namespaceAngular.html#ac327cb94806f4a1d1167953cb7f73476">parity</a>; <span class="comment">//[i] parity of unpaired valence nucleon (+1/-1)</span></div><div class="line">  gl;     <span class="comment">//[i] =1 for valence proton, =0 for valence neutron</span></div><div class="line">  <span class="comment">// -----</span></div><div class="line">  <span class="comment">// The following are only read in if F(r) = doublyOddBW,</span></div><div class="line">  <span class="comment">// but are _required_ in that case (current values are for 212-Fr)</span></div><div class="line">  mu1 = 4.00; <span class="comment">//see paper for explanation</span></div><div class="line">  I1 = 4.5;</div><div class="line">  l1 = 5.;</div><div class="line">  gl1 = 1;</div><div class="line">  I2 = 0.5;</div><div class="line">  l2 = 1.;</div><div class="line">}</div></div><!-- fragment --><h3>Modules:</h3>
-<hr/>
- <div class="fragment"><div class="line"><a class="code" href="namespaceModule_1_1Tests.html">Module::Tests</a> {</div><div class="line">  orthonormal;     <span class="comment">//[b] Prints worst &lt;a|b&gt;&#39;s. default = true</span></div><div class="line">  orthonormal_all; <span class="comment">//[b] Print all &lt;a|b&gt;&#39;s. default = false</span></div><div class="line">  Hamiltonian;     <span class="comment">//[b] check eigenvalues of Hamiltonian. default = false</span></div><div class="line">  boundaries;      <span class="comment">//[b] check f(rmax)/fmax. default = false</span></div><div class="line">  basisTests;        <span class="comment">//[b] Tests basis by evaluating sum rules + HFS/Energies</span></div><div class="line">}</div></div><!-- fragment --><ul>
-<li>Various tests of numerical errors: <hr/>
- <div class="fragment"><div class="line">Module::pnc {</div><div class="line">    transition = na, ka, nb, ka; <span class="comment">//[i,i,i,i] - required</span></div><div class="line">    rpa;      <span class="comment">//[b] default = true</span></div><div class="line">    omega;    <span class="comment">//[r]</span></div><div class="line">}</div></div><!-- fragment --></li>
-<li>Calculates pnc amplitude {na,ka}-&gt;{nb,kb}</li>
-<li>Uses Solving-equations and sum-over-states (spectrum)</li>
-<li>omega: frequency to solve RPA/TDHF equations at. By default is E_a-Eb (from orbitals), but can be anything. <hr/>
- <div class="fragment"><div class="line">Module::polarisability {</div><div class="line">    a = na, ka;     <span class="comment">//[i,i] default=blank</span></div><div class="line">    rpa;            <span class="comment">//[b] default = true</span></div><div class="line">    omega_max;      <span class="comment">//[r] default = 0.0</span></div><div class="line">    omega_steps;    <span class="comment">//[i] default = 30</span></div><div class="line">}</div></div><!-- fragment --></li>
-<li>Calculates dipole polarisability (optionally for valence state 'a', or for core)</li>
-<li>Uses Solving-equations and sum-over-states (spectrum)</li>
-<li>a: valence state (eg: a=6,-1; for 6s). Blank for core-only</li>
-<li>rpa: include rpa into static term</li>
-<li>omega_max: max frequency. Calcs alpha(w) up to this (in omega_steps steps) <hr/>
- <div class="fragment"><div class="line">Module::lifetimes{</div><div class="line">  E1;   <span class="comment">//[b] Include E1 transitions. default = true</span></div><div class="line">  E1;   <span class="comment">//[b] Include E2 transitions. default = false</span></div><div class="line">}</div></div><!-- fragment --> Calculates lifetimes of valence states. Note: uses <a class="el" href="namespaceHF.html" title="Functions and classes for Hartree-Fock. ">HF</a> energies (prints all data to screen) <hr/>
- <div class="fragment"><div class="line"><a class="code" href="namespaceModule.html#a81711048d92da3f4f84ffbb58f9f04df">Module::HFAnomaly</a> {</div><div class="line">  Alist;  <span class="comment">//[i,i,...] // Which A&#39;s to calculate for (blank for all)</span></div><div class="line"> <span class="comment">// ~ most inputs same as MatrixElements::hfs</span></div><div class="line">}</div></div><!-- fragment --> Calculates the hyperfine anomaly (and BW effect) for all available odd isotopes of given atom, relative to the 'main' isotope (see Atom).<ul>
-<li>Note: Only runs for odd isotopes; to get anomaly for even isotopes, use am even isotope as reference (For doubly-odd Bohr-Weisskopf input options, see MatrixElements::hfs)</li>
-<li>Takes same input at MatrixElements::hfs, except for F(r), since it runs for each F(r) <hr/>
- <div class="fragment"><div class="line">Module::BohrWeisskopf { <span class="comment">//Calculates BW effect for Ball/Single-particle</span></div><div class="line">  <span class="comment">// Takes same input at MatrixElements::hfs</span></div><div class="line">  <span class="comment">// Except for F(r), since it runs for each F(r)</span></div><div class="line">}</div></div><!-- fragment --> <hr/>
- <div class="fragment"><div class="line">Module::WriteOrbitals { <span class="comment">//writes orbitals to textfile:</span></div><div class="line">    label = outputLabel; <span class="comment">//[t] Optional. blank by default</span></div><div class="line">}</div></div><!-- fragment --> Writes the core + valence orbitals (+ the total electron density) to a file, in GNUplot friendly format. The (optional) label will be appended to the output file name. Plot file using GNUPLOT. For example, try this:</li>
+<div class="fragment"><div class="line"><span class="keyword">operator</span> = hfs; <span class="comment">// Magnetic dipole hyperfine structure constant A</span></div><div class="line">options = [</div><div class="line">  mu;     <span class="comment">//[r] Nuc. mag. moment. Will be looked up by default</span></div><div class="line">  I;      <span class="comment">//[r] Nuc. spin. Will be looked up by default</span></div><div class="line">  rrms;   <span class="comment">//[r] Nuc. rms radius. Will be looked up by default</span></div><div class="line">  F(r);   <span class="comment">//[t] Bohr-Weisskopf function. ball, shell, pointlike, VolotkaBW, doublyOddBW</span></div><div class="line">  printF; <span class="comment">//[b] default = false. Will write F(r)/r^2 to text file</span></div><div class="line">  <span class="comment">// -----</span></div><div class="line">  <span class="comment">// the following are only used for &quot;VolotkaBW/doublyOddBW&quot;</span></div><div class="line">  <span class="comment">// both are optional (will be deduced otherwise)</span></div><div class="line">  <a class="code" href="namespaceAngular.html#ac327cb94806f4a1d1167953cb7f73476">parity</a>; <span class="comment">//[i] parity of unpaired valence nucleon (+1/-1)</span></div><div class="line">  gl;     <span class="comment">//[i] =1 for valence proton, =0 for valence neutron</span></div><div class="line">  <span class="comment">// -----</span></div><div class="line">  <span class="comment">// The following are only read in if F(r) = doublyOddBW,</span></div><div class="line">  <span class="comment">// but are _required_ in that case (current values are for 212-Fr)</span></div><div class="line">  mu1 = 4.00; <span class="comment">//see paper for explanation</span></div><div class="line">  I1 = 4.5;</div><div class="line">  l1 = 5.;</div><div class="line">  gl1 = 1;</div><div class="line">  I2 = 0.5;</div><div class="line">  l2 = 1.;</div><div class="line">];</div></div><!-- fragment --><h3>Other Modules:</h3>
+<ul>
+<li>Note: 'Modules' documentation also available in the doxygen (html) documentation on github; that is likely more up-to-date <hr/>
+ <div class="fragment"><div class="line"><a class="code" href="namespaceModule_1_1Tests.html">Module::Tests</a> {</div><div class="line">  orthonormal;     <span class="comment">//[b] Prints worst &lt;a|b&gt;&#39;s. default = true</span></div><div class="line">  orthonormal_all; <span class="comment">//[b] Print all &lt;a|b&gt;&#39;s. default = false</span></div><div class="line">  Hamiltonian;     <span class="comment">//[b] check eigenvalues of Hamiltonian. default = false</span></div><div class="line">  boundaries;      <span class="comment">//[b] check f(rmax)/fmax. default = false</span></div><div class="line">  basisTests;        <span class="comment">//[b] Tests basis by evaluating sum rules + HFS/Energies</span></div><div class="line">}</div></div><!-- fragment --></li>
+</ul>
+<p>Various tests of numerical errors: </p><hr/>
+ <div class="fragment"><div class="line">Module::pnc{ <a class="code" href="namespacePhysConst.html#af3948ef083a64b0a3ff75aa6e8ddf8e9">c</a>; t; transition; rpa; omega; nmain; }</div></div><!-- fragment --><p> Uses both 'solving equations' (TDHF) and sum-over-states methods. For solving equations, calculates both:</p><ul>
+<li>&lt;yA_w|d| B&gt; + &lt;A |d|xB_w&gt;</li>
+<li>&lt;A |w|XB_d&gt; + &lt;YA_d|w| B&gt;</li>
+<li>Does not (yet) include DCP</li>
+</ul>
+<p>c, t: half-density radius and skin-thickness (in fm) for rho(r). Will look up default values by default.</p><ul>
+<li>transition: For E1_PNC a-&gt;b transition.<ul>
+<li>in form "a,b", uses the 'short' notation:</li>
+<li>e.g., "6s+,7s+" for 6s_1/2 -&gt; 7s_1/2</li>
+<li>e.g., "6s+,5d-" for 6s_1/2 -&gt; 5d_3/2</li>
 </ul>
 </li>
-<li><em>plot for [i=2:20] "file.txt" u 1:i every :::0::0 w l t columnheader(i)</em></li>
+<li>rpa: true/false. Include RPA or not (TDHF ,method)</li>
+<li>omega: frequency used for RPA (default is transition frequency of valence).</li>
+<li>nmain: highest n (prin. q. number) considered as part of 'main'.<ul>
+<li>If not given, will be max(n_core)+4</li>
+<li>(Calculation broken into core, main, tail) <hr/>
+ <div class="fragment"><div class="line"><a class="code" href="namespaceModule.html#ae558aaf746d7d202a25f2d2ad2471bb3">Module::polarisability</a>{ rpa; omega; transition; omega_max; omega_steps;  }</div></div><!-- fragment --></li>
+</ul>
+</li>
+</ul>
+<p>Calculate dipole polarisabilitities (static, dynamic, alpha, vector beta)</p><ul>
+<li>Uses both 'solving equations' (TDHF) and sum-over-states methods.<ul>
+<li>rpa: true/false. Include RPA or not (TDHF ,method)</li>
+<li>omega: frequency used for alpha_0 (dipole polarisability). default is 0.</li>
+<li>transition: For scalar/vector a-&gt;b transition polarisability.<ul>
+<li>in form "a,b", e.g., "6s+,7s+" for 6s_1/2 -&gt; 7s_1/2</li>
+</ul>
+</li>
+<li>omega_max: maximum frequency for dynamic polarisability. Default is 0.<ul>
+<li>nb: only runs dynamic pol. if omega_max&gt;0</li>
+</ul>
+</li>
+<li>omega_steps: Number of steps used for dynamic. default = 30. (linear scale)</li>
+</ul>
+</li>
+</ul>
+<p>Note: transition polarisabilities written for s-states only. They might be correct for other states too, but NOT checked. Especially for beta, pretty sure it's wrong for non-s states. </p><hr/>
+ <div class="fragment"><div class="line"><a class="code" href="namespaceModule.html#ab9e0f86215b16adbb90b371dcae5bb52">Module::structureRad</a>{</div><div class="line">  <span class="keyword">operator</span>; options; rpa; printBoth; onlyDiagonal; omega; n_minmax;  </div><div class="line">}</div></div><!-- fragment --><ul>
+<li>Calculates Structure Radiation + Normalisation of States</li>
+<li>Note: Most input options are similar to matrixElements module:</li>
+<li>n_minmax: is input as list of ints:<ul>
+<li>n_minmax = min,max;</li>
+<li>min: minimum n for core states kept in summations</li>
+<li>max: maximum n for excited states kept in summations</li>
+</ul>
+</li>
+<li>For explanation of the rest, see matrixElements module. <hr/>
+ <div class="fragment"><div class="line">Module::lifetimes{</div><div class="line">  E1;   <span class="comment">//[b] Include E1 transitions. default = true</span></div><div class="line">  E1;   <span class="comment">//[b] Include E2 transitions. default = false</span></div><div class="line">}</div></div><!-- fragment --> Calculates lifetimes of valence states. Note: uses <a class="el" href="namespaceHF.html" title="Functions and classes for Hartree-Fock. ">HF</a> energies (prints all data to screen) <hr/>
+ <div class="fragment"><div class="line"><a class="code" href="namespaceModule.html#a81711048d92da3f4f84ffbb58f9f04df">Module::HFAnomaly</a> {</div><div class="line">  Alist;  <span class="comment">//[i,i,...] // Which A&#39;s to calculate for (blank for all)</span></div><div class="line"> <span class="comment">// ~ most inputs same as operator = hfs</span></div><div class="line">}</div></div><!-- fragment --> Calculates the hyperfine anomaly (and BW effect) for all available odd isotopes of given atom, relative to the 'main' isotope (see Atom).</li>
+<li>Note: Only runs for odd isotopes; to get anomaly for even isotopes, use am even isotope as reference (For doubly-odd Bohr-Weisskopf input options, see operator = hfs)</li>
+<li>Takes same input as operator = hfs, except for F(r), since it runs for each F(r) <hr/>
+ <div class="fragment"><div class="line">Module::BohrWeisskopf { <span class="comment">//Calculates BW effect for Ball/Single-particle</span></div><div class="line">  <span class="comment">// Takes same input at operator = hfs</span></div><div class="line">  <span class="comment">// Except for F(r), since it runs for each F(r)</span></div><div class="line">}</div></div><!-- fragment --> <hr/>
+ <div class="fragment"><div class="line">Module::WriteOrbitals { <span class="comment">//writes orbitals to textfile:</span></div><div class="line">    label = outputLabel; <span class="comment">//[t] Optional. blank by default</span></div><div class="line">}</div></div><!-- fragment --> Writes the core + valence orbitals (+ the total electron density) to a file, in GNUplot friendly format. The (optional) label will be appended to the output file name. Plot file using GNUPLOT. For example, try this:</li>
+</ul>
+<p><em>plot for [i=2:20] "file.txt" u 1:i every :::0::0 w l t columnheader(i)</em></p><ul>
 <li><em>plot for [i=2:20] "file.txt" u 1:i every :::1::1 w l t columnheader(i)</em></li>
 <li><em>plot "file.txt" u 1:2 every :::2::2 w l t "Core Density"</em> <hr/>
  <div class="fragment"><div class="line"><a class="code" href="namespaceModule_1_1FitParametric.html">Module::FitParametric</a> {</div><div class="line">  method = Green;     <span class="comment">//[t] Green, Tietz</span></div><div class="line">  statesToFit = core; <span class="comment">//[t] core, valence, both</span></div><div class="line">  fitWorst;           <span class="comment">//[b] false (default), true;</span></div><div class="line">}</div></div><!-- fragment --> Performs a 2D fit to determine the best-fit values for the given two-parameter parametric potential (Green, or Tietz potentials), returns H/g d/t parameters for the best-fit. Does fit to Hartree-Fock energies. Will either do for core or valence states, or both (works best for one or the other). fitWorst: if true, will optimise fit for the worst state. If false, uses least squares for the fit. False is default <hr/>

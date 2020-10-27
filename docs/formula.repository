@@ -52,3 +52,6 @@
 \form#51:$S_{ij}$
 \form#52:\[ \psi_{n\kappa m} = \frac{1}{r} \begin{pmatrix} f_{n\kappa}(r)\,\Omega_{\kappa m}\\ g_{n\kappa}(r)\,\Omega_{-\kappa m} \end{pmatrix}, \quad F_{n\kappa} = \begin{pmatrix} f_{n\kappa}(r)\\ g_{n\kappa}(r) \end{pmatrix} \]
 \form#53:$\lambda$
+\form#54:\[ Z^k_abcd = (-1)^{ja+jb+1} * ( Q^k_abcd + \sum_l [k] 6j * Q^l_abdc) \]
+\form#55:\[ (H + \Sigma - \epsilon - \omega)X = -(h + \delta V - \delta\epsilon)\psi \]
+\form#56:\[ (H + \Sigma - \epsilon + \omega)Y = -(h^\dagger + \delta V^\dagger - \delta\epsilon)Psi\]

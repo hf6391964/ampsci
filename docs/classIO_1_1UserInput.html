@@ -83,15 +83,22 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1773457b2f500ef86e81d811aed32fa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae000578387f8722e76e69da2ddafc50"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:aae000578387f8722e76e69da2ddafc50"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classIO_1_1UserInput.html#aae000578387f8722e76e69da2ddafc50">get</a> (const std::string &amp;in_block, const std::string &amp;option, const T &amp;default_value) const</td></tr>
+<tr class="memdesc:aae000578387f8722e76e69da2ddafc50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up option with default value.  <a href="#aae000578387f8722e76e69da2ddafc50">More...</a><br /></td></tr>
 <tr class="separator:aae000578387f8722e76e69da2ddafc50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab399610d16c29e829c55b10dddf5fe2d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ab399610d16c29e829c55b10dddf5fe2d"><td class="memTemplParams" colspan="2"><a id="ab399610d16c29e829c55b10dddf5fe2d"></a>
+template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ab399610d16c29e829c55b10dddf5fe2d"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classIO_1_1UserInput.html#ab399610d16c29e829c55b10dddf5fe2d">get</a> (const std::string &amp;in_block, const std::string &amp;option) const</td></tr>
+<tr class="memdesc:ab399610d16c29e829c55b10dddf5fe2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up option with no default. If option not in input, will warn and abort. <br /></td></tr>
 <tr class="separator:ab399610d16c29e829c55b10dddf5fe2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adaa162952687bf37e426e52fba30b442"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:adaa162952687bf37e426e52fba30b442"><td class="memTemplParams" colspan="2"><a id="adaa162952687bf37e426e52fba30b442"></a>
+template&lt;typename T &gt; </td></tr>
 <tr class="memitem:adaa162952687bf37e426e52fba30b442"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classIO_1_1UserInput.html#adaa162952687bf37e426e52fba30b442">get_list</a> (const std::string &amp;in_block, const std::string &amp;option, const std::vector&lt; T &gt; &amp;default_value) const</td></tr>
+<tr class="memdesc:adaa162952687bf37e426e52fba30b442"><td class="mdescLeft">&#160;</td><td class="mdescRight">As above, but for a list (vector) - all items in list must be of same type. <br /></td></tr>
 <tr class="separator:adaa162952687bf37e426e52fba30b442"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c7a5f063436ee58a08c36ecd92b2c0e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4c7a5f063436ee58a08c36ecd92b2c0e"><td class="memTemplParams" colspan="2"><a id="a4c7a5f063436ee58a08c36ecd92b2c0e"></a>
+template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a4c7a5f063436ee58a08c36ecd92b2c0e"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classIO_1_1UserInput.html#a4c7a5f063436ee58a08c36ecd92b2c0e">get_list</a> (const std::string &amp;in_block, const std::string &amp;option) const</td></tr>
+<tr class="memdesc:a4c7a5f063436ee58a08c36ecd92b2c0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">As above, but for a list (vector) - all items in list must be of same type. <br /></td></tr>
 <tr class="separator:a4c7a5f063436ee58a08c36ecd92b2c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a980d09acec5cb153cd8f17f673df3608"><td class="memItemLeft" align="right" valign="top"><a id="a980d09acec5cb153cd8f17f673df3608"></a>
 const <a class="el" href="classIO_1_1UserInputBlock.html">UserInputBlock</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIO_1_1UserInput.html#a980d09acec5cb153cd8f17f673df3608">get</a> (const std::string &amp;in_block) const</td></tr>
@@ -102,8 +109,10 @@ std::vector&lt; <a class="el" href="classIO_1_1UserInputBlock.html">UserInputBlo
 <tr class="memdesc:a0c817343953315ec7056c60eedfd959a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns list of all blocks that are 'Modules' or 'MatrixElements' (copy) <br /></td></tr>
 <tr class="separator:a0c817343953315ec7056c60eedfd959a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2e9f10390ef4b9955786c9e7eca01bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIO_1_1UserInput.html#ac2e9f10390ef4b9955786c9e7eca01bd">print</a> () const</td></tr>
+<tr class="memdesc:ac2e9f10390ef4b9955786c9e7eca01bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints all input options in nice format.  <a href="#ac2e9f10390ef4b9955786c9e7eca01bd">More...</a><br /></td></tr>
 <tr class="separator:ac2e9f10390ef4b9955786c9e7eca01bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4b9eda2dc46a28e647f3c51733aee48"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIO_1_1UserInput.html#ac4b9eda2dc46a28e647f3c51733aee48">check</a> (const std::string &amp;in_block, const std::vector&lt; std::string &gt; &amp;options) const</td></tr>
+<tr class="memdesc:ac4b9eda2dc46a28e647f3c51733aee48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checker. Returns false if any of the input options in the 'in_block' block are not listed in the given 'options' list.  <a href="#ac4b9eda2dc46a28e647f3c51733aee48">More...</a><br /></td></tr>
 <tr class="separator:ac4b9eda2dc46a28e647f3c51733aee48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -134,13 +143,14 @@ std::vector&lt; <a class="el" href="classIO_1_1UserInputBlock.html">UserInputBlo
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Checker. Returns false if any of the input options in the 'in_block' block are not listed in the given 'options' list</p>
+
+<p>Checker. Returns false if any of the input options in the 'in_block' block are not listed in the given 'options' list. </p>
 <p>This checks to ensure we aren't trying to set an option that doesn't exist, or if we've spelled an option wrong. Otherwise, these would simply be ignored and default values used in the calculations, which is likely an error (and an easy one to miss) </p>
 
 </div>
 </div>
 <a id="aae000578387f8722e76e69da2ddafc50"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae000578387f8722e76e69da2ddafc50">&#9670;&nbsp;</a></span>get() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aae000578387f8722e76e69da2ddafc50">&#9670;&nbsp;</a></span>get()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -172,107 +182,9 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Looks up option with default value.</p>
+
+<p>Looks up option with default value. </p>
 <p>If requested option not in input, returns default value. Return type is specified by the default value (or, explicitely) </p>
-
-</div>
-</div>
-<a id="ab399610d16c29e829c55b10dddf5fe2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab399610d16c29e829c55b10dddf5fe2d">&#9670;&nbsp;</a></span>get() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">T IO::UserInput::get </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>in_block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>option</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Looks up option with no default. If option not in input, will warn and abort </p>
-
-</div>
-</div>
-<a id="adaa162952687bf37e426e52fba30b442"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adaa162952687bf37e426e52fba30b442">&#9670;&nbsp;</a></span>get_list() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; T &gt; IO::UserInput::get_list </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>in_block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>option</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>default_value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>As above, but for a list (vector) - all items in list must be of same type. </p>
-
-</div>
-</div>
-<a id="a4c7a5f063436ee58a08c36ecd92b2c0e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4c7a5f063436ee58a08c36ecd92b2c0e">&#9670;&nbsp;</a></span>get_list() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; T &gt; IO::UserInput::get_list </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>in_block</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>option</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>As above, but for a list (vector) - all items in list must be of same type. </p>
 
 </div>
 </div>
@@ -290,7 +202,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Prints all input options in nice format.</p>
+
+<p>Prints all input options in nice format. </p>
 <p>Note: out format same as input format, so can be copied into new input file </p>
 
 </div>

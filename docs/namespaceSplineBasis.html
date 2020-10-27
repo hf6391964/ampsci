@@ -77,7 +77,9 @@ Functions</h2></td></tr>
 std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSplineBasis.html#ad534b99b9fdb3a9fb23762ef8a1451fc">form_spline_basis</a> (const int kappa, const std::size_t n_states, const std::size_t k_spl, const double r0_spl, const double rmax_spl, std::shared_ptr&lt; const <a class="el" href="classGrid.html">Grid</a> &gt; rgrid, const double alpha)</td></tr>
 <tr class="memdesc:ad534b99b9fdb3a9fb23762ef8a1451fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forms the underlying spline basis (which is not kept) <br /></td></tr>
 <tr class="separator:ad534b99b9fdb3a9fb23762ef8a1451fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73a50bee98288badee81104893028d70"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classLinAlg_1_1SqMatrix.html">LinAlg::SqMatrix</a>, <a class="el" href="classLinAlg_1_1SqMatrix.html">LinAlg::SqMatrix</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSplineBasis.html#a73a50bee98288badee81104893028d70">fill_Hamiltonian_matrix</a> (const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;spl_basis, const <a class="el" href="classWavefunction.html">Wavefunction</a> &amp;wf, const bool correlationsQ=false)</td></tr>
+<tr class="memitem:a73a50bee98288badee81104893028d70"><td class="memItemLeft" align="right" valign="top"><a id="a73a50bee98288badee81104893028d70"></a>
+std::pair&lt; <a class="el" href="classLinAlg_1_1SqMatrix.html">LinAlg::SqMatrix</a>, <a class="el" href="classLinAlg_1_1SqMatrix.html">LinAlg::SqMatrix</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSplineBasis.html#a73a50bee98288badee81104893028d70">fill_Hamiltonian_matrix</a> (const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;spl_basis, const <a class="el" href="classWavefunction.html">Wavefunction</a> &amp;wf, const bool correlationsQ=false)</td></tr>
+<tr class="memdesc:a73a50bee98288badee81104893028d70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates + reyurns the Hamiltonian <img class="formulaInl" alt="$H_{ij}$" src="form_50.png"/> (and <img class="formulaInl" alt="$S_{ij}$" src="form_51.png"/>) matrices. <br /></td></tr>
 <tr class="separator:a73a50bee98288badee81104893028d70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ba4593586f7e3a3737b44f4554e429e"><td class="memItemLeft" align="right" valign="top"><a id="a4ba4593586f7e3a3737b44f4554e429e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_NotreDameBoundary</b> (<a class="el" href="classLinAlg_1_1SqMatrix.html">LinAlg::SqMatrix</a> *Aij, const int kappa, const double alpha)</td></tr>
@@ -114,41 +116,6 @@ std::pair&lt; double, double &gt;&#160;</td><td class="memItemRight" valign="bot
 <img class="formulaDsp" alt="\[ |{n}\rangle = \sum_i^{2N} p_i |i\rangle\, \]" src="form_48.png"/>
 </p>
  </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a73a50bee98288badee81104893028d70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73a50bee98288badee81104893028d70">&#9670;&nbsp;</a></span>fill_Hamiltonian_matrix()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::pair&lt;<a class="el" href="classLinAlg_1_1SqMatrix.html">LinAlg::SqMatrix</a>, <a class="el" href="classLinAlg_1_1SqMatrix.html">LinAlg::SqMatrix</a>&gt; SplineBasis::fill_Hamiltonian_matrix </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>spl_basis</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classWavefunction.html">Wavefunction</a> &amp;&#160;</td>
-          <td class="paramname"><em>wf</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>correlationsQ</em> = <code>false</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Calculates + reyurns the Hamiltonian <img class="formulaInl" alt="$H_{ij}$" src="form_50.png"/> (and <img class="formulaInl" alt="$S_{ij}$" src="form_51.png"/>) matrices </p>
-
-</div>
-</div>
 <a id="a0e0edf847781af2dadc99568750d8ba9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0e0edf847781af2dadc99568750d8ba9">&#9670;&nbsp;</a></span>form_basis()</h2>
 

@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['en_5fcoreval',['en_coreval',['../classWavefunction.html#a5356b0233f99c603e4cdd4f576d1c56a',1,'Wavefunction']]],
   ['energy_5fgap',['energy_gap',['../classWavefunction.html#a36f3e32b0b49ce99dbfb7dbfba8cc7a1',1,'Wavefunction']]],
   ['enforce_5fsymmetric',['enforce_symmetric',['../classLinAlg_1_1SqMatrix.html#a2e67f3a4a018f0ff5d5b8506b74fdf0c',1,'LinAlg::SqMatrix']]],
   ['enguesscore',['enGuessCore',['../classWavefunction.html#a298b0e062106fc74f5d932fc04c5959c',1,'Wavefunction']]],
