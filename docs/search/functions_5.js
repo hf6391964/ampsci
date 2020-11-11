@@ -13,11 +13,10 @@ var searchData=
   ['fitparametric',['fitParametric',['../namespaceModule.html#a21a43640888420c0ebe918fc3c10830e',1,'Module']]],
   ['fitsigma_5fhfbrueckner',['fitSigma_hfBrueckner',['../classWavefunction.html#a09c8fd9c5768cf18ddb2427f57b8d1b1',1,'Wavefunction']]],
   ['form_5fbasis',['form_basis',['../namespaceSplineBasis.html#a0e0edf847781af2dadc99568750d8ba9',1,'SplineBasis']]],
-  ['form_5fsigma',['form_Sigma',['../classMBPT_1_1CorrelationPotential.html#ae0e3c36bbbdac65240ccb79b159c593c',1,'MBPT::CorrelationPotential']]],
   ['form_5fspline_5fbasis',['form_spline_basis',['../namespaceSplineBasis.html#ad534b99b9fdb3a9fb23762ef8a1451fc',1,'SplineBasis']]],
   ['formbasis',['formBasis',['../classWavefunction.html#a10b4000c0b43b5437b9cb7acae829c90',1,'Wavefunction']]],
   ['formpotential',['formPotential',['../namespaceNuclear.html#a5b6f713ddfd84799178ea50f26a71dae',1,'Nuclear']]],
-  ['formsigma',['formSigma',['../classWavefunction.html#a1110b9c6e99020286de6c83d9f12272b',1,'Wavefunction']]],
+  ['formsigma',['formSigma',['../classWavefunction.html#adfef9bfb54ba371deb8f6ba1fa0d165c',1,'Wavefunction']]],
   ['formspectrum',['formSpectrum',['../classWavefunction.html#a854d9e30f51b7978eb01d140bba65893',1,'Wavefunction']]],
   ['fstring',['fstring',['../namespaceqip.html#a95825e5328321b8e0f83c230a42bd384',1,'qip::fstring(const std::string format,...)'],['../namespaceqip.html#a97f77c0373bce44b37d7e26af0f03de4',1,'qip::fstring(const std::size_t size, const std::string format,...)']]]
 ];

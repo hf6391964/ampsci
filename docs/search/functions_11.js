@@ -20,7 +20,6 @@ var searchData=
   ['rkv_5fbcd',['Rkv_bcd',['../namespaceCoulomb.html#afa824ad9c42f012b07b682b588af3646',1,'Coulomb::Rkv_bcd(const int kappa_v, const DiracSpinor &amp;Fb, const DiracSpinor &amp;Fc, const DiracSpinor &amp;Fd, const int k)'],['../namespaceCoulomb.html#ab05ccb72c3a9dc4674a59141d94738be',1,'Coulomb::Rkv_bcd(const int kappa_v, const DiracSpinor &amp;Fc, const std::vector&lt; double &gt; &amp;ykbd)'],['../namespaceCoulomb.html#a99832c01c92ec9a2faeca69f1a5c0db4',1,'Coulomb::Rkv_bcd(DiracSpinor *const Rkv, const DiracSpinor &amp;Fc, const std::vector&lt; double &gt; &amp;ykbd)']]],
   ['rme3js',['rme3js',['../classDiracOperator_1_1TensorOperator.html#a8020a7b4e014c7387bc043c6ff1f9ad5',1,'DiracOperator::TensorOperator']]],
   ['rme_5fsymbol',['rme_symbol',['../classDiracOperator_1_1TensorOperator.html#a961d4ecdbadfc5c565f6b2cd056ea53f',1,'DiracOperator::TensorOperator']]],
-  ['rpa_5fcore',['rpa_core',['../classMBPT_1_1DiagramRPA.html#a214ef9b1a2e5cf77077e8619c9d0c117',1,'MBPT::DiagramRPA']]],
   ['rpow',['rpow',['../classGrid.html#ac960bbd525c81205c3e41d52c803defe',1,'Grid']]],
   ['rrms_5fformula_5fc_5ft',['rrms_formula_c_t',['../namespaceNuclear.html#a397ebf3afd30e0a355c2dc20de8aaeff',1,'Nuclear']]],
   ['runmodule',['runModule',['../namespaceModule.html#a775fc6987fbf5fbb86ba8b5788ae0c2a',1,'Module']]],

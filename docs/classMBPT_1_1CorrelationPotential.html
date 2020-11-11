@@ -78,17 +78,29 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="CorrelationPotential_8hpp_source.html">CorrelationPotential.hpp</a>&gt;</code></p>
 
-<p>Inherited by MBPT::FeynmanSigma, and <a class="el" href="classMBPT_1_1GoldstoneSigma2.html">MBPT::GoldstoneSigma2</a>.</p>
+<p>Inherited by MBPT::FeynmanSigma, and <a class="el" href="classMBPT_1_1GoldstoneSigma.html">MBPT::GoldstoneSigma</a>.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae0e3c36bbbdac65240ccb79b159c593c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMBPT_1_1CorrelationPotential.html#ae0e3c36bbbdac65240ccb79b159c593c">form_Sigma</a> (const std::vector&lt; double &gt; &amp;en_list={}, const std::string &amp;out_fname=&quot;&quot;)</td></tr>
-<tr class="memdesc:ae0e3c36bbbdac65240ccb79b159c593c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forms Correlation potential matrix [called on construct].  <a href="#ae0e3c36bbbdac65240ccb79b159c593c">More...</a><br /></td></tr>
-<tr class="separator:ae0e3c36bbbdac65240ccb79b159c593c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d8013e2ffbf8e9eaff223056d8f8e5d"><td class="memItemLeft" align="right" valign="top"><a id="a0d8013e2ffbf8e9eaff223056d8f8e5d"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>formSigma</b> (int kappa, double en, int n=0)=0</td></tr>
+<tr class="separator:a0d8013e2ffbf8e9eaff223056d8f8e5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb7e8b5c20a4867dfb10ffebd01a4c31"><td class="memItemLeft" align="right" valign="top"><a id="acb7e8b5c20a4867dfb10ffebd01a4c31"></a>
+const <a class="el" href="classMBPT_1_1GreenMatrix.html">GMatrix</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getSigma</b> (int n, int kappa) const</td></tr>
+<tr class="separator:acb7e8b5c20a4867dfb10ffebd01a4c31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50f72002739f37e8409e939cfadfb1a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMBPT_1_1CorrelationPotential.html#a50f72002739f37e8409e939cfadfb1a1">SigmaFv</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fv) const</td></tr>
+<tr class="memdesc:a50f72002739f37e8409e939cfadfb1a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns Spinor: Sigma|Fv&gt;  <a href="#a50f72002739f37e8409e939cfadfb1a1">More...</a><br /></td></tr>
+<tr class="separator:a50f72002739f37e8409e939cfadfb1a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9410b10b96f6fa69fde5dba640c1e7bd"><td class="memItemLeft" align="right" valign="top"><a id="a9410b10b96f6fa69fde5dba640c1e7bd"></a>
+<a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fv) const</td></tr>
+<tr class="separator:a9410b10b96f6fa69fde5dba640c1e7bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0f0efd1937cac9831d87e81e2caef1d"><td class="memItemLeft" align="right" valign="top"><a id="ad0f0efd1937cac9831d87e81e2caef1d"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMBPT_1_1CorrelationPotential.html#ad0f0efd1937cac9831d87e81e2caef1d">scale_Sigma</a> (const std::vector&lt; double &gt; &amp;lambda_kappa)</td></tr>
 <tr class="memdesc:ad0f0efd1937cac9831d87e81e2caef1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores scaling factors, lambda, for each kappa (Sigma -&gt; lamda*Sigma) <br /></td></tr>
 <tr class="separator:ad0f0efd1937cac9831d87e81e2caef1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90e8edeb342176a28829780e1b6a0081"><td class="memItemLeft" align="right" valign="top"><a id="a90e8edeb342176a28829780e1b6a0081"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>scale_Sigma</b> (int n, int kappa, double lambda)</td></tr>
+<tr class="separator:a90e8edeb342176a28829780e1b6a0081"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ce140949dcb9823ead445a6396d8c6f"><td class="memItemLeft" align="right" valign="top"><a id="a0ce140949dcb9823ead445a6396d8c6f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMBPT_1_1CorrelationPotential.html#a0ce140949dcb9823ead445a6396d8c6f">print_scaling</a> () const</td></tr>
 <tr class="memdesc:a0ce140949dcb9823ead445a6396d8c6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints the scaling factors to screen. <br /></td></tr>
@@ -97,48 +109,30 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMBPT_1_1CorrelationPotential.html#abf6e97d3eba6156063b416141d8f10c8">print_subGrid</a> () const</td></tr>
 <tr class="memdesc:abf6e97d3eba6156063b416141d8f10c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints the sub-grid parameters to screen. <br /></td></tr>
 <tr class="separator:abf6e97d3eba6156063b416141d8f10c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50f72002739f37e8409e939cfadfb1a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMBPT_1_1CorrelationPotential.html#a50f72002739f37e8409e939cfadfb1a1">SigmaFv</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fv) const</td></tr>
-<tr class="memdesc:a50f72002739f37e8409e939cfadfb1a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns Spinor: Sigma|Fv&gt;  <a href="#a50f72002739f37e8409e939cfadfb1a1">More...</a><br /></td></tr>
-<tr class="separator:a50f72002739f37e8409e939cfadfb1a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9410b10b96f6fa69fde5dba640c1e7bd"><td class="memItemLeft" align="right" valign="top"><a id="a9410b10b96f6fa69fde5dba640c1e7bd"></a>
-<a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fv) const</td></tr>
-<tr class="separator:a9410b10b96f6fa69fde5dba640c1e7bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a389b632260b92de13c30c80f7818027c"><td class="memItemLeft" align="right" valign="top"><a id="a389b632260b92de13c30c80f7818027c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>print_info</b> () const</td></tr>
+<tr class="separator:a389b632260b92de13c30c80f7818027c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93714987f83338eb3858972119a9f7e6"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMBPT_1_1CorrelationPotential.html#a93714987f83338eb3858972119a9f7e6">SOEnergyShift</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fv, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fw, int max_l=99) const</td></tr>
 <tr class="memdesc:a93714987f83338eb3858972119a9f7e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates &lt;Fv|Sigma|Fw&gt; from scratch, at Fv energy [full grid + fg+gg].  <a href="#a93714987f83338eb3858972119a9f7e6">More...</a><br /></td></tr>
 <tr class="separator:a93714987f83338eb3858972119a9f7e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a724962278297e1cdaf576da9bd0ec62d"><td class="memItemLeft" align="right" valign="top"><a id="a724962278297e1cdaf576da9bd0ec62d"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>maxk</b> () const</td></tr>
 <tr class="separator:a724962278297e1cdaf576da9bd0ec62d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a178adc31e4ab98629fbec2eca24626e0"><td class="memItemLeft" align="right" valign="top"><a id="a178adc31e4ab98629fbec2eca24626e0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setup_subGrid</b> (double rmin, double rmax)</td></tr>
-<tr class="separator:a178adc31e4ab98629fbec2eca24626e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af389afaa3bb9a40f7d090aaf0fe41b14"><td class="memItemLeft" align="right" valign="top"><a id="af389afaa3bb9a40f7d090aaf0fe41b14"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>fill_Sigma_k</b> (<a class="el" href="classMBPT_1_1GreenMatrix.html">GMatrix</a> *Gmat, const int kappa, const double en)=0</td></tr>
-<tr class="separator:af389afaa3bb9a40f7d090aaf0fe41b14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab53cacfb25f2a5b43777c914ea7e3187"><td class="memItemLeft" align="right" valign="top"><a id="ab53cacfb25f2a5b43777c914ea7e3187"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addto_G</b> (<a class="el" href="classMBPT_1_1GreenMatrix.html">GMatrix</a> *Gmat, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;ket, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;bra, const double f=1.0) const</td></tr>
-<tr class="separator:ab53cacfb25f2a5b43777c914ea7e3187"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f7f9e3e95bbed36210cba70dabaeba9"><td class="memItemLeft" align="right" valign="top"><a id="a2f7f9e3e95bbed36210cba70dabaeba9"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>read_write</b> (const std::string &amp;fname, IO::FRW::RoW rw)</td></tr>
+<tr class="separator:a2f7f9e3e95bbed36210cba70dabaeba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab98c0e64f2cfcae0056f684d3dfb08ca"><td class="memItemLeft" align="right" valign="top"><a id="ab98c0e64f2cfcae0056f684d3dfb08ca"></a>
 <a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><b>act_G_Fv</b> (const <a class="el" href="classMBPT_1_1GreenMatrix.html">GMatrix</a> &amp;Gmat, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fv) const</td></tr>
 <tr class="separator:ab98c0e64f2cfcae0056f684d3dfb08ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44d22d4dfb1a8beeed52dd5a0f7fdf08"><td class="memItemLeft" align="right" valign="top"><a id="a44d22d4dfb1a8beeed52dd5a0f7fdf08"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>act_G_Fv_2</b> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classMBPT_1_1GreenMatrix.html">GMatrix</a> &amp;Gmat, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
 <tr class="separator:a44d22d4dfb1a8beeed52dd5a0f7fdf08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f7f9e3e95bbed36210cba70dabaeba9"><td class="memItemLeft" align="right" valign="top"><a id="a2f7f9e3e95bbed36210cba70dabaeba9"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>read_write</b> (const std::string &amp;fname, IO::FRW::RoW rw)</td></tr>
-<tr class="separator:a2f7f9e3e95bbed36210cba70dabaeba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4abe87cddc63f77a0048c760fd8088d"><td class="memItemLeft" align="right" valign="top"><a id="af4abe87cddc63f77a0048c760fd8088d"></a>
 std::size_t&#160;</td><td class="memItemRight" valign="bottom"><b>ri_subToFull</b> (std::size_t i) const</td></tr>
 <tr class="separator:af4abe87cddc63f77a0048c760fd8088d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a027713195a39ff08d723d494df89e1"><td class="memItemLeft" align="right" valign="top"><a id="a5a027713195a39ff08d723d494df89e1"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>dr_subToFull</b> (std::size_t i) const</td></tr>
 <tr class="separator:a5a027713195a39ff08d723d494df89e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55942765df8b0f04303d908e1f71a0f2"><td class="memItemLeft" align="right" valign="top"><a id="a55942765df8b0f04303d908e1f71a0f2"></a>
-std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>copy_holes</b> (const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;basis, const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;core, int n_min) const</td></tr>
-<tr class="separator:a55942765df8b0f04303d908e1f71a0f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5f687bb5927c3c722e075122bebefff"><td class="memItemLeft" align="right" valign="top"><a id="ae5f687bb5927c3c722e075122bebefff"></a>
-std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>copy_excited</b> (const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;basis, const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;core) const</td></tr>
-<tr class="separator:ae5f687bb5927c3c722e075122bebefff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -163,6 +157,21 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a1256bdf6df793256c8cfbc953dd5088a"><td class="memItemLeft" align="right" valign="top"><a id="a1256bdf6df793256c8cfbc953dd5088a"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>CorrelationPotential</b> (const <a class="el" href="classMBPT_1_1CorrelationPotential.html">CorrelationPotential</a> &amp;)=delete</td></tr>
 <tr class="separator:a1256bdf6df793256c8cfbc953dd5088a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cb6e99f4330796ad6fce394899b745c"><td class="memItemLeft" align="right" valign="top"><a id="a8cb6e99f4330796ad6fce394899b745c"></a>
+std::size_t&#160;</td><td class="memItemRight" valign="bottom"><b>getSigmaIndex</b> (int n, int kappa) const</td></tr>
+<tr class="separator:a8cb6e99f4330796ad6fce394899b745c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a178adc31e4ab98629fbec2eca24626e0"><td class="memItemLeft" align="right" valign="top"><a id="a178adc31e4ab98629fbec2eca24626e0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setup_subGrid</b> (double rmin, double rmax)</td></tr>
+<tr class="separator:a178adc31e4ab98629fbec2eca24626e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab53cacfb25f2a5b43777c914ea7e3187"><td class="memItemLeft" align="right" valign="top"><a id="ab53cacfb25f2a5b43777c914ea7e3187"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addto_G</b> (<a class="el" href="classMBPT_1_1GreenMatrix.html">GMatrix</a> *Gmat, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;ket, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;bra, const double f=1.0) const</td></tr>
+<tr class="separator:ab53cacfb25f2a5b43777c914ea7e3187"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55942765df8b0f04303d908e1f71a0f2"><td class="memItemLeft" align="right" valign="top"><a id="a55942765df8b0f04303d908e1f71a0f2"></a>
+std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>copy_holes</b> (const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;basis, const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;core, int n_min) const</td></tr>
+<tr class="separator:a55942765df8b0f04303d908e1f71a0f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5f687bb5927c3c722e075122bebefff"><td class="memItemLeft" align="right" valign="top"><a id="ae5f687bb5927c3c722e075122bebefff"></a>
+std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>copy_excited</b> (const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;basis, const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;core) const</td></tr>
+<tr class="separator:ae5f687bb5927c3c722e075122bebefff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1afb93fa2a9030a428d75987f268880a"><td class="memItemLeft" align="right" valign="top"><a id="a1afb93fa2a9030a428d75987f268880a"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>get_fk</b> (int k) const</td></tr>
 <tr class="separator:a1afb93fa2a9030a428d75987f268880a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -196,9 +205,15 @@ std::vector&lt; <a class="el" href="classMBPT_1_1GreenMatrix.html">GMatrix</a> &
 <tr class="memitem:a9c6e89bee2b2d53fe6c2ff7ddf13188f"><td class="memItemLeft" align="right" valign="top"><a id="a9c6e89bee2b2d53fe6c2ff7ddf13188f"></a>
 std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_lambda_kappa</b> {}</td></tr>
 <tr class="separator:a9c6e89bee2b2d53fe6c2ff7ddf13188f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d0d60a657be985124e93400664afcb3"><td class="memItemLeft" align="right" valign="top"><a id="a4d0d60a657be985124e93400664afcb3"></a>
+std::vector&lt; <a class="el" href="structAtomData_1_1DiracSEnken.html">AtomData::DiracSEnken</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_nk</b> {}</td></tr>
+<tr class="separator:a4d0d60a657be985124e93400664afcb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a597972ab7a42c93e4bc9f5040e63b526"><td class="memItemLeft" align="right" valign="top"><a id="a597972ab7a42c93e4bc9f5040e63b526"></a>
 const bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_include_G</b></td></tr>
 <tr class="separator:a597972ab7a42c93e4bc9f5040e63b526"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2521c4efd0b97c8c9c1d2bca6ea1450a"><td class="memItemLeft" align="right" valign="top"><a id="a2521c4efd0b97c8c9c1d2bca6ea1450a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>same_as_fileQ</b> {false}</td></tr>
+<tr class="separator:a2521c4efd0b97c8c9c1d2bca6ea1450a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44a14f7eb3335a8c15065a629aa537aa"><td class="memItemLeft" align="right" valign="top"><a id="a44a14f7eb3335a8c15065a629aa537aa"></a>
 std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_fk</b> {}</td></tr>
 <tr class="separator:a44a14f7eb3335a8c15065a629aa537aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -264,37 +279,6 @@ std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae0e3c36bbbdac65240ccb79b159c593c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0e3c36bbbdac65240ccb79b159c593c">&#9670;&nbsp;</a></span>form_Sigma()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void MBPT::CorrelationPotential::form_Sigma </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
-          <td class="paramname"><em>en_list</em> = <code>{}</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>out_fname</em> = <code>&quot;&quot;</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Forms Correlation potential matrix [called on construct]. </p>
-<p>Forms for each kappa at given energy. One energy must be given per kappa. </p>
-
-</div>
-</div>
 <a id="a50f72002739f37e8409e939cfadfb1a1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a50f72002739f37e8409e939cfadfb1a1">&#9670;&nbsp;</a></span>SigmaFv()</h2>
 

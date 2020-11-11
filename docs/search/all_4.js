@@ -17,5 +17,5 @@ var searchData=
   ['excludeexchangeq',['excludeExchangeQ',['../classHF_1_1HartreeFock.html#addf451a38799ca599b7620c75d850a97',1,'HF::HartreeFock']]],
   ['expand_5fbasis_5forbitals',['expand_basis_orbitals',['../namespaceSplineBasis.html#af40170b0ddee9c462d83421f9b199ea7',1,'SplineBasis']]],
   ['extendedgrid',['ExtendedGrid',['../classExtendedGrid.html',1,'']]],
-  ['externalfield',['ExternalField',['../classHF_1_1ExternalField.html',1,'HF']]]
+  ['externalfield',['ExternalField',['../namespaceExternalField.html',1,'']]]
 ];

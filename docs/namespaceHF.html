@@ -76,19 +76,12 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHF_1_1Breit.html">Breit</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classHF_1_1Breit.html" title="Breit (Hartree-Fock Breit) interaction potential. ">Breit</a> (Hartree-Fock <a class="el" href="classHF_1_1Breit.html" title="Breit (Hartree-Fock Breit) interaction potential. ">Breit</a>) interaction potential.  <a href="classHF_1_1Breit.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHF_1_1ExternalField.html">ExternalField</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uses time-dependent Hartree-Fock method to include core-polarisation (RPA) corrections to matrix elements of some external field operator.  <a href="classHF_1_1ExternalField.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHF_1_1HartreeFock.html">HartreeFock</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves relativistic Hartree-Fock equations.  <a href="classHF_1_1HartreeFock.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a9fd5d80b435164a77b41cb81c784d2e5"><td class="memItemLeft" align="right" valign="top"><a id="a9fd5d80b435164a77b41cb81c784d2e5"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>dPsiType</b> { <b>X</b>, 
-<b>Y</b>
- }</td></tr>
-<tr class="separator:a9fd5d80b435164a77b41cb81c784d2e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd2c00e11c0f1009ecdc53087e57e9fa"><td class="memItemLeft" align="right" valign="top"><a id="abd2c00e11c0f1009ecdc53087e57e9fa"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Method</b> { <b>HartreeFock</b>, 
 <b>ApproxHF</b>, 
 <b>Hartree</b>, 
@@ -112,12 +105,6 @@ Method&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="na
 auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceHF.html#a121bb2089d2095069144fdb8bd22f2d4">rampedDamp</a> (double a_beg, double a_end, int beg, int end)</td></tr>
 <tr class="memdesc:a121bb2089d2095069144fdb8bd22f2d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">For non-constant damping. Slowly ramps the damping factor from a_beg to a_end over interval (beg, end) <br /></td></tr>
 <tr class="separator:a121bb2089d2095069144fdb8bd22f2d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2dbe0a03c5c4f0109e7b82b6731690d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceHF.html#a2dbe0a03c5c4f0109e7b82b6731690d3">solveMixedState</a> (const int k, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const double omega, const std::vector&lt; double &gt; &amp;vl, const double alpha, const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;core, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;hFa, const double eps_target=1.0e-9, const MBPT::CorrelationPotential *const Sigma=nullptr, const Breit *const VBr=nullptr, const std::vector&lt; double &gt; &amp;H_mag={})</td></tr>
-<tr class="memdesc:a2dbe0a03c5c4f0109e7b82b6731690d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves Mixed States (Dalgarno-Lewis) equation, inhomogenous equation, with Hartree-Fock hamiltonian, including exchange.  <a href="#a2dbe0a03c5c4f0109e7b82b6731690d3">More...</a><br /></td></tr>
-<tr class="separator:a2dbe0a03c5c4f0109e7b82b6731690d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17d06c8c7a30bd00528cd7b19ce88b5f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceHF.html#a17d06c8c7a30bd00528cd7b19ce88b5f">solveMixedState</a> (<a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;dF, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const double omega, const std::vector&lt; double &gt; &amp;vl, const double alpha, const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;core, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;hFa, const double eps_target=1.0e-9, const MBPT::CorrelationPotential *const Sigma=nullptr, const Breit *const VBr=nullptr, const std::vector&lt; double &gt; &amp;H_mag={})</td></tr>
-<tr class="memdesc:a17d06c8c7a30bd00528cd7b19ce88b5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves Mixed States (Dalgarno-Lewis equation)  <a href="#a17d06c8c7a30bd00528cd7b19ce88b5f">More...</a><br /></td></tr>
-<tr class="separator:a17d06c8c7a30bd00528cd7b19ce88b5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -131,179 +118,6 @@ constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><b>print_each_
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions and classes for Hartree-Fock. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a2dbe0a03c5c4f0109e7b82b6731690d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2dbe0a03c5c4f0109e7b82b6731690d3">&#9670;&nbsp;</a></span>solveMixedState() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classDiracSpinor.html">DiracSpinor</a> HF::solveMixedState </td>
-          <td>(</td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>k</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;&#160;</td>
-          <td class="paramname"><em>Fa</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const double&#160;</td>
-          <td class="paramname"><em>omega</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
-          <td class="paramname"><em>vl</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const double&#160;</td>
-          <td class="paramname"><em>alpha</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>core</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;&#160;</td>
-          <td class="paramname"><em>hFa</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const double&#160;</td>
-          <td class="paramname"><em>eps_target</em> = <code>1.0e-9</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classMBPT_1_1CorrelationPotential.html">MBPT::CorrelationPotential</a> *const&#160;</td>
-          <td class="paramname"><em>Sigma</em> = <code>nullptr</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classHF_1_1Breit.html">Breit</a> *const&#160;</td>
-          <td class="paramname"><em>VBr</em> = <code>nullptr</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
-          <td class="paramname"><em>H_mag</em> = <code>{}</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Solves Mixed States (Dalgarno-Lewis) equation, inhomogenous equation, with Hartree-Fock hamiltonian, including exchange. </p>
-<p>Solves </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ (H_{\rm HF} - \epsilon - \omega)\delta\phi = -\hat h \phi \]" src="form_34.png"/>
-</p>
-<p> for <img class="formulaInl" alt="$\delta\phi$" src="form_35.png"/> (dF). Requires kappa angular momentum number of solution (dF), unperturbed orbital Fa, a local potential (vl, typically vnuc + vdir), set of core electrons (for exchange). Note sign on hFa (this is <img class="formulaInl" alt="$\hat h \phi$" src="form_36.png"/>, not <img class="formulaInl" alt="$-\hat h \phi$" src="form_37.png"/>). eps_target is convergance goal for soling the inhomogenous dif. equation. </p>
-
-</div>
-</div>
-<a id="a17d06c8c7a30bd00528cd7b19ce88b5f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a17d06c8c7a30bd00528cd7b19ce88b5f">&#9670;&nbsp;</a></span>solveMixedState() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void HF::solveMixedState </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;&#160;</td>
-          <td class="paramname"><em>dF</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;&#160;</td>
-          <td class="paramname"><em>Fa</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const double&#160;</td>
-          <td class="paramname"><em>omega</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
-          <td class="paramname"><em>vl</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const double&#160;</td>
-          <td class="paramname"><em>alpha</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>core</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;&#160;</td>
-          <td class="paramname"><em>hFa</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const double&#160;</td>
-          <td class="paramname"><em>eps_target</em> = <code>1.0e-9</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classMBPT_1_1CorrelationPotential.html">MBPT::CorrelationPotential</a> *const&#160;</td>
-          <td class="paramname"><em>Sigma</em> = <code>nullptr</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classHF_1_1Breit.html">Breit</a> *const&#160;</td>
-          <td class="paramname"><em>VBr</em> = <code>nullptr</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
-          <td class="paramname"><em>H_mag</em> = <code>{}</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Solves Mixed States (Dalgarno-Lewis equation) </p>
-<p>As above, but starts with existing solution dF (may be 'zero'). If existing solution is already axproximate solution, this allows equation to be solved much quicker. </p>
-
-</div>
-</div>
 <a id="ac1db3db0a43960380fd0fe2096b8c7ec"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac1db3db0a43960380fd0fe2096b8c7ec">&#9670;&nbsp;</a></span>vex_approx()</h2>
 

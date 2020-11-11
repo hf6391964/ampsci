@@ -95,6 +95,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a76526f61d547809a0137c1f7c8000564">update_y_ints</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fn)</td></tr>
 <tr class="memdesc:a76526f61d547809a0137c1f7c8000564"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-calculates y^k integrals involving single orbital Fn. <br /></td></tr>
 <tr class="separator:a76526f61d547809a0137c1f7c8000564"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99b273fb05b23bf8c0c17b91601f7e90"><td class="memItemLeft" align="right" valign="top"><a id="a99b273fb05b23bf8c0c17b91601f7e90"></a>
+const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_a</b> () const</td></tr>
+<tr class="separator:a99b273fb05b23bf8c0c17b91601f7e90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfe2e07eb7b9dea0da3f6a8df5c785c3"><td class="memItemLeft" align="right" valign="top"><a id="abfe2e07eb7b9dea0da3f6a8df5c785c3"></a>
+const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get_b</b> () const</td></tr>
+<tr class="separator:abfe2e07eb7b9dea0da3f6a8df5c785c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa6c4560d3fe5a602e4c148f06b60e6d"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; double &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#afa6c4560d3fe5a602e4c148f06b60e6d">get_yk_ab</a> (const int k, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
 <tr class="memdesc:afa6c4560d3fe5a602e4c148f06b60e6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns single y^k_ab(r) [by const ref].  <a href="#afa6c4560d3fe5a602e4c148f06b60e6d">More...</a><br /></td></tr>
 <tr class="separator:afa6c4560d3fe5a602e4c148f06b60e6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,22 +141,6 @@ double&#160;</td><td class="memItemRight" valign="bottom"><b>Wk</b> (const int k
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a891470d07e173505019494215627e416"><td class="memItemLeft" align="right" valign="top"><a id="a891470d07e173505019494215627e416"></a>
-static std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a891470d07e173505019494215627e416">k_minmax</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;b)</td></tr>
-<tr class="memdesc:a891470d07e173505019494215627e416"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns min and max k (multipolarity) allowed for C^k_ab. <br /></td></tr>
-<tr class="separator:a891470d07e173505019494215627e416"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ee3a22b1736ba584365b3f60722e38c"><td class="memItemLeft" align="right" valign="top"><a id="a2ee3a22b1736ba584365b3f60722e38c"></a>
-static std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a2ee3a22b1736ba584365b3f60722e38c">k_minmax_Q</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;b, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;c, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;d)</td></tr>
-<tr class="memdesc:a2ee3a22b1736ba584365b3f60722e38c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns min and max k (multipolarity) allowed for Q^k_abcd, Wk, Pk. For Q (and Q only), parity rule is included, so you may safely call k+=2. <br /></td></tr>
-<tr class="separator:a2ee3a22b1736ba584365b3f60722e38c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac764911c462e7a2ac9f4a8c85d9f06eb"><td class="memItemLeft" align="right" valign="top"><a id="ac764911c462e7a2ac9f4a8c85d9f06eb"></a>
-static std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#ac764911c462e7a2ac9f4a8c85d9f06eb">k_minmax_P</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;b, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;c, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;d)</td></tr>
-<tr class="memdesc:ac764911c462e7a2ac9f4a8c85d9f06eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">DOES NOT contain parity rules (6j only) - so NOT safe to call k+=2. <br /></td></tr>
-<tr class="separator:ac764911c462e7a2ac9f4a8c85d9f06eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d3007c0b14880eb917f991bdc3d3f07"><td class="memItemLeft" align="right" valign="top"><a id="a4d3007c0b14880eb917f991bdc3d3f07"></a>
-static std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#a4d3007c0b14880eb917f991bdc3d3f07">k_minmax_W</a> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;b, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;c, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;d)</td></tr>
-<tr class="memdesc:a4d3007c0b14880eb917f991bdc3d3f07"><td class="mdescLeft">&#160;</td><td class="mdescRight">DOES NOT contain parity rules (6j only) - so NOT safe to call k+=2. <br /></td></tr>
-<tr class="separator:a4d3007c0b14880eb917f991bdc3d3f07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addf16fcdf5f799268ca412df78c31b83"><td class="memTemplParams" colspan="2"><a id="addf16fcdf5f799268ca412df78c31b83"></a>
 template&lt;class A , class B , class C , class D , class E , class F &gt; </td></tr>
 <tr class="memitem:addf16fcdf5f799268ca412df78c31b83"><td class="memTemplItemLeft" align="right" valign="top">static double&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classCoulomb_1_1YkTable.html#addf16fcdf5f799268ca412df78c31b83">sixj</a> (A a, B b, C c, D d, E e, F f)</td></tr>

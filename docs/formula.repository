@@ -55,3 +55,4 @@
 \form#54:\[ Z^k_abcd = (-1)^{ja+jb+1} * ( Q^k_abcd + \sum_l [k] 6j * Q^l_abdc) \]
 \form#55:\[ (H + \Sigma - \epsilon - \omega)X = -(h + \delta V - \delta\epsilon)\psi \]
 \form#56:\[ (H + \Sigma - \epsilon + \omega)Y = -(h^\dagger + \delta V^\dagger - \delta\epsilon)Psi\]
+\form#57:\[R = \frac{-3}{\alpha^2\omega} \int (f_ag_b+g_af_b) j_1(kr) \, dr\]

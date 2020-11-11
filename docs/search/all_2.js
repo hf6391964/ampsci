@@ -21,9 +21,7 @@ var searchData=
   ['ck_5fab',['Ck_ab',['../classAngular_1_1Ck__ab.html',1,'Angular']]],
   ['ck_5fkk',['Ck_kk',['../namespaceAngular.html#afd4880892614bcdd46cb181ad0e48384',1,'Angular']]],
   ['ck_5fkk_5fsr',['Ck_kk_SR',['../namespaceAngular.html#ab3635aacac330e2cf0b4e2ef810965ed',1,'Angular']]],
-  ['clear',['clear',['../classContinuumOrbitals.html#a187ea240f131818ef0f28446a93f7e5d',1,'ContinuumOrbitals']]],
-  ['clear_5fdpsi',['clear_dPsi',['../classHF_1_1ExternalField.html#ac28fee0585a2bff46bc368e2fd957609',1,'HF::ExternalField']]],
-  ['clear_5ftam',['clear_tam',['../classMBPT_1_1DiagramRPA.html#a2daa1bdcee4366cbacacaf7744d50d34',1,'MBPT::DiagramRPA']]],
+  ['clear',['clear',['../classExternalField_1_1CorePolarisation.html#a02214c1da138b08534bc19d4bc7ee00a',1,'ExternalField::CorePolarisation::clear()'],['../classExternalField_1_1DiagramRPA.html#a4b85205e89e62ee4c8b8b604444630f8',1,'ExternalField::DiagramRPA::clear()'],['../classExternalField_1_1TDHF.html#a42a0552f4d3e5d11c9c7e188410fef28',1,'ExternalField::TDHF::clear()'],['../classContinuumOrbitals.html#a187ea240f131818ef0f28446a93f7e5d',1,'ContinuumOrbitals::clear()']]],
   ['clip',['clip',['../namespaceqip.html#af091ad44ba19b2538888cf9487af0e31',1,'qip']]],
   ['clip_5fhigh',['clip_high',['../classLinAlg_1_1SqMatrix.html#a62b7180bae7e3e1cd4e7598a743d7080',1,'LinAlg::SqMatrix']]],
   ['clip_5flow',['clip_low',['../classLinAlg_1_1SqMatrix.html#a65414b9f8be96c8d8a0ff2eabfae1f91',1,'LinAlg::SqMatrix']]],
@@ -39,6 +37,7 @@ var searchData=
   ['coreconfiguration_5fnice',['coreConfiguration_nice',['../classWavefunction.html#a7e7206fa0868e18ef7e2b6e13c0d969d',1,'Wavefunction']]],
   ['coredensity',['coreDensity',['../classWavefunction.html#a0e359ee6a36453ec2dc2823b106bd689',1,'Wavefunction']]],
   ['coreenergyhf',['coreEnergyHF',['../classWavefunction.html#aee52168498b9d13f4c081d1c76df9579',1,'Wavefunction']]],
+  ['corepolarisation',['CorePolarisation',['../classExternalField_1_1CorePolarisation.html',1,'ExternalField']]],
   ['correlationpotential',['CorrelationPotential',['../classMBPT_1_1CorrelationPotential.html',1,'MBPT::CorrelationPotential'],['../classMBPT_1_1CorrelationPotential.html#a066398e27b57be6e03868c2f310b5030',1,'MBPT::CorrelationPotential::CorrelationPotential()']]],
   ['coulomb',['Coulomb',['../namespaceCoulomb.html',1,'']]]
 ];
