@@ -103,6 +103,9 @@ public: // const methods: "views" into WF object
   //! @details is_valence is optional out-parameter; tells you where orb was
   //! found
   const DiracSpinor *getState(int n, int k, bool *is_valence = nullptr) const;
+  //! As above, but takes 'short symbol' (e.g., 6s+, 6p-)
+  const DiracSpinor *getState(std::string_view state,
+                              bool *is_valence = nullptr) const;
 
   // These are only really for testing Greens function..
   const DiracSpinor *firstCoreState(int k) const {
@@ -213,10 +216,12 @@ public: // const methods: "views" into WF object
   //! Forms + stores correlation potential Sigma
   void formSigma(const int nmin_core = 1, const bool form_matrix = true,
                  const double r0 = 1.0e-4, const double rmax = 30.0,
-                 const int stride = 4, const bool include_G = false,
+                 const int stride = 4, const bool each_valence = false,
+                 const bool include_G = false,
                  const std::vector<double> &lambdas = {},
                  const std::vector<double> &fk = {},
-                 const std::string &fname = "", const bool FeynmanQ = false,
+                 const std::string &in_fname = "",
+                 const std::string &out_fname = "", const bool FeynmanQ = false,
                  const bool ScreeningQ = false,
                  const bool holeParticleQ = false, const int lmax = 6,
                  const bool GreenBasis = false, const bool PolBasis = false,

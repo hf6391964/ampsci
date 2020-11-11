@@ -6,6 +6,8 @@
 #include "qip/Format.hpp"
 #include <iomanip>
 #include <string>
+//
+#include "ExternalField/TDHF.hpp"
 
 namespace UnitTest {
 
@@ -36,7 +38,7 @@ bool MixedStates(std::ostream &obuff) {
   bool passQ = true;
 
   // Create wavefunction object
-  Wavefunction wf({10000, 1.0e-7, 200.0, 0.33 * 200.0, "loglinear", -1.0},
+  Wavefunction wf({6000, 1.0e-6, 150.0, 0.33 * 150.0, "loglinear", -1.0},
                   {"Cs", -1, "Fermi", -1.0, -1.0}, 1.0);
   wf.hartreeFockCore("HartreeFock", 0.0, "[Xe]");
   wf.hartreeFockValence("7sp5d4f");
@@ -46,14 +48,16 @@ bool MixedStates(std::ostream &obuff) {
   const auto hE2 = DiracOperator::Ek(*wf.rgrid, 2);
   const auto c = Nuclear::c_hdr_formula_rrms_t(wf.get_rrms());
   const auto hpnc = DiracOperator::PNCnsi(c, Nuclear::default_t, *wf.rgrid);
-  const auto hM1 = DiracOperator::M1(*wf.rgrid, wf.alpha, 0.0);
-  // Use "spherical ball" model for hyperfine (doesn't work with zero-size)
+  // M1 little problematic
+  // const auto hM1 = DiracOperator::M1(*wf.rgrid, wf.alpha, 0.0);
+  // Use "spherical ball" model for hyperfine (Works best.)
+  // Fails for some d states with pointlike (?)
   const auto hhfs = DiracOperator::Hyperfine(
       1.0, 1.0, std::sqrt(5.0 / 3) * wf.get_rrms(), *wf.rgrid,
       DiracOperator::Hyperfine::sphericalBall_F());
 
   const std::vector<const DiracOperator::TensorOperator *> hs{&hE1, &hE2, &hpnc,
-                                                              &hhfs, &hM1};
+                                                              &hhfs /*, &hM1*/};
 
   // For each operator
   for (const auto h : hs) {
@@ -70,6 +74,94 @@ bool MixedStates(std::ostream &obuff) {
     passQ &= qip::check_value(
         &obuff, "MS:" + h->name() + " best (" + best.name + " w=" + wbest + ")",
         best.eps, 0.0, 6e-7);
+  }
+
+  // Since we have trouble with TDHF and HFS, do it again more thoroughly here.
+  // Note: This makes it seem the problem is in solve_core, NOT in solve dPsi
+  // This should be easier to fix!
+  // NOTE: This loop is very much the same as the other one... could combine
+
+  // Hyperfine
+  std::cout << "\nTest hyperfine (again, but more)\n";
+  auto &h = hhfs;
+
+  for (int max_its : {0, 1, 99}) {
+    double worst_eps = 0.0;
+    std::string worst_set{};
+    double best_eps = 1.0;
+    std::string best_set{};
+    ExternalField::TDHF dv(&h, wf.getHF());
+    dv.solve_core(0.0, max_its);
+
+    // to test the .get() X,Y's
+    ExternalField::TDHF dPsi(&h, wf.getHF());
+    dPsi.solve_core(0.0, 1); // 1 it; no dV, but solve for dPsi
+
+    int count = 0;
+    for (const auto Fv : wf.valence) {
+      for (const auto &Fm : wf.valence) {
+        if (Fm == Fv || h.isZero(Fm.k, Fv.k))
+          continue;
+
+        const auto Xb =
+            dv.solve_dPsi(Fv, 0.0, ExternalField::dPsiType::X, Fm.k);
+        const auto Yb = dv.solve_dPsi(Fv, 0.0, ExternalField::dPsiType::Y, Fm.k,
+                                      nullptr, ExternalField::StateType::bra);
+        const auto h_mv = h.reducedME(Fm, Fv) + dv.dV(Fm, Fv);
+        const auto lhs = Fm * Xb;
+        const auto rhs = h_mv / (Fv.en - Fm.en);
+        const auto eps = (lhs - rhs) / (lhs + rhs);
+
+        const auto h_vm = h.reducedME(Fv, Fm) + dv.dV(Fv, Fm);
+        const auto lhsY = Yb * Fm;
+        const auto rhsY = h_vm / (Fv.en - Fm.en);
+        const auto epsY = (lhsY - rhsY) / (lhsY + rhsY);
+
+        if (count % 5 == 0 || count == 0) {
+          // only print a subset (too many)
+          std::cout << "<" << Fv.shortSymbol() << "|h|" << Fm.shortSymbol()
+                    << "> , <" << Fv.shortSymbol() << "|X_" << Xb.shortSymbol()
+                    << "> : "; // << rhs << " " << lhs << "\n";
+          printf("%10.7g, %10.7g  %6.0e\n", rhs, lhs, eps);
+          std::cout << "<" << Fm.shortSymbol() << "|h|" << Fv.shortSymbol()
+                    << "> , <Y_" << Yb.shortSymbol() << "|" << Fv.shortSymbol()
+                    << "> : "; // << rhsY << " " << lhsY << "\n";
+
+          printf("%10.7g, %10.7g  %6.0e", rhsY, lhsY, epsY);
+          if (std::abs(epsY + eps) > 1.0e-3)
+            std::cout << "  ***";
+          std::cout << "\n";
+        }
+        ++count;
+
+        if (std::abs(eps) > std::abs(worst_eps)) {
+          worst_eps = eps;
+          worst_set = "<" + Fv.shortSymbol() + "|h|" + Fm.shortSymbol() +
+                      ">/<" + Fv.shortSymbol() + "|X_" + Xb.shortSymbol() + ">";
+        }
+        if (std::abs(epsY) > std::abs(worst_eps)) {
+          worst_eps = epsY;
+          worst_set = "<" + Fm.shortSymbol() + "|h|" + Fv.shortSymbol() +
+                      ">/<Y_" + Xb.shortSymbol() + "|" + Fv.shortSymbol() + ">";
+        }
+        if (std::abs(eps) < std::abs(best_eps)) {
+          best_eps = eps;
+          best_set = "<" + Fv.shortSymbol() + "|h|" + Fm.shortSymbol() + ">/<" +
+                     Fv.shortSymbol() + "|X_" + Xb.shortSymbol() + ">";
+        }
+        if (std::abs(epsY) < std::abs(best_eps)) {
+          best_eps = epsY;
+          best_set = "<" + Fm.shortSymbol() + "|h|" + Fv.shortSymbol() +
+                     ">/<Y_" + Xb.shortSymbol() + "|" + Fv.shortSymbol() + ">";
+        }
+      }
+    }
+    std::cout << worst_set << " " << worst_eps << "\n";
+    // the "best" are all ~1.e-y
+    passQ &= qip::check_value(&obuff, "MS: hfs(B) " + best_set, best_eps, 0.0,
+                              1.0e-7);
+    passQ &= qip::check_value(&obuff, "MS: hfs(W) " + worst_set, worst_eps, 0.0,
+                              1.0e-4);
   }
 
   return passQ;
@@ -121,8 +213,8 @@ UnitTest::helper::MS_loops(const Wavefunction &wf,
       for (const auto &w_mult : omega_mults) {
         const auto w = std::abs(Fv.en * w_mult);
 
-        const auto dFv =
-            HF::solveMixedState(Fm.k, Fv, w, vl, wf.alpha, wf.core, hFv);
+        const auto dFv = ExternalField::solveMixedState(Fm.k, Fv, w, vl,
+                                                        wf.alpha, wf.core, hFv);
 
         const auto lhs = Fm * dFv;
         const auto rhs = h_mv / (Fv.en - Fm.en + w);
