@@ -8,6 +8,15 @@ class Grid;
 namespace DiracODE {
 namespace Adams {
 
+/*
+Program to solve single-electron bound-state Dirac problem for a (given)
+local, central potential.
+Based on method presented in book by W. Johnson.
+Employs the Adams-Moulton method.
+boundState is the main routine that is called from elsewhere.
+All other functions called by boundState.
+*/
+
 //******************************************************************************
 // Parameters used for Adams-Moulton mehtod:
 namespace Param {
@@ -39,16 +48,19 @@ static_assert(Param::AMO >= 5 && Param::AMO <= 8,
 //******************************************************************************
 class DiracMatrix {
   // Notation:
-  // df = af - bg
-  // dg = -cf + dg
+  // df = af + bg
+  // dg = cf + dg
 public:
   DiracMatrix(const Grid &in_grid, const std::vector<double> &in_v,
               const int in_k, const double in_en, const double in_alpha,
-              const std::vector<double> &Hmag = {});
+              const std::vector<double> &Hmag = {},
+              const DiracSpinor *const VxFa = nullptr, double zion = 1.0);
 
   const Grid *const pgr;
   const std::vector<double> *const v;
   const std::vector<double> *const Hmag;
+  const DiracSpinor *const VxFa;
+  const double zion = 1.0;
   const int k;
   const double en, alpha, cc;
 
@@ -85,7 +97,9 @@ void trialDiracSolution(std::vector<double> &f, std::vector<double> &g,
                         const std::vector<double> &v,
                         const std::vector<double> &H_mag, const Grid &gr,
                         const int ctp, const int d_ctp, const int pinf,
-                        const double alpha);
+                        const double alpha,
+                        const DiracSpinor *const VxFa = nullptr,
+                        double zion = 1.0);
 
 int countNodes(const std::vector<double> &f, const int maxi);
 

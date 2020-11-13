@@ -5,9 +5,11 @@
 #include "Physics/AtomData.hpp"
 #include "Physics/DiracHydrogen.hpp"
 #include "Physics/NuclearPotentials.hpp"
+#include "Physics/Parametric_potentials.hpp"
 #include "Physics/PhysConst_constants.hpp"
 #include "Wavefunction/DiracSpinor.hpp"
 #include "qip/Check.hpp"
+#include "qip/Vector.hpp"
 #include <algorithm>
 #include <array>
 #include <memory>
@@ -133,7 +135,65 @@ bool DiracODE(std::ostream &obuff) {
                              1.0e-10);
   }
 
+  // {
+  //   auto max_eps = -1.0;
+  //   const auto states_new = AtomData::listOfStates_nk("3sp");
+  //
+  //   auto vp = Parametric::GreenPotential(Zeff, grid->r, 1.0, 1.0);
+  //   for (auto i = 0ul; i < grid->r.size(); ++i) {
+  //     auto r = grid->r[i];
+  //     vp[i] = (-0.5 / (r * r * r * r + 1.0));
+  //     // std::cout << grid->r[i] << " " << vp[i] << "\n";
+  //   }
+  //
+  //   const auto x = 1.00;
+  //   qip::scale(&vp, x);
+  //
+  //   for (const auto &[n, k, en] : states_new) {
+  //     auto Fa = DiracSpinor(n, k, grid);
+  //     auto Fb = DiracSpinor(n, k, grid);
+  //     const auto en_guess = -(Zeff * Zeff) / (2.0 * n * n);
+  //
+  //     auto v1 = qip::add(v_nuc, vp);
+  //     DiracODE::boundState(Fa, en_guess, v1, {}, PhysConst::alpha, 15);
+  //
+  //     auto dvFa = (vp * Fa);
+  //     // for (int i = 0; i < 1; ++i)
+  //     {
+  //       DiracODE::boundState(Fb, en_guess, v_nuc, {}, PhysConst::alpha, 15,
+  //                            &dvFa, Zeff);
+  //       // dvFa = vp * Fb;
+  //       // std::cout << i << " " << Fa.en << " " << Fb.en << " " << Fb.eps <<
+  //       "
+  //       // "
+  //       //           << Fb.pinf << "\n";
+  //     }
+  //
+  //     auto Fc = DiracSpinor(n, k, grid);
+  //     for (int i = 0; i < 1; ++i) {
+  //       DiracODE::solve_inhomog(Fc, Fa.en, v_nuc, {}, PhysConst::alpha,
+  //                               -1 * dvFa);
+  //       Fc.normalise();
+  //       dvFa = (vp * Fc);
+  //     }
+  //     // Fc.normalise();
+  //
+  //     const auto eps = std::abs((Fa.en - Fb.en) / (Fa.en + Fb.en));
+  //     std::cout << Fa.en << " " << Fb.en << " " << eps << "\n";
+  //     std::cout << "\neps(inhomog): " << std::abs(Fa * Fc - 1.0) << "\n";
+  //     std::cout << "eps(inhomog): " << (Fa - Fc) * (Fa - Fc) << "\n";
+  //     if (!(eps < max_eps))
+  //       max_eps = eps;
+  //
+  //     // for (auto i = 0ul; i < grid->r.size(); i += 100) {
+  //     //   std::cout << grid->r[i] << " " << Fa.f[i] << " " << Fc.f[i] <<
+  //     "\n";
+  //     // }
+  //   }
+  //   pass &= qip::check_value(&obuff, "new ", max_eps, 0.0, 1.0e-10);
+  // }
+
   return pass;
-}
+} // namespace UnitTest
 
 } // namespace UnitTest

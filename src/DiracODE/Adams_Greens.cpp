@@ -23,6 +23,7 @@ DiracSpinor solve_inhomog(const int kappa, const double en,
                           const DiracSpinor &source) {
   [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__, "0");
   auto phi = DiracSpinor(0, kappa, source.rgrid);
+  phi.en = en;
   solve_inhomog(phi, en, v, H_mag, alpha, source);
   return phi;
 }

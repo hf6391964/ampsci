@@ -18,21 +18,7 @@
 // Unfortunately, seems too messy to fix this
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 
-/*
-Program to solve single-electron bound-state Dirac problem for a (given)
-local, central potential.
-Based on method presented in book by W. Johnson.
-Employs the Adams-Moulton method.
-boundState is the main routine that is called from elsewhere.
-All other functions called by boundState.
-*/
-
-#define DO_DEBUG false
-#if DO_DEBUG
-#define DEBUG(x) x
-#else
-#define DEBUG(x)
-#endif // DEBUG
+constexpr bool do_debug = false;
 
 namespace DiracODE {
 
@@ -40,7 +26,8 @@ using namespace Adams;
 //******************************************************************************
 void boundState(DiracSpinor &psi, const double en0,
                 const std::vector<double> &v, const std::vector<double> &H_mag,
-                const double alpha, int log_dele)
+                const double alpha, int log_dele, const DiracSpinor *const VxFa,
+                double zion)
 // Solves local, spherical bound state dirac equation using Adams-Moulton
 // method. Based on method presented in book by W. R. Johnson:
 //   W. R. Johnson, Atomic Structure Theory (Springer, New York, 2007)
@@ -82,10 +69,12 @@ void boundState(DiracSpinor &psi, const double en0,
   // Convergance goal. Default: 1e-14
   const double eps_goal = std::pow(10, -std::abs(log_dele));
 
-  DEBUG(if (!(std::abs(psi.k) <= psi.n && psi.k != psi.n)) {
-    std::cerr << "\nFail96 in Adams: bad state " << psi.symbol() << "\n";
-    return;
-  })
+  if constexpr (do_debug) {
+    if (!(std::abs(psi.k) <= psi.n && psi.k != psi.n)) {
+      std::cerr << "\nFail96 in Adams: bad state " << psi.symbol() << "\n";
+      return;
+    }
+  }
 
   const auto &rgrid = *psi.rgrid;
 
@@ -110,7 +99,7 @@ void boundState(DiracSpinor &psi, const double en0,
     // Also stores dg (gout-gin) for PT [used for PT to find better e]
     std::vector<double> dg(2 * Param::d_ctp + 1);
     Adams::trialDiracSolution(psi.f, psi.g, dg, t_en, psi.k, v, H_mag, rgrid,
-                              ctp, Param::d_ctp, t_pinf, alpha);
+                              ctp, Param::d_ctp, t_pinf, alpha, VxFa, zion);
 
     const int counted_nodes = Adams::countNodes(psi.f, t_pinf);
 
@@ -130,10 +119,12 @@ void boundState(DiracSpinor &psi, const double en0,
     }
     t_eps = std::abs((t_en - en_old) / en_old);
 
-    DEBUG(std::cerr << " :: it=" << t_its << " nodes:" << counted_nodes << "/"
-                    << required_nodes << " new_en = " << t_en
-                    << " delta=" << t_eps * t_en << " eps=" << t_eps << "\n";
-          std::cin.get();)
+    if constexpr (do_debug) {
+      std::cerr << " :: it=" << t_its << " nodes:" << counted_nodes << "/"
+                << required_nodes << " new_en = " << t_en
+                << " delta=" << t_eps * t_en << " eps=" << t_eps << "\n";
+      std::cin.get();
+    }
 
     auto getting_worse = (t_its > 10 && t_eps >= 1.2 * t_eps_prev &&
                           correct_nodes && t_eps < 1.0e-5);
@@ -148,9 +139,11 @@ void boundState(DiracSpinor &psi, const double en0,
   // a few more HF iterations..If we don't norm wf, HF will fail.
   if (!correct_nodes) {
     anorm = psi * psi;
-    DEBUG(std::cerr << "\nFAIL-148: wrong nodes:"
-                    << Adams::countNodes(psi.f, t_pinf) << "/" << required_nodes
-                    << " for " << psi.symbol() << "\n";)
+    if constexpr (do_debug) {
+      std::cerr << "\nFAIL-148: wrong nodes:"
+                << Adams::countNodes(psi.f, t_pinf) << "/" << required_nodes
+                << " for " << psi.symbol() << "\n";
+    }
   }
 
   // store energy etc.
@@ -257,7 +250,8 @@ double smallEnergyChangePT(const double en, const double anorm,
   } else if ((sofar.count_toomany != 0) && (new_en > sofar.high_en)) {
     new_en = 0.5 * (en + sofar.high_en);
   } else if (new_en > 0) {
-    // This only happens v. rarely. nodes correct, but P.T. gives silly result!
+    // This only happens v. rarely. nodes correct, but P.T. gives silly
+    // result!
     new_en = (de > 0) ? 0.9 * en : 1.1 * en;
   }
 
@@ -310,14 +304,16 @@ void trialDiracSolution(std::vector<double> &f, std::vector<double> &g,
                         const std::vector<double> &v,
                         const std::vector<double> &H_mag, const Grid &gr,
                         const int ctp, const int d_ctp, const int pinf,
-                        const double alpha)
+                        const double alpha, const DiracSpinor *const VxFa,
+                        double zion)
 // Performs inward (from pinf) and outward (from r0) integrations for given
 // energy. Intergated in/out towards ctp +/- d_ctp [class. turn. point]
 // Then, joins solutions, including weighted meshing around ctp +/ d_ctp
 // Also: stores dg [the difference: (gout-gin)], which is used for PT
 {
   [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
-  DiracMatrix Hd(gr, v, ka, en, alpha, H_mag);
+  // DiracMatrix Hd(gr, v, ka, en, alpha, H_mag);
+  DiracMatrix Hd(gr, v, ka, en, alpha, H_mag, VxFa, zion);
   outwardAM(f, g, Hd, ctp + d_ctp);
   std::vector<double> f_in(gr.num_points), g_in(gr.num_points);
   inwardAM(f_in, g_in, Hd, ctp - d_ctp, pinf - 1);
@@ -387,9 +383,9 @@ void outwardAM(std::vector<double> &f, std::vector<double> &g,
   // P(r) = r^gamma u(r) // f(r) = P(r)
   // Q(r) = r^gamma v(r) // g(r) = -Q(r)
   auto u0 = 1.0;
-  auto v0 = (ka > 0) ? (ka + ga0) / az0 : az0 / (ka - ga0);
+  auto v0 = (ka > 0) ? -(ga0 + ka) / az0 : az0 / (ga0 - ka);
   f[0] = std::pow(r[0], ga0) * u0;
-  g[0] = std::pow(r[0], ga0) * v0;
+  g[0] = -std::pow(r[0], ga0) * v0;
 
   // loop through and find first Param::num_loops*AMO points of wf
   for (int ln = 0; ln < Param::num_loops; ln++) {
@@ -409,6 +405,15 @@ void outwardAM(std::vector<double> &f, std::vector<double> &g,
       coefb[i] = -oid_du * Hd.b(ir);
       coefc[i] = -oid_du * Hd.c(ir);
       coefd[i] = oid_du * (Hd.d(ir) - ga[i] * dror);
+
+      // if (Hd.VxFa && g[ir] != 0 && f[ir] != 0) {
+      //   // OK ? needed?
+      //   coefb[i] -=
+      //       oid_du * alpha * (Hd.VxFa->g[ir] / g[ir]) * Hd.pgr->drdu[ir];
+      //   coefc[i] -=
+      //       oid_du * alpha * (Hd.VxFa->f[ir] / f[ir]) * Hd.pgr->drdu[ir];
+      // }
+
       for (int j = 0; j < Param::AMO; j++) {
         em[i][j] = Param::AMcoef.OIe[i][j];
       }
@@ -424,7 +429,7 @@ void outwardAM(std::vector<double> &f, std::vector<double> &g,
       s[i] = -Param::AMcoef.OIa[i] * u0;
       for (int j = 0; j < Param::AMO; j++) {
         fm[i][j] = Param::AMcoef.OIe[i][j] - coefb[i] * em[i][j] * coefc[j];
-        s[i] += coefb[i] * em[i][j] * Param::AMcoef.OIa[j] * v0;
+        s[i] -= coefb[i] * em[i][j] * Param::AMcoef.OIa[j] * v0;
       }
       fm[i][i] -= coefa[i];
     }
@@ -444,7 +449,7 @@ void outwardAM(std::vector<double> &f, std::vector<double> &g,
     for (int i = 0; i < Param::AMO; i++) {
       vs[i] = 0;
       for (int j = 0; j < Param::AMO; j++) {
-        vs[i] -= em[i][j] * (coefc[j] * us[j] + Param::AMcoef.OIa[j] * v0);
+        vs[i] += em[i][j] * (coefc[j] * us[j] - Param::AMcoef.OIa[j] * v0);
       }
     }
 
@@ -452,7 +457,7 @@ void outwardAM(std::vector<double> &f, std::vector<double> &g,
     for (int i = 0; i < Param::AMO; i++) {
       const auto r_ga = std::pow(r[i + i0], ga[i]);
       f[i + i0] = r_ga * us[i];
-      g[i + i0] = r_ga * vs[i];
+      g[i + i0] = -r_ga * vs[i];
     }
 
     // re-sets 'starting point' for next ln
@@ -492,7 +497,9 @@ void inwardAM(std::vector<double> &f, std::vector<double> &g,
   const auto ka2 = (double)(ka * ka);
 
   const auto lambda = std::sqrt(-en * (2.0 + en * alpha2));
-  const auto zeta = -v[pinf] * r[pinf];
+  // const auto zeta = -v[pinf] * r[pinf];
+  const auto zeta = Hd.VxFa ? Hd.zion : -v[pinf] * r[pinf]; // XXX ?
+  // std::cout << zeta << " " << Hd.zion << " " << -v[pinf] * r[pinf] << "\n";
   const auto zeta2 = zeta * zeta;
   const auto sigma = (1.0 + en * alpha2) * (zeta / lambda);
   const auto Ren = en + c2; // total relativistic energy
@@ -529,9 +536,11 @@ void inwardAM(std::vector<double> &f, std::vector<double> &g,
         break;
       }
     }
-    DEBUG(if (xe > 1.0e-3) std::cerr
-              << "WARNING: Asymp. expansion in inwardAM didn't converge: " << i
-              << " " << xe << "\n";)
+    if constexpr (do_debug) {
+      if (xe > 1.0e-3)
+        std::cerr << "WARNING: Asymp. expansion in inwardAM didn't converge: "
+                  << i << " " << xe << "\n";
+    }
     f[i] = rfac * (f1 * ps + f2 * qs);
     g[i] = rfac * (f1 * qs - f2 * ps);
   }
@@ -567,10 +576,33 @@ void adamsMoulton(std::vector<double> &f, std::vector<double> &g,
   for (int i = 0, ri = ni; i < nosteps; i++, ri += inc) {
     const auto [a, b, c, d] = Hd.abcd(ri);
     const double det_inv = 1.0 / (1.0 - a02 * (b * c - a * d));
-    const double sf = f[ri - inc] + qip::inner_product(am, df);
-    const double sg = g[ri - inc] + qip::inner_product(am, dg);
+    double sf = f[ri - inc] + qip::inner_product(am, df);
+    double sg = g[ri - inc] + qip::inner_product(am, dg);
+
+    if (Hd.VxFa) {
+      // inc?
+      const auto dr = Hd.pgr->drdu[ri - inc] * a0; // Hd.pgr->du;
+      // sign???
+      sf += -Hd.alpha * Hd.VxFa->g[ri - inc] * dr;
+      sg += Hd.alpha * Hd.VxFa->f[ri - inc] * dr;
+    }
+
     f[ri] = (sf - a0 * (d * sf - b * sg)) * det_inv;
     g[ri] = (sg - a0 * (-c * sf + a * sg)) * det_inv;
+
+    // if (Hd.VxFa) {
+    //   const auto du = Hd.pgr->du;
+    //   const double det_inv2 = 1.0 / (1.0 - du * du * (b * c - a * d));
+    //   // not quite!?
+    //
+    //   auto sfx = -Hd.alpha * Hd.VxFa->g[ri - inc];
+    //   auto sgx = Hd.alpha * Hd.VxFa->f[ri - inc];
+    //   // const auto [a, b, c, d] = Hd.abcd(ri - inc);
+    //
+    //   f[ri] += (sfx - a0 * (d * sfx - b * sgx)) * det_inv;
+    //   g[ri] += (sgx - a0 * (-c * sfx + a * sgx)) * det_inv;
+    // }
+
     // Shift the derivative along
     for (int l = 0; l < (Param::AMO - 1); l++) {
       df[l] = df[l + 1];
@@ -588,10 +620,13 @@ void adamsMoulton(std::vector<double> &f, std::vector<double> &g,
 DiracMatrix::DiracMatrix(const Grid &in_grid, const std::vector<double> &in_v,
                          const int in_k, const double in_en,
                          const double in_alpha,
-                         const std::vector<double> &in_Hmag)
+                         const std::vector<double> &in_Hmag,
+                         const DiracSpinor *const in_VxFa, double in_zion)
     : pgr(&in_grid),
       v(&in_v),
       Hmag(in_Hmag.empty() ? nullptr : &in_Hmag),
+      VxFa(in_VxFa),
+      zion(in_zion),
       k(in_k),
       en(in_en),
       alpha(in_alpha),
@@ -602,7 +637,7 @@ double DiracMatrix::a(std::size_t i) const {
   return (double(-k)) * pgr->drduor[i] + h_mag * pgr->drdu[i];
 }
 double DiracMatrix::b(std::size_t i) const {
-  return (alpha * en + 2.0 * cc - alpha * (*v)[i]) * pgr->drdu[i];
+  return (2.0 * cc + alpha * (en - (*v)[i])) * pgr->drdu[i];
 }
 double DiracMatrix::c(std::size_t i) const {
   return alpha * ((*v)[i] - en) * pgr->drdu[i];
@@ -620,11 +655,16 @@ DiracMatrix::abcd(std::size_t i) const {
 
 double DiracMatrix::dfdu(const std::vector<double> &f,
                          const std::vector<double> &g, std::size_t i) const {
-  return a(i) * f[i] + b(i) * g[i];
+  // XXX ?
+  const auto exch = VxFa ? -alpha * VxFa->g[i] * pgr->drdu[i] : 0.0;
+  return a(i) * f[i] + b(i) * g[i] + exch;
 }
+
 double DiracMatrix::dgdu(const std::vector<double> &f,
                          const std::vector<double> &g, std::size_t i) const {
-  return c(i) * f[i] + d(i) * g[i];
+  // XXX ?
+  const auto exch = VxFa ? alpha * VxFa->f[i] * pgr->drdu[i] : 0.0;
+  return c(i) * f[i] + d(i) * g[i] + exch;
 }
 
 } // namespace Adams
