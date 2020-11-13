@@ -406,14 +406,6 @@ void outwardAM(std::vector<double> &f, std::vector<double> &g,
       coefc[i] = -oid_du * Hd.c(ir);
       coefd[i] = oid_du * (Hd.d(ir) - ga[i] * dror);
 
-      // if (Hd.VxFa && g[ir] != 0 && f[ir] != 0) {
-      //   // OK ? needed?
-      //   coefb[i] -=
-      //       oid_du * alpha * (Hd.VxFa->g[ir] / g[ir]) * Hd.pgr->drdu[ir];
-      //   coefc[i] -=
-      //       oid_du * alpha * (Hd.VxFa->f[ir] / f[ir]) * Hd.pgr->drdu[ir];
-      // }
-
       for (int j = 0; j < Param::AMO; j++) {
         em[i][j] = Param::AMcoef.OIe[i][j];
       }
@@ -580,28 +572,14 @@ void adamsMoulton(std::vector<double> &f, std::vector<double> &g,
     double sg = g[ri - inc] + qip::inner_product(am, dg);
 
     if (Hd.VxFa) {
-      // inc?
-      const auto dr = Hd.pgr->drdu[ri - inc] * a0; // Hd.pgr->du;
-      // sign???
+      // XXX nb: issue is that 'f' is not normalised, but VxFa is!
+      const auto dr = Hd.pgr->drdu[ri - inc] * a0;
       sf += -Hd.alpha * Hd.VxFa->g[ri - inc] * dr;
       sg += Hd.alpha * Hd.VxFa->f[ri - inc] * dr;
     }
 
     f[ri] = (sf - a0 * (d * sf - b * sg)) * det_inv;
     g[ri] = (sg - a0 * (-c * sf + a * sg)) * det_inv;
-
-    // if (Hd.VxFa) {
-    //   const auto du = Hd.pgr->du;
-    //   const double det_inv2 = 1.0 / (1.0 - du * du * (b * c - a * d));
-    //   // not quite!?
-    //
-    //   auto sfx = -Hd.alpha * Hd.VxFa->g[ri - inc];
-    //   auto sgx = Hd.alpha * Hd.VxFa->f[ri - inc];
-    //   // const auto [a, b, c, d] = Hd.abcd(ri - inc);
-    //
-    //   f[ri] += (sfx - a0 * (d * sfx - b * sgx)) * det_inv;
-    //   g[ri] += (sgx - a0 * (-c * sfx + a * sgx)) * det_inv;
-    // }
 
     // Shift the derivative along
     for (int l = 0; l < (Param::AMO - 1); l++) {
@@ -655,14 +633,14 @@ DiracMatrix::abcd(std::size_t i) const {
 
 double DiracMatrix::dfdu(const std::vector<double> &f,
                          const std::vector<double> &g, std::size_t i) const {
-  // XXX ?
+  // XXX nb: issue is that 'f' is not normalised, but VxFa is!
   const auto exch = VxFa ? -alpha * VxFa->g[i] * pgr->drdu[i] : 0.0;
   return a(i) * f[i] + b(i) * g[i] + exch;
 }
 
 double DiracMatrix::dgdu(const std::vector<double> &f,
                          const std::vector<double> &g, std::size_t i) const {
-  // XXX ?
+  // XXX nb: issue is that 'f' is not normalised, but VxFa is!
   const auto exch = VxFa ? alpha * VxFa->f[i] * pgr->drdu[i] : 0.0;
   return c(i) * f[i] + d(i) * g[i] + exch;
 }

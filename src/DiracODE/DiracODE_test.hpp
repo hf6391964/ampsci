@@ -135,63 +135,98 @@ bool DiracODE(std::ostream &obuff) {
                              1.0e-10);
   }
 
-  // {
-  //   auto max_eps = -1.0;
-  //   const auto states_new = AtomData::listOfStates_nk("3sp");
-  //
-  //   auto vp = Parametric::GreenPotential(Zeff, grid->r, 1.0, 1.0);
-  //   for (auto i = 0ul; i < grid->r.size(); ++i) {
-  //     auto r = grid->r[i];
-  //     vp[i] = (-0.5 / (r * r * r * r + 1.0));
-  //     // std::cout << grid->r[i] << " " << vp[i] << "\n";
-  //   }
-  //
-  //   const auto x = 1.00;
-  //   qip::scale(&vp, x);
-  //
-  //   for (const auto &[n, k, en] : states_new) {
-  //     auto Fa = DiracSpinor(n, k, grid);
-  //     auto Fb = DiracSpinor(n, k, grid);
-  //     const auto en_guess = -(Zeff * Zeff) / (2.0 * n * n);
-  //
-  //     auto v1 = qip::add(v_nuc, vp);
-  //     DiracODE::boundState(Fa, en_guess, v1, {}, PhysConst::alpha, 15);
-  //
-  //     auto dvFa = (vp * Fa);
-  //     // for (int i = 0; i < 1; ++i)
-  //     {
-  //       DiracODE::boundState(Fb, en_guess, v_nuc, {}, PhysConst::alpha, 15,
-  //                            &dvFa, Zeff);
-  //       // dvFa = vp * Fb;
-  //       // std::cout << i << " " << Fa.en << " " << Fb.en << " " << Fb.eps <<
-  //       "
-  //       // "
-  //       //           << Fb.pinf << "\n";
-  //     }
-  //
-  //     auto Fc = DiracSpinor(n, k, grid);
-  //     for (int i = 0; i < 1; ++i) {
-  //       DiracODE::solve_inhomog(Fc, Fa.en, v_nuc, {}, PhysConst::alpha,
-  //                               -1 * dvFa);
-  //       Fc.normalise();
-  //       dvFa = (vp * Fc);
-  //     }
-  //     // Fc.normalise();
-  //
-  //     const auto eps = std::abs((Fa.en - Fb.en) / (Fa.en + Fb.en));
-  //     std::cout << Fa.en << " " << Fb.en << " " << eps << "\n";
-  //     std::cout << "\neps(inhomog): " << std::abs(Fa * Fc - 1.0) << "\n";
-  //     std::cout << "eps(inhomog): " << (Fa - Fc) * (Fa - Fc) << "\n";
-  //     if (!(eps < max_eps))
-  //       max_eps = eps;
-  //
-  //     // for (auto i = 0ul; i < grid->r.size(); i += 100) {
-  //     //   std::cout << grid->r[i] << " " << Fa.f[i] << " " << Fc.f[i] <<
-  //     "\n";
-  //     // }
-  //   }
-  //   pass &= qip::check_value(&obuff, "new ", max_eps, 0.0, 1.0e-10);
-  // }
+  { // Test inhomogenous (Green's) method:
+    // Solve: (Fa and Fb should be equal)
+    // (H + v + vp - e)Fa = 0
+    // (H + v - e)Fb = -vp*Fa
+    std::cout << "Test inhomogenous (Green's) method:   \n"
+                 "(H + v + vp - e)Fa = 0     vs.\n"
+                 "(H + v - e)Fb = -vp*Fa    (Fa and Fb should be equal)\n";
+    auto max_eps_dF = -1.0;
+    auto max_eps_orthNorm = -1.0;
+    const auto states_new = AtomData::listOfStates_nk("5spdf");
+
+    // This will act as a "non-local" potential
+    std::vector<double> vp;
+    for (const auto r : grid->r) {
+      vp.push_back(-0.3 / (r * r * r * r + 1.0));
+    }
+    const auto v_tot = qip::add(v_nuc, vp);
+
+    for (const auto &[n, k, en] : states_new) {
+
+      auto Fa = DiracSpinor(n, k, grid);
+      auto Fap1 = DiracSpinor(n + 1, k, grid); // for orthog
+      auto Fb = DiracSpinor(n, k, grid);
+      const auto en_guess = -(Zeff * Zeff) / (2.0 * n * n);
+      const auto en_guess_p1 = -(Zeff * Zeff) / (2.0 * (n + 1) * (n + 1));
+
+      DiracODE::boundState(Fa, en_guess, v_tot, {}, PhysConst::alpha, 15);
+      DiracODE::boundState(Fap1, en_guess_p1, v_tot, {}, PhysConst::alpha, 15);
+
+      const auto dvFa = vp * Fa; // "non-local"
+      DiracODE::solve_inhomog(Fb, Fa.en, v_nuc, {}, PhysConst::alpha,
+                              -1 * dvFa);
+
+      const auto eps_norm = std::abs(Fb * Fb - 1.0); //<b|b> - norm
+
+      Fb.normalise(); // don't propogate norm error:
+
+      const auto eps_orth = std::abs(Fap1 * Fb);  //<a+1|b> - orthogonality
+      const auto eps_1 = std::abs(Fa * Fb - 1.0); // <a|b> - check values
+      const auto eps_2 = (Fa - Fb) * (Fa - Fb);   // <a-b>^2 - check values
+
+      const auto eps_dF = std::max(eps_1, eps_2);
+      const auto eps_orthNorm = std::max(eps_norm, eps_orth);
+      printf("%4s <b|b>-1 = %.0e, <a|b>-1 = %.0e, <a-b>^2 = %.0e, <a+1|b> = "
+             "%.0e\n",
+             Fa.shortSymbol().c_str(), eps_norm, eps_1, eps_2, eps_orth);
+
+      if (!(eps_dF < max_eps_dF))
+        max_eps_dF = eps_dF;
+      if (!(eps_orthNorm < max_eps_orthNorm))
+        max_eps_orthNorm = eps_orthNorm;
+    }
+    pass &= qip::check_value(&obuff, "Inhomog (G): orthonorm", max_eps_orthNorm,
+                             0.0, 1.0e-5);
+    pass &= qip::check_value(&obuff, "Inhomog (G): value", max_eps_dF, 0.0,
+                             1.0e-11);
+  }
+
+  {
+    double z = Zeff;
+    auto max_eps = -1.0;
+    const auto states_new = AtomData::listOfStates_nk("5spd");
+
+    std::vector<double> vp;
+    for (const auto r : grid->r) {
+      r > 1.0e-2 ? vp.push_back(-0.3 / (r * r * r * r + 1.0))
+                 : vp.push_back(0.0);
+    }
+
+    for (const auto &[n, k, en] : states_new) {
+      std::cout << "\n";
+      auto Fa = DiracSpinor(n, k, grid);
+      auto Fb = DiracSpinor(n, k, grid);
+      const auto en_guess = -(z * z) / (2.0 * n * n);
+
+      const auto v1 = qip::add(v_nuc, vp);
+      DiracODE::boundState(Fa, en_guess, v1, {}, PhysConst::alpha, 15);
+
+      const auto dvFa = (vp * Fa);
+      DiracODE::boundState(Fb, en_guess, v_nuc, {}, PhysConst::alpha, 15, &dvFa,
+                           z);
+      std::cout << Fa.shortSymbol() << " " << Fa.en << " " << Fb.en << " "
+                << Fb.eps << " " << Fb.pinf << " " << Fb.its << "\n";
+
+      const auto eps = std::abs((Fa.en - Fb.en) / (Fa.en + Fb.en));
+      std::cout << Fa.shortSymbol() << " " << eps << "\n";
+      if (!(eps < max_eps))
+        max_eps = eps;
+    }
+    std::cout << "\n";
+    pass &= qip::check_value(&obuff, "new ", max_eps, 0.0, 1.0e-10);
+  }
 
   return pass;
 } // namespace UnitTest
