@@ -9,6 +9,8 @@
 #include "qip/Vector.hpp"
 #include <iostream>
 #include <string>
+//
+#include "DiracODE/DiracODE.hpp"
 
 int main(int argc, char *argv[]) {
   IO::ChronoTimer timer("\nampsci");
@@ -325,6 +327,41 @@ int main(int argc, char *argv[]) {
 
   // run each of the modules with the calculated wavefunctions
   Module::runModules(input, wf);
+
+  std::cout << "\n\n";
+  for (const auto &Fv : wf.valence) {
+    const auto vx1 = HF::vex_approx(Fv, wf.core);
+    // const auto dVx = HF::vexFa(Fv, wf.core) - vx * Fv;
+
+    const auto vl1 = qip::add(wf.get_Vlocal(Fv.l()), vx1);
+
+    auto Fv2 = Fv;
+
+    DiracODE::boundState(Fv2, 0.92 * Fv.en, vl1, {}, wf.alpha, 16);
+
+    auto Fv3 = Fv2;
+    auto en_old = Fv3.en;
+    int i = 0;
+    for (; i < 99; ++i) {
+      const auto vx = qip::scale(HF::vex_approx(Fv3, wf.core), 0.99);
+      const auto vl = qip::add(wf.get_Vlocal(Fv.l()), vx);
+      const auto dVx = HF::vexFa(Fv3, wf.core) - vx * Fv3;
+      auto df = Fv3;
+      DiracODE::boundState(Fv3, Fv.en, vl, {}, wf.alpha, 16, &dVx);
+      auto eps = std::abs((Fv3.en - en_old) / en_old);
+      if (eps < 1.0e-16)
+        break;
+      en_old = Fv3.en;
+      Fv3 += 0.5 * df;
+      Fv3.normalise();
+    }
+    // std::cout << Fv.symbol() << " " << Fv.en << " " << Fv2.en << "\n";
+    auto eps1 = std::abs((Fv.en - Fv2.en) / (Fv.en + Fv2.en));
+    auto eps2 = std::abs((Fv.en - Fv3.en) / (Fv.en + Fv3.en));
+    printf("%3s %11.8f %11.8f %.0e | %3i %11.8f %.0e   %.0e %i\n",
+           Fv.shortSymbol().c_str(), Fv.en, Fv2.en, eps1, i, Fv3.en, eps2,
+           Fv3.eps, Fv3.its);
+  }
 
   return 0;
 }

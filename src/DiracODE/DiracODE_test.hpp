@@ -149,7 +149,7 @@ bool DiracODE(std::ostream &obuff) {
     // This will act as a "non-local" potential
     std::vector<double> vp;
     for (const auto r : grid->r) {
-      vp.push_back(-0.3 / (r * r * r * r + 1.0));
+      vp.push_back(-0.03 / (r * r * r * r + 1.0));
     }
     const auto v_tot = qip::add(v_nuc, vp);
 
@@ -200,8 +200,8 @@ bool DiracODE(std::ostream &obuff) {
 
     std::vector<double> vp;
     for (const auto r : grid->r) {
-      r > 1.0e-2 ? vp.push_back(-0.3 / (r * r * r * r + 1.0))
-                 : vp.push_back(0.0);
+      r > 1.0e-3 && r < 15.0 ? vp.push_back(-0.2 / (r * r * r * r + 1.0))
+                             : vp.push_back(0.0);
     }
 
     for (const auto &[n, k, en] : states_new) {
@@ -213,9 +213,14 @@ bool DiracODE(std::ostream &obuff) {
       const auto v1 = qip::add(v_nuc, vp);
       DiracODE::boundState(Fa, en_guess, v1, {}, PhysConst::alpha, 15);
 
-      const auto dvFa = (vp * Fa);
-      DiracODE::boundState(Fb, en_guess, v_nuc, {}, PhysConst::alpha, 15, &dvFa,
-                           z);
+      auto dvFa = (vp * Fa);
+      // for (int i = 0; i < 99; ++i)
+      {
+        DiracODE::boundState(Fb, Fa.en, v_nuc, {}, PhysConst::alpha, 15, &dvFa,
+                             z);
+        dvFa = (vp * Fb);
+      }
+
       std::cout << Fa.shortSymbol() << " " << Fa.en << " " << Fb.en << " "
                 << Fb.eps << " " << Fb.pinf << " " << Fb.its << "\n";
 
@@ -225,7 +230,7 @@ bool DiracODE(std::ostream &obuff) {
         max_eps = eps;
     }
     std::cout << "\n";
-    pass &= qip::check_value(&obuff, "new ", max_eps, 0.0, 1.0e-10);
+    pass &= qip::check_value(&obuff, "new ", max_eps, 0.0, 5.0e-5);
   }
 
   return pass;

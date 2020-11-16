@@ -24,10 +24,9 @@ namespace DiracODE {
 
 using namespace Adams;
 //******************************************************************************
-void boundState(DiracSpinor &psi, const double en0,
-                const std::vector<double> &v, const std::vector<double> &H_mag,
-                const double alpha, int log_dele, const DiracSpinor *const VxFa,
-                double zion)
+void boundState(DiracSpinor &Fa, const double en0, const std::vector<double> &v,
+                const std::vector<double> &H_mag, const double alpha,
+                int log_dele, const DiracSpinor *const VxFa, double zion)
 // Solves local, spherical bound state dirac equation using Adams-Moulton
 // method. Based on method presented in book by W. R. Johnson:
 //   W. R. Johnson, Atomic Structure Theory (Springer, New York, 2007)
@@ -45,7 +44,7 @@ void boundState(DiracSpinor &psi, const double en0,
 //
 // Rough description of method:
 // 1. Start with initial 'guess' of energy
-// 2. Find "practical infinity" (psi~0), and Classical turning point (e=v)
+// 2. Find "practical infinity" (Fa~0), and Classical turning point (e=v)
 // 3. Performs 'inward' integration (Adams Moulton).
 //    Integrates inwards from the practical infinity inwards to d_ctp points
 //    past the classical turning point (ctp).
@@ -61,7 +60,7 @@ void boundState(DiracSpinor &psi, const double en0,
 // Continues until this energy adjustment falls below a prescribed threshold.
 //
 // Orbitals defined:
-//   psi := (1/r) {f O_k, ig O_(-k)}
+//   Fa := (1/r) {f O_k, ig O_(-k)}
 //
 {
   [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
@@ -70,16 +69,16 @@ void boundState(DiracSpinor &psi, const double en0,
   const double eps_goal = std::pow(10, -std::abs(log_dele));
 
   if constexpr (do_debug) {
-    if (!(std::abs(psi.k) <= psi.n && psi.k != psi.n)) {
-      std::cerr << "\nFail96 in Adams: bad state " << psi.symbol() << "\n";
+    if (!(std::abs(Fa.k) <= Fa.n && Fa.k != Fa.n)) {
+      std::cerr << "\nFail96 in Adams: bad state " << Fa.symbol() << "\n";
       return;
     }
   }
 
-  const auto &rgrid = *psi.rgrid;
+  const auto &rgrid = *Fa.rgrid;
 
   // orbital should have (n-l-1) nodes:
-  const int required_nodes = psi.n - psi.l() - 1;
+  const int required_nodes = Fa.n - Fa.l() - 1;
   bool correct_nodes = false;
   TrackEnGuess sofar; // track higest/lowest energy guesses etc.
 
@@ -98,18 +97,18 @@ void boundState(DiracSpinor &psi, const double en0,
     // Find solution (f,g) to DE for given energy:
     // Also stores dg (gout-gin) for PT [used for PT to find better e]
     std::vector<double> dg(2 * Param::d_ctp + 1);
-    Adams::trialDiracSolution(psi.f, psi.g, dg, t_en, psi.k, v, H_mag, rgrid,
-                              ctp, Param::d_ctp, t_pinf, alpha, VxFa, zion);
+    Adams::trialDiracSolution(Fa.f, Fa.g, dg, t_en, Fa.k, v, H_mag, rgrid, ctp,
+                              Param::d_ctp, t_pinf, alpha, VxFa, zion);
 
-    const int counted_nodes = Adams::countNodes(psi.f, t_pinf);
+    const int counted_nodes = Adams::countNodes(Fa.f, t_pinf);
 
     // If correct number of nodes, use PT to make minor energy adjustment.
     // Otherwise, make large adjustmunt until correct # of nodes
     const double en_old = t_en;
     if (counted_nodes == required_nodes) {
       correct_nodes = true;
-      anorm = psi * psi;
-      t_en = Adams::smallEnergyChangePT(en_old, anorm, psi.f, dg, ctp,
+      anorm = Fa * Fa;
+      t_en = Adams::smallEnergyChangePT(en_old, anorm, Fa.f, dg, ctp,
                                         Param::d_ctp, alpha, sofar);
     } else {
       correct_nodes = false;
@@ -138,58 +137,61 @@ void boundState(DiracSpinor &psi, const double en0,
   // This is rare - means a failure. But hopefully, failure will go away after
   // a few more HF iterations..If we don't norm wf, HF will fail.
   if (!correct_nodes) {
-    anorm = psi * psi;
+    anorm = Fa * Fa;
     if constexpr (do_debug) {
-      std::cerr << "\nFAIL-148: wrong nodes:"
-                << Adams::countNodes(psi.f, t_pinf) << "/" << required_nodes
-                << " for " << psi.symbol() << "\n";
+      std::cerr << "\nFAIL-148: wrong nodes:" << Adams::countNodes(Fa.f, t_pinf)
+                << "/" << required_nodes << " for " << Fa.symbol() << "\n";
     }
   }
 
   // store energy etc.
-  psi.en = t_en;
-  psi.eps = t_eps;
-  psi.pinf = (std::size_t)t_pinf;
-  psi.its = t_its;
+  Fa.en = t_en;
+  Fa.eps = t_eps;
+  Fa.pinf = (std::size_t)t_pinf;
+  Fa.its = t_its;
 
   // Explicitely set 'tail' to zero (we may be re-using orbital)
-  psi.zero_boundaries();
+  Fa.zero_boundaries();
   // normalises the orbital (alrady cal'd anorm)
-  psi *= 1.0 / std::sqrt(anorm);
+  Fa *= 1.0 / std::sqrt(anorm);
 
   return;
 }
 
 //******************************************************************************
-void regularAtOrigin(DiracSpinor &phi, const double en,
+void regularAtOrigin(DiracSpinor &Fa, const double en,
                      const std::vector<double> &v,
                      const std::vector<double> &H_mag, const double alpha) {
   [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
-  const auto &gr = phi.rgrid;
+  const auto &gr = Fa.rgrid;
   if (en != 0)
-    phi.en = en;
-  const auto pinf = Adams::findPracticalInfinity(phi.en, v, gr->r, Param::cALR);
-  Adams::DiracMatrix Hd(*gr, v, phi.k, phi.en, alpha, H_mag);
-  Adams::outwardAM(phi.f, phi.g, Hd, pinf - 1);
-  phi.pinf = pinf;
+    Fa.en = en;
+  const auto pinf = Adams::findPracticalInfinity(Fa.en, v, gr->r, Param::cALR);
+  Adams::DiracMatrix Hd(*gr, v, Fa.k, Fa.en, alpha, H_mag);
+  Adams::outwardAM(Fa.f, Fa.g, Hd, pinf - 1);
+  Fa.pinf = pinf;
   // for safety: make sure zerod! (I may re-use existing orbitals!)
-  phi.zero_boundaries();
+  Fa.zero_boundaries();
 }
 
 //******************************************************************************
-void regularAtInfinity(DiracSpinor &phi, const double en,
+void regularAtInfinity(DiracSpinor &Fa, const double en,
                        const std::vector<double> &v,
                        const std::vector<double> &H_mag, const double alpha) {
   [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
-  const auto &gr = phi.rgrid;
+  const auto &gr = Fa.rgrid;
   if (en < 0)
-    phi.en = en;
-  const auto pinf = Adams::findPracticalInfinity(phi.en, v, gr->r, Param::cALR);
-  Adams::DiracMatrix Hd(*gr, v, phi.k, phi.en, alpha, H_mag);
-  Adams::inwardAM(phi.f, phi.g, Hd, 0, pinf - 1);
-  phi.pinf = pinf;
+    Fa.en = en;
+  const auto pinf = Adams::findPracticalInfinity(Fa.en, v, gr->r, Param::cALR);
+  Adams::DiracMatrix Hd(*gr, v, Fa.k, Fa.en, alpha, H_mag);
+  // Adams::inwardAM(Fa.f, Fa.g, Hd, 0, pinf - 1);
+
+  inwardAM(Fa.f, Fa.g, Hd, 0, pinf - 1);
+  adamsMoulton(Fa.f, Fa.g, Hd, pinf - Param::AMO - 1, 0);
+
+  Fa.pinf = pinf;
   // for safety: make sure zerod! (I may re-use existing orbitals!)
-  phi.zero_boundaries();
+  Fa.zero_boundaries();
 }
 
 //******************************************************************************
@@ -313,12 +315,43 @@ void trialDiracSolution(std::vector<double> &f, std::vector<double> &g,
 {
   [[maybe_unused]] auto sp = IO::Profile::safeProfiler(__func__);
   // DiracMatrix Hd(gr, v, ka, en, alpha, H_mag);
-  DiracMatrix Hd(gr, v, ka, en, alpha, H_mag, VxFa, zion);
-  outwardAM(f, g, Hd, ctp + d_ctp);
+  DiracMatrix Hd(gr, v, ka, en, alpha, H_mag);
+  // outwardAM(f, g, Hd, ctp + d_ctp);
+
+  const auto na = Param::num_loops * Param::AMO + 1;
+  outwardAM(f, g, Hd, 0);
+  adamsMoulton(f, g, Hd, na, ctp + d_ctp);
+
   std::vector<double> f_in(gr.num_points), g_in(gr.num_points);
+
   inwardAM(f_in, g_in, Hd, ctp - d_ctp, pinf - 1);
+  adamsMoulton(f_in, g_in, Hd, pinf - Param::AMO - 1, ctp - d_ctp);
+
   joinInOutSolutions(f, g, dg, f_in, g_in, ctp, d_ctp, pinf);
-}
+
+  // for (int i = 0; i < 50; ++i)
+  if (VxFa) {
+    DiracMatrix HdX(gr, v, ka, en, alpha, H_mag, VxFa, zion);
+
+    auto prev_norm = 0.0;
+    for (int i = 0; i < 99; ++i) {
+      auto nn = NumCalc::integrate(gr.du, 0, pinf, f, f, gr.drdu) +
+                NumCalc::integrate(gr.du, 0, pinf, g, g, gr.drdu);
+      auto norm = 1.0 / std::sqrt(nn);
+      if (std::abs(prev_norm / norm - 1) < 1.0e-15)
+        break;
+      prev_norm = norm;
+      qip::scale(&f, norm);
+      qip::scale(&g, norm);
+
+      f_in = f;
+      g_in = g;
+      adamsMoulton(f, g, HdX, na, ctp + d_ctp);
+      adamsMoulton(f_in, g_in, HdX, pinf - Param::AMO - 1, ctp - d_ctp);
+      joinInOutSolutions(f, g, dg, f_in, g_in, ctp, d_ctp, pinf);
+    }
+  }
+} // namespace Adams
 
 //******************************************************************************
 void joinInOutSolutions(std::vector<double> &f, std::vector<double> &g,
@@ -537,8 +570,8 @@ void inwardAM(std::vector<double> &f, std::vector<double> &g,
     g[i] = rfac * (f1 * qs - f2 * ps);
   }
 
-  if ((pinf - Param::AMO - 1) >= nf)
-    adamsMoulton(f, g, Hd, pinf - Param::AMO - 1, nf);
+  // if ((pinf - Param::AMO - 1) >= nf)
+  //   adamsMoulton(f, g, Hd, pinf - Param::AMO - 1, nf);
 }
 
 //******************************************************************************
