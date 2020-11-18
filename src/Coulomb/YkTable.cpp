@@ -44,11 +44,11 @@ int YkTable::max_tj() const {
 }
 
 //******************************************************************************
-std::pair<int, int> YkTable::k_minmax(const DiracSpinor &a,
-                                      const DiracSpinor &b) {
-  return std::make_pair(std::abs(a.twoj() - b.twoj()) / 2,
-                        (a.twoj() + b.twoj()) / 2);
-}
+// std::pair<int, int> YkTable::k_minmax(const DiracSpinor &a,
+//                                       const DiracSpinor &b) {
+//   return std::make_pair(std::abs(a.twoj() - b.twoj()) / 2,
+//                         (a.twoj() + b.twoj()) / 2);
+// }
 
 //******************************************************************************
 const std::vector<double> &YkTable::get_yk_ab(const int k,
@@ -62,6 +62,18 @@ const std::vector<double> &YkTable::get_yk_ab(const int k,
   assert(ik < yab.size());
   return yab[ik];
 }
+
+//------------------------------------------------------------------------------
+const std::vector<double> *YkTable::ptr_yk_ab(const int k,
+                                              const DiracSpinor &Fa,
+                                              const DiracSpinor &Fb) const {
+  const auto [min, max] = k_minmax(Fa, Fb);
+  if (k >= min && k <= max) {
+    return &get_yk_ab(k, Fa, Fb);
+  }
+  return nullptr;
+}
+
 //------------------------------------------------------------------------------
 const std::vector<std::vector<double>> &
 YkTable::get_y_ab(const DiracSpinor &Fa, const DiracSpinor &Fb) const {
@@ -80,6 +92,7 @@ void YkTable::update_y_ints() {
   resize_y();
   const auto tj_max = max_tj();
   m_Ck.fill(tj_max);
+  m_6j.fill(tj_max);
 
   a_size = m_a_orbs->size();
   b_size = m_b_orbs->size();
@@ -90,7 +103,7 @@ void YkTable::update_y_ints() {
     const auto b_max = m_aisb ? ia : b_size - 1;
     for (std::size_t ib = 0; ib <= b_max; ib++) {
       const auto &Fb = (*m_b_orbs)[ib];
-      const auto &[kmin, kmax] = k_minmax(Fa, Fb); // weird that this works?
+      const auto [kmin, kmax] = k_minmax(Fa, Fb);
       for (auto k = kmin; k <= kmax; k++) {
         const auto Lk = m_Ck.get_Lambdakab(k, Fa.k, Fb.k);
         if (Lk == 0)
@@ -158,14 +171,36 @@ void YkTable::resize_y() {
       const auto &[kmin, kmax] = k_minmax(Fa, Fb);
       const auto num_k = std::size_t(kmax - kmin + 1);
       m_y_abkr[ia][ib].resize(num_k);
-      // Don't need to!
-      // Many of these k's will be zero - don't need to allocate for them!
-      // for (auto &yk_ab_r : m_y_abkr[ia][ib]) {
-      //   // XXX Need to do this??
-      //   yk_ab_r.resize(m_grid->num_points);
-      // } // k
     } // b
   }   // a
+}
+
+//******************************************************************************
+//******************************************************************************
+double YkTable::Qk(const int k, const DiracSpinor &Fa, const DiracSpinor &Fb,
+                   const DiracSpinor &Fc, const DiracSpinor &Fd) const {
+  // nb: b and d _MUST_ be in {a},{b} orbitals
+  assert(m_aisb && "May only use Qk if Yk init with {a}={b}");
+  const auto ykbd = ptr_yk_ab(k, Fb, Fd);
+  return ykbd ? Coulomb::Qk_abcd(Fa, Fb, Fc, Fd, k, *ykbd, m_Ck) : 0.0;
+}
+
+//------------------------------------------------------------------------------
+double YkTable::Pk(const int k, const DiracSpinor &Fa, const DiracSpinor &Fb,
+                   const DiracSpinor &Fc, const DiracSpinor &Fd) const {
+  // nb: b and c _MUST_ be in {a},{b} orbitals
+  assert(m_aisb && "May only use Pk if Yk init with {a}={b}");
+  return Pk_abcd(Fa, Fb, Fc, Fd, k, get_y_ab(Fb, Fc), m_Ck, m_6j);
+}
+
+//------------------------------------------------------------------------------
+double YkTable::Wk(const int k, const DiracSpinor &Fa, const DiracSpinor &Fb,
+                   const DiracSpinor &Fc, const DiracSpinor &Fd) const {
+  // nb: b and d _MUST_ be in {a},{b} orbitals
+  // AND
+  // c and d _MUST_ be in {a},{b} orbitals
+  assert(m_aisb && "May only use Wk if Yk init with {a}={b}");
+  return Qk(k, Fa, Fb, Fc, Fd) + Pk(k, Fa, Fb, Fc, Fd);
 }
 
 } // namespace Coulomb

@@ -18,10 +18,10 @@ Module::firstModule { <input_options> }
 Module::secondModule { <input_options> }
 ```
 
-* Most options have a default, and can be left blank, explicitly set to 'default', or removed entirely.
-* The curly-braces denote the start/end of each block. *Don't* use any other curly-braces (nested braces are not allowed)
+* Most options have a default; these may be left blank, explicitly set to 'default', or removed entirely.
+* The curly-braces denote the start/end of each block. *Don't* use any other curly-braces (nested curly-braces are not allowed)
 * Uses c++ style comments. Any commented-out line will not be read. White-space is ignored.
-* For example, the following four inputs are all equivalent
+* For example, the following inputs are all equivalent
 
 ```cpp
 Atom {
@@ -33,13 +33,16 @@ Atom {
 //  A;
 }
 Atom { Z = Cs; }
+Atom { Z = 55; A = 133; }
 Atom{Z=Cs;A=default;}
 ```
 
 * All available inputs for each input block are listed below
-  * Inputs are taken in as either text, boolean (true/false), integers, or real numbers.
-  * These will be denoted by [t], [b], [i], [r]
-* Program will _usually_ warn you if an incorrect option is given, and print all the available options to the screen.
+  * Inputs are taken in as either text, boolean (true/false), integers, or real numbers, or a "sub-block"
+  * These will be denoted by [t], [b], [i], [r], [sub-block]
+  * A sub-block is a bracketed list of sub-options, e.g.
+    * options = {a=1; b=2;};
+* Program will _usually_ warn you if an incorrect option is given, and print all the available options to the screen -- you can use this fact to get the code to print all the available options for each block.
 
 ********************************************************************************
 # Each input block:
@@ -64,7 +67,7 @@ Atom {
 HartreeFock {
   core;        //[t] default = [] (no core)
   valence;     //[t] default = none
-  sortOutput;  //[b] default = true
+  sortOutput;  //[b] default = false
   method;      //[t] default = HartreeFock
   Breit;       //[r] default = 0.0
   convergence; //[r] default = 1.0e-12
@@ -218,11 +221,12 @@ Basis {
 * For including correlations. 'basis' must exist to calculate Sigma, but not to read Sigma in from file.
 ```cpp
 Correlations {
-  io_file;        //[b] default = true (or [t]; see below)
+  read;           //[t] default = ""
+  write;          //[t] default = ""
   n_min_core;     //[i] default = 1
   energyShifts;   //[b] default = false
   Brueckner;      //[b] default = false
-  lambda_k;       //[r,r...] (list) default is blank.
+  lambda_kappa;   //[r,r...] (list) default is blank.
   fk;             //[r,r...] (list) default is blank.
   fitTo_cm;       //[r,r...] (list) default is blank.
   // Following are "sub-grid" options:
@@ -232,7 +236,8 @@ Correlations {
 }
 ```
 * Includes correlation corrections. note: splines must exist already
-* io_file: Read/write from/to file. Set to 'false' to calculate from scratch (and not write to file), true to read/write from/to default filename. Alternatively, put any text here to be a custom filename (e.g., io_file="new"; will read/write from/to new.Sigma -- useful for tests). Grids must match exactly when reading in from a file.
+* read/write: Read/write from/to file. Set to 'false' to calculate from scratch (and not write to file). By default, the file name is: "Atom".sig.
+  * Alternatively, put any text here to be a custom filename (e.g., read/write="Cs_new"; will read/write from/to Cs_new.sig). Don't include the '.sig' extension (uses sigf for Feynman method, sig2 for Goldstone). Grids must match exactly when reading in from a file.
   * If reading Sigma in from file, basis doesn't need to exist
 * n_min_core: minimum core n included in the Sigma calculation; lowest states often contribute little, so this speeds up the calculations
 * energyShifts: If true, will calculate the second-order energy shifts (from scratch, according to MBPT) - compares to <v|Sigma|v> if it exists
@@ -240,14 +245,14 @@ Correlations {
 * Brueckner: Construct Brueckner valence orbitals using correlation potential method (i.e., include correlations into wavefunctions and energies for valence states)
 * stride: Only calculates Sigma every nth point (Sigma is NxN matrix, so stride=4 leads to ~16x speed-up vs 1)
 * rmin/rmax: min/max points along radial Grid Sigma is calculated+stored.
-* lambda_k: Rescale Sigma -> lambda*Sigma. One lambda for each kappa. If not given, assumed to be 1.
+* lambda_kappa: Rescale Sigma -> lambda*Sigma. One lambda for each kappa. If not given, assumed to be 1.
   * Note: Lambda's are not written/read to file, so these must be given (if required) even when reading Sigma from disk
 * fk: Effective screening factors; only used for 2nd-order Goldstone method
   * Note: Included directly into Sigma
   * e.g., for Cs: fk = 0.72, 0.62, 0.83, 0.89, 0.94, 1.0;
-* fitTo_cm: Provide list of energies (lowest valence states for each kappa); Sigma for each kappa will be automatically re-scaled to exactly reproduce these. Give as binding energies in inverse cm! It will print the lambda_k's that it calculated
+* fitTo_cm: Provide list of energies (lowest valence states for each kappa); Sigma for each kappa will be automatically re-scaled to exactly reproduce these. Give as binding energies in inverse cm! It will print the lambda_kappa's that it calculated
   * e.g., fitTo_cm = -31406.5, -20228.2, -19674.1; will fit for the lowest s & p states for Cs
-  * Will over-write lambda_k
+  * Will over-write lambda_kappa
   * -43487.11, -28583.45, -28583.11, -12204.03, -12203.99, -6856.91, -6856.91; // Li
   * -41449.45, -24493.28, -24476.08, -12276.56, -12276.61, -6862.53, -6862.53; // Na
   * -35009.81, -22024.63, -21966.92, -13472.83, -13475.13, -6881.96, -6881.96; // K
@@ -268,18 +273,20 @@ Spectrum {
 ```
 
 
-## Modules and MatrixElements
+## Modules
 
-Modules and MatrixElements work in essentially the same way. Each MatrixElements/Modules block will be run in order. You can comment-out just the block name, and the block will be skipped.
+Each Modules block will be run in order.
+You can comment-out just the block name, and the block will be skipped.
 
-MatrixElements blocks calculate reduced matrix elements of given operator, Modules can do anything.
+### Module::matrixElements
 
-For MatrixElements, there are some options that apply for any operator; and then there are some
-options specific to each operator
+Module to calculate Matrix Elements.
+For matrixElements, there are some options that apply for any operator; and then there are some options specific to each operator; these operator-specific options are given as a [] bracketed list of options ("sub-block")
 
 ```cpp
-MatrixElements::ExampleOperator { //this is not a real operator..
-  // Options that apply to all operators:
+Module::matrixElements {
+  operator;       //[t] default = ""
+  options;        //[sub-block], default = ""
   printBoth;      //[t] default = false
   onlyDiagonal;   //[t] default = false
   radialIntegral; //[b] default = false
@@ -290,6 +297,9 @@ MatrixElements::ExampleOperator { //this is not a real operator..
   b_vertex;       //[r] default = 1.0
 }
 ```
+* operator: name of operator; see list below
+* options: list any operator-specific options (most will be blank)
+  * _see below_
 * printBoth: Print <a|h|b> and <b|h|a> ? false by default. (For _some_ operators, e.g., involving derivatives, this is a good test of numerical error. For most operators, values will be trivially the same; reduced matrix elements, sign may be different.)
 * onlyDiagonal: If true, will only print diagonal MEs <a|h|a>
 * radialIntegral: if true, calculates the radial integral (definition depends on specific operator)
@@ -301,37 +311,41 @@ MatrixElements::ExampleOperator { //this is not a real operator..
 
 ### Available operators:
 
+Here I list the available operators, and their possible options.
+Remember; the program will print out the full list of available options if you ask it to.
+
 ```cpp
-MatrixElements::E1 { //Electric dipole operator:
+operator = E1; //Electric dipole operator:
+options = {
   gauge; //[t] lform, vform. default = lform
-}
+};
 ```
 
 ```cpp
-MatrixElements::Ek { //Electric multipole operator:
+operator = Ek; //Electric multipole operator:
+options = {
   k; //[i] default = 1
-}
+};
 ```
 * k=1 => E1, dipole. k=2 => E2, quadrupole etc.
 
 ```cpp
-MatrixElements::r { //scalar r
+operator = r; //scalar r
+options = {
   power; //[r] default = 1. Will calc <|r^n|>.
-}
+};
 ```
 
 ```cpp
-MatrixElements::pnc {// spin-independent (Qw) PNC operator.
-  // Output given in units of i(-Q/N)e-11
+operator = pnc; // spin-independent (Qw) PNC operator.
+options = {
   c; //[r] half-density radius. By default, uses rrms from Z,A [see nucleus]
   t; //[r] skin thickness. default = 2.3
-}
+};
 ```
 
 ```cpp
-MatrixElements::Hrad_el {
-  // QED electric part (Euhling+electric SE)
-}
+operator = Hrad_el; // QED electric part (Euhling+electric SE)
 ```
  * Takes similar arguments as RadPot (except for scale_l and core_qed)
    * Simple, Ueh, SE_h, SE_l, rcut, scale_rN (but not SE_mag)
@@ -340,10 +354,9 @@ MatrixElements::Hrad_el {
  * Typically used with onlyDiagonal=true, and radialIntegral=true (get energy shifts)
 
 ```cpp
-MatrixElements::Hrad_mag {
-  // QED magnetic part (magnetic SE form-factor)
-}
+operator = Hrad_mag; // QED magnetic part (magnetic SE form-factor)
 ```
+ * QED magnetic part (magnetic SE form-factor)
  * Takes similar arguments as RadPot (except for scale_l and core_qed)
    * SE_mag, rcut, scale_rN (but not Simple, Ueh, SE_h, SE_l,)
  * Including RPA should be equivalent to including QED into core HF equations
@@ -351,7 +364,8 @@ MatrixElements::Hrad_mag {
  * Typically used with onlyDiagonal=true, and radialIntegral=true (get energy shifts)
 
 ```cpp
-MatrixElements::hfs { // Magnetic dipole hyperfine structure constant A
+operator = hfs; // Magnetic dipole hyperfine structure constant A
+options = {
   mu;     //[r] Nuc. mag. moment. Will be looked up by default
   I;      //[r] Nuc. spin. Will be looked up by default
   rrms;   //[r] Nuc. rms radius. Will be looked up by default
@@ -371,10 +385,12 @@ MatrixElements::hfs { // Magnetic dipole hyperfine structure constant A
   gl1 = 1;
   I2 = 0.5;
   l2 = 1.;
-}
+};
 ```
 
-### Modules:
+### Other Modules:
+
+ * Note: 'Modules' documentation also available in the doxygen (html) documentation on github; that is likely more up-to-date
 
 -------------------
 ```cpp
@@ -431,6 +447,20 @@ Especially for beta, pretty sure it's wrong for non-s states.
 
 -------------------
 ```cpp
+Module::structureRad{
+  operator; options; rpa; printBoth; onlyDiagonal; omega; n_minmax;  
+}
+```
+ * Calculates Structure Radiation + Normalisation of States
+ * Note: Most input options are similar to matrixElements module:
+ * n_minmax: is input as list of ints:
+   * n_minmax = min,max;
+   * min: minimum n for core states kept in summations
+   * max: maximum n for excited states kept in summations
+ * For explanation of the rest, see matrixElements module.
+
+-------------------
+```cpp
 Module::lifetimes{
   E1;   //[b] Include E1 transitions. default = true
   E1;   //[b] Include E2 transitions. default = false
@@ -442,18 +472,18 @@ Calculates lifetimes of valence states. Note: uses HF energies (prints all data 
 ```cpp
 Module::HFAnomaly {
   Alist;  //[i,i,...] // Which A's to calculate for (blank for all)
- // ~ most inputs same as MatrixElements::hfs
+ // ~ most inputs same as operator = hfs
 }
 ```
 Calculates the hyperfine anomaly (and BW effect) for all available odd
 isotopes of given atom, relative to the 'main' isotope (see Atom).
- * Note: Only runs for odd isotopes; to get anomaly for even isotopes, use am even isotope as reference (For doubly-odd Bohr-Weisskopf input options, see MatrixElements::hfs)
- * Takes same input at MatrixElements::hfs, except for F(r), since it runs for each F(r)
+ * Note: Only runs for odd isotopes; to get anomaly for even isotopes, use am even isotope as reference (For doubly-odd Bohr-Weisskopf input options, see operator = hfs)
+ * Takes same input as operator = hfs, except for F(r), since it runs for each F(r)
 
 -------------------
 ```cpp
 Module::BohrWeisskopf { //Calculates BW effect for Ball/Single-particle
-  // Takes same input at MatrixElements::hfs
+  // Takes same input at operator = hfs
   // Except for F(r), since it runs for each F(r)
 }
 ```

@@ -1,18 +1,18 @@
 #include "Angular/Angular_test.hpp"
 #include "Coulomb/Coulomb_test.hpp"
 #include "DiracODE/DiracODE_test.hpp"
+#include "ExternalField/DiagramRPA_test.hpp"
+#include "ExternalField/MixedStates_test.hpp"
+#include "ExternalField/TDHF_test.hpp"
 #include "HF/Breit_test.hpp"
-#include "HF/ExternalField_test.hpp"
 #include "HF/HartreeFock_test.hpp"
-#include "HF/MixedStates_test.hpp"
 #include "IO/ChronoTimer.hpp"
+#include "IO/UserInput.hpp" // for time+date
 #include "MBPT/CorrelationPotential_test.hpp"
-#include "MBPT/DiagramRPA_test.hpp"
+#include "MBPT/StructureRad_test.hpp"
 #include "Maths/LinAlg_test.hpp"
 #include "Physics/RadPot_test.hpp"
 #include "Wavefunction/BSplineBasis_test.hpp"
-//
-#include "IO/UserInput.hpp" // for time+date
 #include "git.info"
 #include <cassert>
 #include <iostream>
@@ -25,8 +25,6 @@
 
 @details
 Each unit test tests a certain piece of the code.
-
-Note: must
 
 To run the unit tests, compile unitTests (make unitTests), and run from command
 line. It takes optional command-line options (the names of which tests to run).
@@ -59,16 +57,23 @@ static const std::vector<std::pair<std::string, bool (*)(std::ostream &obuff)>>
         {"HartreeFock", &HartreeFock},
         {"Breit", &Breit},
         {"MixedStates", &MixedStates},
-        {"ExternalField", &ExternalField},
+        {"TDHF", &TDHF},
         {"RadPot", &RadPot},
         {"Angular", &Angular},
         {"LinAlg", &LinAlg},
         {"BSplineBasis", &BSplineBasis},
         {"Coulomb", &Coulomb},
         {"CorrelationPotential", &CorrelationPotential},
-        {"DiagramRPA", &DiagramRPA}
+        {"DiagramRPA", &DiagramRPA},
+        {"StructureRad", &StructureRad}
         //
     };
+
+static const std::vector<std::pair<std::string, bool (*)(std::ostream &obuff)>>
+    quick_list{{"DiracODE", &DiracODE},       {"HartreeFock", &HartreeFock},
+               {"MixedStates", &MixedStates}, {"Angular", &Angular},
+               {"LinAlg", &LinAlg},           {"BSplineBasis", &BSplineBasis},
+               {"Coulomb", &Coulomb}};
 
 //------------------------------------------------------------------------------
 // Looks up test + returns its function. If test not in list, prints list to
@@ -98,8 +103,6 @@ auto get_test(std::string_view in_name) {
 
 //******************************************************************************
 int main(int argc, char *argv[]) {
-  IO::ChronoTimer timer("\nUnit tests");
-  const std::string input_file = (argc > 1) ? argv[1] : "unitTests.in";
 
   std::ostringstream out_buff;
   out_buff << "ampsci test. git:" << GitInfo::gitversion << "\n";
@@ -112,6 +115,9 @@ int main(int argc, char *argv[]) {
     // run all tests
     for (const auto &[name, test] : UnitTest::test_list)
       name_list.emplace_back(name);
+  } else if (argv[1] == std::string("quick")) {
+    for (const auto &[name, test] : UnitTest::quick_list)
+      name_list.emplace_back(name);
   } else {
     // run only those tests specifically asked
     for (int i = 1; i < argc; ++i)
@@ -122,30 +128,38 @@ int main(int argc, char *argv[]) {
   int passed = 0;
   int failed = 0;
   int total = 0;
-  for (const auto &name : name_list) {
-    std::cout << "\nRunning: " << name << "\n";
-    const auto test = UnitTest::get_test(name);
-    out_buff << name << "\n";
-    const auto passedQ = test(out_buff);
-    ++total;
-    if (passedQ) {
-      out_buff << "PASSED " << name << "\n";
-      ++passed;
-    } else {
-      ++failed;
-      out_buff << "FAILED " << name << " ~~~~~\n";
-    }
-  }
-  out_buff << "\n";
-  if (failed > 0) {
-    out_buff << "FAILS " << failed << "/" << total << " tests; ";
-  }
-  out_buff << "passes " << passed << "/" << total << " tests.\n";
+  {
+    IO::ChronoTimer timer("\nUnit tests");
 
-  // Output results:
-  std::cout << "\n" << out_buff.str();
-  std::ofstream of(IO::date() + "_unitTests.txt");
-  of << out_buff.str();
+    for (const auto &name : name_list) {
+      std::cout << "\nRunning: " << name << "\n";
+      const auto test = UnitTest::get_test(name);
+      out_buff << name << "\n";
+      IO::ChronoTimer t(name);
+      const auto passedQ = test(out_buff);
+      ++total;
+      if (passedQ) {
+        out_buff << "PASSED " << name << "\n";
+        std::cout << "PASSED " << name << "\n";
+        ++passed;
+      } else {
+        ++failed;
+        out_buff << "FAILED " << name << " ~~~~~\n";
+        std::cout << "FAILED " << name << " ~~~~~\n";
+      }
+      out_buff << "T= " << t.reading_str() << "\n";
+    }
+    out_buff << "\n";
+    if (failed > 0) {
+      out_buff << "FAILS " << failed << "/" << total << " tests; ";
+    }
+    out_buff << "passes " << passed << "/" << total << " tests.\n";
+
+    // Output results:
+    std::cout << "\n" << out_buff.str();
+    std::ofstream of(IO::date() + "_unitTests.txt");
+    of << out_buff.str();
+  }
 
   assert(failed == 0);
   // do not allow a test to seemingly "pass" just because it wasn't run!

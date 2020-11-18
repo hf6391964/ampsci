@@ -1,6 +1,6 @@
 #pragma once
 #include "DiracOperator/Operators.hpp"
-#include "HF/ExternalField.hpp"
+#include "ExternalField/TDHF.hpp"
 #include "Wavefunction/Wavefunction.hpp"
 #include "qip/Check.hpp"
 #include "qip/Maths.hpp"
@@ -89,8 +89,8 @@ bool Breit(std::ostream &obuff) {
 
     // Solve TDHF with Breit (for RPA)
     const auto h{DiracOperator::E1(*wf.rgrid)};
-    auto rpa = HF::ExternalField(&h, wf.getHF());
-    rpa.solve_TDHFcore(0.0); // w=0
+    auto rpa = ExternalField::TDHF(&h, wf.getHF());
+    rpa.solve_core(0.0, 20); // w=0
 
     // Get my values:
     datav me{}, me_RPA{};
@@ -134,8 +134,8 @@ bool Breit(std::ostream &obuff) {
     std::sort(begin(e2_VD_RPA), end(e2_VD_RPA), sort_by_first);
 
     auto h = DiracOperator::Ek(*wf.rgrid, 2);
-    auto rpa = HF::ExternalField(&h, wf.getHF());
-    rpa.solve_TDHFcore(0.0); // w=0
+    auto rpa = ExternalField::TDHF(&h, wf.getHF());
+    rpa.solve_core(0.0, 20); // w=0
 
     datav me{}, me_RPA{};
     for (const auto &Fv : wf.valence) {
@@ -176,8 +176,8 @@ bool Breit(std::ostream &obuff) {
 
     // nb: use exact same 'c' and 't' params used for Dzuba test data:
     auto h = DiracOperator::PNCnsi(5.674800, 2.3, *wf.rgrid);
-    auto rpa = HF::ExternalField(&h, wf.getHF());
-    rpa.solve_TDHFcore(0.0); // w=0
+    auto rpa = ExternalField::TDHF(&h, wf.getHF());
+    rpa.solve_core(0.0, 20); // w=0
 
     datav me{}, me_RPA{};
     for (const auto &Fv : wf.valence) {
