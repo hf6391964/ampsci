@@ -929,8 +929,10 @@ GMatrix FeynmanSigma::FeynmanEx_w1w2(int kv, double en_r) const {
           const auto &gA = Green(kA, evpw1, States::both, m_Green_method);
 
           for (auto iw2 = 0ul; iw2 < wgrid.num_points; iw2 += m_wX_stride) {
-            const auto dw2 = wgrid.drdu[iw2]; //-ve for -Im(w)
-            const ComplexDouble ev_p_w2{en_r + omre, +wgrid.r[iw2]};
+            // for (auto iw2 = iw1; iw2 < wgrid.num_points; iw2 += m_wX_stride)
+            // { const auto sym_f = iw1 == iw2 ? 1 : 2; // XXX Valid?
+            const auto dw2 = wgrid.drdu[iw2];
+            const ComplexDouble ev_p_w2{en_r + omre, wgrid.r[iw2]};
             const ComplexDouble ev_m_w2{en_r + omre, -wgrid.r[iw2]};
 
             if (std::abs(wgrid.r[iw2]) > wmax)
@@ -958,24 +960,22 @@ GMatrix FeynmanSigma::FeynmanEx_w1w2(int kv, double en_r) const {
               Sc_i += (dw1 * dw2) * (gqgqg_p);
             }
 
-            // nb: I thought these should be Sc_i -= ...
-            // because we have (i*i)=-1 from dw1*dw2, and sumkl_gqgqg is real
-            // But, I included an extra i inside sumkl_gqgqg instead (i.e.,
-            // assume only get 1 i)?
-            // Still, factor of 10 too big!?
-            // if (std::abs((evpw1 + ev_m_w2).cim()) <= 1.5 * wmax)
-            {
-              // (w1 - w2) case:
-              const auto &gB_m =
-                  Green(kB, evpw1 + ev_m_w2, States::both, m_Green_method);
-              const auto &gG_m =
-                  Green(kG, ev_m_w2, States::both, m_Green_method);
-
-              const auto gqgqg_m = sumkl_gqgqg(gA, gB_m, gG_m, kv, kA, kB, kG,
-                                               max_k, qpqw1, qpqw2);
-              // -ve for 'm', since we go wrong direction around w2 contour??
-              Sc_i += (dw1 * (-dw2)) * (gqgqg_m);
-            }
+            // Note: This part doesn't seem to contribute, even if it's supposed
+            // to be here.... if (std::abs((evpw1 + ev_m_w2).cim()) <= 1.5 *
+            // wmax)
+            // {
+            //   // (w1 - w2) case:
+            //   const auto &gB_m =
+            //       Green(kB, evpw1 + ev_m_w2, States::both, m_Green_method);
+            //   const auto &gG_m =
+            //       Green(kG, ev_m_w2, States::both, m_Green_method);
+            //
+            //   const auto gqgqg_m = sumkl_gqgqg(gA, gB_m, gG_m, kv, kA, kB,
+            //   kG,
+            //                                    max_k, qpqw1, qpqw2);
+            //   // -ve for 'm', since we go wrong direction around w2 contour??
+            //   Sc_i -= (dw1 * dw2) * (gqgqg_m);
+            // }
 
             // im(gqgqg_m) is small, but real part is v. large
             // im(gqgqg_p) is roughly ok, re(gqgqg_p) is large
@@ -994,7 +994,7 @@ GMatrix FeynmanSigma::FeynmanEx_w1w2(int kv, double en_r) const {
   // sw?
   const double dw_const = sw * double(m_wX_stride) * wgrid.du / (2.0 * M_PI);
   // XXX Extra 2*Pi ????? XXX
-  Sx *= 2.0 * (dw_const * dw_const / tjvp1); // / (2.0 * M_PI);
+  Sx *= 2.0 * (dw_const * dw_const / tjvp1) / (2.0 * M_PI);
 
   // devide through by dri, drj [these included in q's, but want
   // differential operator for sigma] or.. include one of these in
@@ -1136,9 +1136,9 @@ FeynmanSigma::sumkl_gqgqg(const ComplexGMatrix &gA, const ComplexGMatrix &gB,
       const auto Lkl = Lkl_abcd(k, l, kv, kB, kA, kG);
       if (Lkl != 0.0) {
         const auto s = Angular::neg1pow(k + l);
-        const auto sLkl = ComplexDouble{s * Lkl, 0.0};
+        // const auto sLkl = ComplexDouble{s * Lkl, 0.0};
         // // XXX extra factor of i ??: - pretty sure this is wrong
-        // const auto sLkl = ComplexDouble{0.0, s * Lkl};
+        const auto sLkl = ComplexDouble{0.0, s * Lkl};
         tensor_5_product(&gqgqg, sLkl, qk, gB, gG, gA, ql);
       }
     } // l

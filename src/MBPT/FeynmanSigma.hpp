@@ -204,7 +204,7 @@ private:
   std::unique_ptr<ComplexGMatrix> m_drj = nullptr;
   std::unique_ptr<Grid> m_wgridD = nullptr;
   // only use every nth point on Im(w) grid for exchange
-  std::size_t m_wX_stride{4}; // XXX input?
+  std::size_t m_wX_stride{2}; // XXX input?
 
   std::vector<std::vector<ComplexGMatrix>> m_qpq_wk{};
 
