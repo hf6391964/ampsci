@@ -79,7 +79,7 @@ std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt;&
 <tr class="separator:ad534b99b9fdb3a9fb23762ef8a1451fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73a50bee98288badee81104893028d70"><td class="memItemLeft" align="right" valign="top"><a id="a73a50bee98288badee81104893028d70"></a>
 std::pair&lt; <a class="el" href="classLinAlg_1_1SqMatrix.html">LinAlg::SqMatrix</a>, <a class="el" href="classLinAlg_1_1SqMatrix.html">LinAlg::SqMatrix</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSplineBasis.html#a73a50bee98288badee81104893028d70">fill_Hamiltonian_matrix</a> (const std::vector&lt; <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &gt; &amp;spl_basis, const <a class="el" href="classWavefunction.html">Wavefunction</a> &amp;wf, const bool correlationsQ=false)</td></tr>
-<tr class="memdesc:a73a50bee98288badee81104893028d70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates + reyurns the Hamiltonian <img class="formulaInl" alt="$H_{ij}$" src="form_50.png"/> (and <img class="formulaInl" alt="$S_{ij}$" src="form_51.png"/>) matrices. <br /></td></tr>
+<tr class="memdesc:a73a50bee98288badee81104893028d70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates + reyurns the Hamiltonian <img class="formulaInl" alt="$H_{ij}$" src="form_53.png"/> (and <img class="formulaInl" alt="$S_{ij}$" src="form_54.png"/>) matrices. <br /></td></tr>
 <tr class="separator:a73a50bee98288badee81104893028d70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ba4593586f7e3a3737b44f4554e429e"><td class="memItemLeft" align="right" valign="top"><a id="a4ba4593586f7e3a3737b44f4554e429e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>add_NotreDameBoundary</b> (<a class="el" href="classLinAlg_1_1SqMatrix.html">LinAlg::SqMatrix</a> *Aij, const int kappa, const double alpha)</td></tr>
@@ -105,15 +105,15 @@ std::pair&lt; double, double &gt;&#160;</td><td class="memItemRight" valign="bot
 <p>Uses Maths/Bsplines to forma set of B-spline orbitals (using method from [1]). Diagonalises B-splines over Hamiltonian to produce a set of basis orbitals.</p><ul>
 <li>[1] K. Beloy and A. Derevianko, Comput. Phys. Commun. 179, 310 (2008).</li>
 </ul>
-<p>If <img class="formulaInl" alt="$\{|i\rangle\}$" src="form_43.png"/> are the set of <img class="formulaInl" alt="$2N$" src="form_44.png"/> DKB spline orbitals (of a given angular symmetry), and </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ H_{ij} = \langle{S_i}|\hat H_{\rm HF}|{S_j}\rangle \, , \qquad S_{ij} = \langle{S_i|S_j}\rangle. \]" src="form_45.png"/>
+<p>If <img class="formulaInl" alt="$\{|i\rangle\}$" src="form_46.png"/> are the set of <img class="formulaInl" alt="$2N$" src="form_47.png"/> DKB spline orbitals (of a given angular symmetry), and </p><p class="formulaDsp">
+<img class="formulaDsp" alt="\[ H_{ij} = \langle{S_i}|\hat H_{\rm HF}|{S_j}\rangle \, , \qquad S_{ij} = \langle{S_i|S_j}\rangle. \]" src="form_48.png"/>
 </p>
 <p> The eigenvalue problem: </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ H_{ij}p_i = \epsilon S_{ij}p_i, \]" src="form_46.png"/>
+<img class="formulaDsp" alt="\[ H_{ij}p_i = \epsilon S_{ij}p_i, \]" src="form_49.png"/>
 </p>
-<p> is solved, yielding <img class="formulaInl" alt="$2N$" src="form_44.png"/> eigenvalues <img class="formulaInl" alt="$\epsilon$" src="form_15.png"/> with corresponding eigenvectors <img class="formulaInl" alt="$p$" src="form_47.png"/> (half of these are positive energy solutions, half are negative energy solutions).</p>
+<p> is solved, yielding <img class="formulaInl" alt="$2N$" src="form_47.png"/> eigenvalues <img class="formulaInl" alt="$\epsilon$" src="form_15.png"/> with corresponding eigenvectors <img class="formulaInl" alt="$p$" src="form_50.png"/> (half of these are positive energy solutions, half are negative energy solutions).</p>
 <p>Note: <a class="el" href="namespaceSplineBasis.html#a0e0edf847781af2dadc99568750d8ba9" title="Forms + returns the basis orbitals (expanded in terms of splines) ">form_basis()</a> does not store the eigenvectors, instead, it expands the basis orbitals and stores them on the regular grid (coordinate space). i.e., for each eigenvalue, n, the corresponding basis orbital is: </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ |{n}\rangle = \sum_i^{2N} p_i |i\rangle\, \]" src="form_48.png"/>
+<img class="formulaDsp" alt="\[ |{n}\rangle = \sum_i^{2N} p_i |i\rangle\, \]" src="form_51.png"/>
 </p>
  </div><h2 class="groupheader">Function Documentation</h2>
 <a id="a0e0edf847781af2dadc99568750d8ba9"></a>
@@ -152,7 +152,7 @@ std::pair&lt; double, double &gt;&#160;</td><td class="memItemRight" valign="bot
 <ul>
 <li>states_str = which states to keep e.g., "25spd10f" (up to n=25 for s,p,d-states, and up to n=10 for f states)</li>
 <li>n_spl: Number of splines (nb: underlying spline set is larger, see [1])</li>
-<li>k_spl: k order of the B-splines. NB: must have <img class="formulaInl" alt="$k\geq l_{\rm max}+3$" src="form_49.png"/> [1]</li>
+<li>k_spl: k order of the B-splines. NB: must have <img class="formulaInl" alt="$k\geq l_{\rm max}+3$" src="form_52.png"/> [1]</li>
 <li>r0_spl: first internal knot (basis orbitals only non-zero after this point)</li>
 <li>r0_eps: Only calculate splines for r where relative core density larger than r0_eps (updates r0 for each l). Typically ~1.0e-8. Set to zero to use r0_spl.</li>
 <li>rmax_spl: last internal knot (basis orbitals only non-zero before this point)</li>
