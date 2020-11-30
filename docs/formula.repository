@@ -56,3 +56,8 @@
 \form#55:\[ (H + \Sigma - \epsilon - \omega)X = -(h + \delta V - \delta\epsilon)\psi \]
 \form#56:\[ (H + \Sigma - \epsilon + \omega)Y = -(h^\dagger + \delta V^\dagger - \delta\epsilon)Psi\]
 \form#57:\[R = \frac{-3}{\alpha^2\omega} \int (f_ag_b+g_af_b) j_1(kr) \, dr\]
+\form#58:\[ (H_0 + v - \epsilon_a)F_a = 0\]
+\form#59:\[ (H_0 + v -\epsilon_a)F_a = S \]
+\form#60:\[ h = -|e|r^k = -e r^k \]
+\form#61:\[<a||d||b> = R C^k_{ab}\]
+\form#62:\[R = -e \int r^k (f_a f_b + g_a g_b) \, dr\]

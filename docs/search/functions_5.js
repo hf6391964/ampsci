@@ -13,6 +13,8 @@ var searchData=
   ['fitparametric',['fitParametric',['../namespaceModule.html#a21a43640888420c0ebe918fc3c10830e',1,'Module']]],
   ['fitsigma_5fhfbrueckner',['fitSigma_hfBrueckner',['../classWavefunction.html#a09c8fd9c5768cf18ddb2427f57b8d1b1',1,'Wavefunction']]],
   ['form_5fbasis',['form_basis',['../namespaceSplineBasis.html#a0e0edf847781af2dadc99568750d8ba9',1,'SplineBasis']]],
+  ['form_5fdpsi',['form_dPsi',['../classExternalField_1_1TDHFbasis.html#a759f06f2953536536c99b95b90f8f269',1,'ExternalField::TDHFbasis']]],
+  ['form_5fdpsis',['form_dPsis',['../classExternalField_1_1TDHFbasis.html#a773fd8778b267ffe0e52a4222406dd12',1,'ExternalField::TDHFbasis']]],
   ['form_5fspline_5fbasis',['form_spline_basis',['../namespaceSplineBasis.html#ad534b99b9fdb3a9fb23762ef8a1451fc',1,'SplineBasis']]],
   ['formbasis',['formBasis',['../classWavefunction.html#a10b4000c0b43b5437b9cb7acae829c90',1,'Wavefunction']]],
   ['formpotential',['formPotential',['../namespaceNuclear.html#a5b6f713ddfd84799178ea50f26a71dae',1,'Nuclear']]],

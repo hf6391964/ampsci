@@ -78,7 +78,7 @@ $(function() {
 
 <p>Inherits <a class="el" href="classDiracOperator_1_1TensorOperator.html">DiracOperator::TensorOperator</a>.</p>
 
-<p>Inherited by <a class="el" href="classDiracOperator_1_1Hrad__el.html">DiracOperator::Hrad_el</a>, <a class="el" href="classDiracOperator_1_1Hrad__mag.html">DiracOperator::Hrad_mag</a>, <a class="el" href="classDiracOperator_1_1NullOperator.html">DiracOperator::NullOperator</a>, <a class="el" href="classDiracOperator_1_1PNCnsi.html">DiracOperator::PNCnsi</a>, and <a class="el" href="classDiracOperator_1_1RadialF.html">DiracOperator::RadialF</a>.</p>
+<p>Inherited by DiracOperator::Hrad, <a class="el" href="classDiracOperator_1_1Hrad__el.html">DiracOperator::Hrad_el</a>, <a class="el" href="classDiracOperator_1_1Hrad__mag.html">DiracOperator::Hrad_mag</a>, <a class="el" href="classDiracOperator_1_1NullOperator.html">DiracOperator::NullOperator</a>, <a class="el" href="classDiracOperator_1_1PNCnsi.html">DiracOperator::PNCnsi</a>, and <a class="el" href="classDiracOperator_1_1RadialF.html">DiracOperator::RadialF</a>.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -100,6 +100,9 @@ virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a5753b23a35bc5f4903ca3feb3265f028">isZero</a> (const int ka, int kb) const</td></tr>
 <tr class="memdesc:a5753b23a35bc5f4903ca3feb3265f028 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">If matrix element &lt;a|h|b&gt; is zero, returns true. <br /></td></tr>
 <tr class="separator:a5753b23a35bc5f4903ca3feb3265f028 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27dd1f67b217d6d903b5056f5f6cd75b inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="a27dd1f67b217d6d903b5056f5f6cd75b"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isZero</b> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
+<tr class="separator:a27dd1f67b217d6d903b5056f5f6cd75b inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1cfd94e53005dfd962f3ce604db77f3 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="af1cfd94e53005dfd962f3ce604db77f3"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#af1cfd94e53005dfd962f3ce604db77f3">updateFrequency</a> (const double)</td></tr>
 <tr class="memdesc:af1cfd94e53005dfd962f3ce604db77f3 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update frequency for frequency-dependant operators. <br /></td></tr>
@@ -141,10 +144,10 @@ virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class=
 virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a33a42bfbe111a93375d5b819b08b5edc">units</a> () const</td></tr>
 <tr class="memdesc:a33a42bfbe111a93375d5b819b08b5edc inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns units of operator (usually au, may be MHz, etc.) <br /></td></tr>
 <tr class="separator:a33a42bfbe111a93375d5b819b08b5edc inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab44aa615ffdb7a98fe9ad64917e1a49 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="aab44aa615ffdb7a98fe9ad64917e1a49"></a>
-<a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#aab44aa615ffdb7a98fe9ad64917e1a49">radial_rhs</a> (const int kappa_a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
-<tr class="memdesc:aab44aa615ffdb7a98fe9ad64917e1a49 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">radial_int = Fa * radial_rhs(a, Fb) (a needed for angular factor) <br /></td></tr>
-<tr class="separator:aab44aa615ffdb7a98fe9ad64917e1a49 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4de86194d90a44be2409df9896b9da7f inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="a4de86194d90a44be2409df9896b9da7f"></a>
+virtual <a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a4de86194d90a44be2409df9896b9da7f">radial_rhs</a> (const int kappa_a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
+<tr class="memdesc:a4de86194d90a44be2409df9896b9da7f inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">radial_int = Fa * radial_rhs(a, Fb) (a needed for angular factor) <br /></td></tr>
+<tr class="separator:a4de86194d90a44be2409df9896b9da7f inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8020a7b4e014c7387bc043c6ff1f9ad5 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="a8020a7b4e014c7387bc043c6ff1f9ad5"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a8020a7b4e014c7387bc043c6ff1f9ad5">rme3js</a> (const int twoja, const int twojb, int two_mb, int two_q=0) const</td></tr>
 <tr class="memdesc:a8020a7b4e014c7387bc043c6ff1f9ad5 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">ME = rme3js * RME. <br /></td></tr>

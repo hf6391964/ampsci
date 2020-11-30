@@ -252,7 +252,7 @@ $(function() {
 <p>Each Modules block will be run in order. You can comment-out just the block name, and the block will be skipped.</p>
 <h3><a class="el" href="namespaceModule.html#a55c4b7766fbc4c805ae6bd65bf9b8783" title="Calculates matrix elements of any tensor operator, with RPA. ">Module::matrixElements</a></h3>
 <p><a class="el" href="namespaceModule.html" title="Modules are run using calculated atomic wavefunctions. ">Module</a> to calculate Matrix Elements. For matrixElements, there are some options that apply for any operator; and then there are some options specific to each operator; these operator-specific options are given as a [] bracketed list of options ("sub-block")</p>
-<div class="fragment"><div class="line"><a class="code" href="namespaceModule.html#a55c4b7766fbc4c805ae6bd65bf9b8783">Module::matrixElements</a> {</div><div class="line">  <span class="keyword">operator</span>;       <span class="comment">//[t] default = &quot;&quot;</span></div><div class="line">  options;        <span class="comment">//[sub-block], default = &quot;&quot;</span></div><div class="line">  printBoth;      <span class="comment">//[t] default = false</span></div><div class="line">  onlyDiagonal;   <span class="comment">//[t] default = false</span></div><div class="line">  radialIntegral; <span class="comment">//[b] default = false</span></div><div class="line">  rpa;            <span class="comment">//[b] default = true</span></div><div class="line">  rpa_diagram;    <span class="comment">//[b] default = false</span></div><div class="line">  omega;          <span class="comment">//[r] default = 0.0;  or [t] (&#39;each&#39;)</span></div><div class="line">  A_vertex;       <span class="comment">//[r] default = 0.0 - for QED vertex</span></div><div class="line">  b_vertex;       <span class="comment">//[r] default = 1.0</span></div><div class="line">}</div></div><!-- fragment --><ul>
+<div class="fragment"><div class="line"><a class="code" href="namespaceModule.html#a55c4b7766fbc4c805ae6bd65bf9b8783">Module::matrixElements</a> {</div><div class="line">  <span class="keyword">operator</span>;       <span class="comment">//[t] default = &quot;&quot;</span></div><div class="line">  options;        <span class="comment">//[sub-block], default = &quot;&quot;</span></div><div class="line">  printBoth;      <span class="comment">//[t] default = false</span></div><div class="line">  onlyDiagonal;   <span class="comment">//[t] default = false</span></div><div class="line">  radialIntegral; <span class="comment">//[b] default = false</span></div><div class="line">  rpa;            <span class="comment">//[t] default = &quot;TDHF&quot;</span></div><div class="line">  omega;          <span class="comment">//[r] default = 0.0;  or [t] (&#39;each&#39;)</span></div><div class="line">  A_vertex;       <span class="comment">//[r] default = 0.0 - for QED vertex</span></div><div class="line">  b_vertex;       <span class="comment">//[r] default = 1.0</span></div><div class="line">}</div></div><!-- fragment --><ul>
 <li>operator: name of operator; see list below</li>
 <li>options: list any operator-specific options (most will be blank)<ul>
 <li><em>see below</em></li>
@@ -261,8 +261,13 @@ $(function() {
 <li>printBoth: Print &lt;a|h|b&gt; and &lt;b|h|a&gt; ? false by default. (For <em>some</em> operators, e.g., involving derivatives, this is a good test of numerical error. For most operators, values will be trivially the same; reduced matrix elements, sign may be different.)</li>
 <li>onlyDiagonal: If true, will only print diagonal MEs &lt;a|h|a&gt;</li>
 <li>radialIntegral: if true, calculates the radial integral (definition depends on specific operator)</li>
-<li>rpa: Include RPA (core polarisation) corrections to MEs, using TDHF method</li>
-<li>rpa_diagram: Include RPA (core polarisation), using diagram (Goldstone) technique</li>
+<li>rpa: Include RPA (core polarisation) corrections to MEs:<ul>
+<li>rpa = TDHF; (default) =&gt; uses TDHF method</li>
+<li>rpa = basis; =&gt; uses TDHF/basis method (uses basis)</li>
+<li>rpa = diagram; =&gt; uses diagram (Goldstone) method (uses basis)</li>
+<li>rpa = false; no RPA included</li>
+</ul>
+</li>
 <li>omega: frequency for solving TDHF/RPA equations, should be positive. Put "omega=each;" to solve at the frequency for each transition (i.e., re-solve TDHF for each transition).</li>
 <li>A_vertex, b_vertex: Effective QED vertex func: A * alpha * exp(-b * r / alpha)</li>
 </ul>
@@ -271,28 +276,16 @@ $(function() {
 <div class="fragment"><div class="line"><span class="keyword">operator</span> = E1; <span class="comment">//Electric dipole operator:</span></div><div class="line">options = {</div><div class="line">  gauge; <span class="comment">//[t] lform, vform. default = lform</span></div><div class="line">};</div></div><!-- fragment --><div class="fragment"><div class="line"><span class="keyword">operator</span> = Ek; <span class="comment">//Electric multipole operator:</span></div><div class="line">options = {</div><div class="line">  k; <span class="comment">//[i] default = 1</span></div><div class="line">};</div></div><!-- fragment --><ul>
 <li>k=1 =&gt; E1, dipole. k=2 =&gt; E2, quadrupole etc.</li>
 </ul>
-<div class="fragment"><div class="line"><span class="keyword">operator</span> = r; <span class="comment">//scalar r</span></div><div class="line">options = {</div><div class="line">  power; <span class="comment">//[r] default = 1. Will calc &lt;|r^n|&gt;.</span></div><div class="line">};</div></div><!-- fragment --><div class="fragment"><div class="line"><span class="keyword">operator</span> = pnc; <span class="comment">// spin-independent (Qw) PNC operator.</span></div><div class="line">options = {</div><div class="line">  <a class="code" href="namespacePhysConst.html#af3948ef083a64b0a3ff75aa6e8ddf8e9">c</a>; <span class="comment">//[r] half-density radius. By default, uses rrms from Z,A [see nucleus]</span></div><div class="line">  t; <span class="comment">//[r] skin thickness. default = 2.3</span></div><div class="line">};</div></div><!-- fragment --><div class="fragment"><div class="line"><span class="keyword">operator</span> = Hrad_el; <span class="comment">// QED electric part (Euhling+electric SE)</span></div></div><!-- fragment --><ul>
+<div class="fragment"><div class="line"><span class="keyword">operator</span> = r; <span class="comment">//scalar r</span></div><div class="line">options = {</div><div class="line">  power; <span class="comment">//[r] default = 1. Will calc &lt;|r^n|&gt;.</span></div><div class="line">};</div></div><!-- fragment --><div class="fragment"><div class="line"><span class="keyword">operator</span> = pnc; <span class="comment">// spin-independent (Qw) PNC operator.</span></div><div class="line">options = {</div><div class="line">  <a class="code" href="namespacePhysConst.html#af3948ef083a64b0a3ff75aa6e8ddf8e9">c</a>; <span class="comment">//[r] half-density radius. By default, uses rrms from Z,A [see nucleus]</span></div><div class="line">  t; <span class="comment">//[r] skin thickness. default = 2.3</span></div><div class="line">};</div></div><!-- fragment --><div class="fragment"><div class="line"><span class="keyword">operator</span> = Hrad; <span class="comment">// QED radiative potential</span></div></div><!-- fragment --><ul>
 <li>Takes similar arguments as RadPot (except for scale_l and core_qed)<ul>
-<li>Simple, Ueh, SE_h, SE_l, rcut, scale_rN (but not SE_mag)</li>
+<li>Simple, Ueh, SE_h, SE_l, SE_mag, rcut, scale_rN</li>
 </ul>
 </li>
 <li>Including RPA should be equivalent to including QED into core <a class="el" href="namespaceHF.html" title="Functions and classes for Hartree-Fock. ">HF</a> equations<ul>
-<li>Note: only rpa_diagram method seems to work</li>
+<li>Note: only diagram/basis method seems to work</li>
 </ul>
 </li>
-<li>Typically used with onlyDiagonal=true, and radialIntegral=true (get energy shifts)</li>
-</ul>
-<div class="fragment"><div class="line"><span class="keyword">operator</span> = Hrad_mag; <span class="comment">// QED magnetic part (magnetic SE form-factor)</span></div></div><!-- fragment --><ul>
-<li>QED magnetic part (magnetic SE form-factor)</li>
-<li>Takes similar arguments as RadPot (except for scale_l and core_qed)<ul>
-<li>SE_mag, rcut, scale_rN (but not Simple, Ueh, SE_h, SE_l,)</li>
-</ul>
-</li>
-<li>Including RPA should be equivalent to including QED into core <a class="el" href="namespaceHF.html" title="Functions and classes for Hartree-Fock. ">HF</a> equations<ul>
-<li>Note: only rpa_diagram method seems to work</li>
-</ul>
-</li>
-<li>Typically used with onlyDiagonal=true, and radialIntegral=true (get energy shifts)</li>
+<li>Typically used with radialIntegral=true (get energy shifts)</li>
 </ul>
 <div class="fragment"><div class="line"><span class="keyword">operator</span> = hfs; <span class="comment">// Magnetic dipole hyperfine structure constant A</span></div><div class="line">options = {</div><div class="line">  mu;     <span class="comment">//[r] Nuc. mag. moment. Will be looked up by default</span></div><div class="line">  I;      <span class="comment">//[r] Nuc. spin. Will be looked up by default</span></div><div class="line">  rrms;   <span class="comment">//[r] Nuc. rms radius. Will be looked up by default</span></div><div class="line">  F(r);   <span class="comment">//[t] Bohr-Weisskopf function. ball, shell, pointlike, VolotkaBW, doublyOddBW</span></div><div class="line">  printF; <span class="comment">//[b] default = false. Will write F(r)/r^2 to text file</span></div><div class="line">  <span class="comment">// -----</span></div><div class="line">  <span class="comment">// the following are only used for &quot;VolotkaBW/doublyOddBW&quot;</span></div><div class="line">  <span class="comment">// both are optional (will be deduced otherwise)</span></div><div class="line">  <a class="code" href="namespaceAngular.html#ac327cb94806f4a1d1167953cb7f73476">parity</a>; <span class="comment">//[i] parity of unpaired valence nucleon (+1/-1)</span></div><div class="line">  gl;     <span class="comment">//[i] =1 for valence proton, =0 for valence neutron</span></div><div class="line">  <span class="comment">// -----</span></div><div class="line">  <span class="comment">// The following are only read in if F(r) = doublyOddBW,</span></div><div class="line">  <span class="comment">// but are _required_ in that case (current values are for 212-Fr)</span></div><div class="line">  mu1 = 4.00; <span class="comment">//see paper for explanation</span></div><div class="line">  I1 = 4.5;</div><div class="line">  l1 = 5.;</div><div class="line">  gl1 = 1;</div><div class="line">  I2 = 0.5;</div><div class="line">  l2 = 1.;</div><div class="line">};</div></div><!-- fragment --><h3>Other Modules:</h3>
 <ul>

@@ -91,10 +91,13 @@ template&lt;typename C , typename... Args&gt; </td></tr>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a37c72ba10034151d3ef10a5056360cf7"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>derivative</b> (const std::vector&lt; T &gt; &amp;f, const std::vector&lt; T &gt; &amp;drdt, const T dt, const int order=1)</td></tr>
 <tr class="separator:a37c72ba10034151d3ef10a5056360cf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b3352a4e5c31fbe9611651796ee1716"><td class="memTemplParams" colspan="2"><a id="a6b3352a4e5c31fbe9611651796ee1716"></a>
-template&lt;Direction direction, typename Real &gt; </td></tr>
-<tr class="memitem:a6b3352a4e5c31fbe9611651796ee1716"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>additivePIntegral</b> (std::vector&lt; Real &gt; &amp;answer, const std::vector&lt; Real &gt; &amp;f, const std::vector&lt; Real &gt; &amp;g, const std::vector&lt; Real &gt; &amp;h, const <a class="el" href="classGrid.html">Grid</a> &amp;gr, std::size_t pinf=0)</td></tr>
+<tr class="memitem:a6b3352a4e5c31fbe9611651796ee1716"><td class="memTemplParams" colspan="2">template&lt;Direction direction, typename Real &gt; </td></tr>
+<tr class="memitem:a6b3352a4e5c31fbe9611651796ee1716"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceNumCalc.html#a6b3352a4e5c31fbe9611651796ee1716">additivePIntegral</a> (std::vector&lt; Real &gt; &amp;answer, const std::vector&lt; Real &gt; &amp;f, const std::vector&lt; Real &gt; &amp;g, const std::vector&lt; Real &gt; &amp;h, const <a class="el" href="classGrid.html">Grid</a> &amp;gr, std::size_t pinf=0)</td></tr>
 <tr class="separator:a6b3352a4e5c31fbe9611651796ee1716"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace568a6cd2b31399fb559a0bff1da68d"><td class="memTemplParams" colspan="2"><a id="ace568a6cd2b31399fb559a0bff1da68d"></a>
+template&lt;Direction direction, typename Real &gt; </td></tr>
+<tr class="memitem:ace568a6cd2b31399fb559a0bff1da68d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>additivePIntegral</b> (std::vector&lt; Real &gt; &amp;answer, const std::vector&lt; Real &gt; &amp;f, const std::vector&lt; Real &gt; &amp;g, const <a class="el" href="classGrid.html">Grid</a> &amp;gr, std::size_t pinf=0)</td></tr>
+<tr class="separator:ace568a6cd2b31399fb559a0bff1da68d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac224a27feb0fb052aa67371436567f22"><td class="memTemplParams" colspan="2"><a id="ac224a27feb0fb052aa67371436567f22"></a>
 template&lt;Direction direction, typename Real &gt; </td></tr>
 <tr class="memitem:ac224a27feb0fb052aa67371436567f22"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; Real &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>partialIntegral</b> (const std::vector&lt; Real &gt; &amp;f, const std::vector&lt; Real &gt; &amp;g, const std::vector&lt; Real &gt; &amp;h, const <a class="el" href="classGrid.html">Grid</a> &amp;gr, std::size_t pinf=0)</td></tr>
@@ -129,7 +132,72 @@ constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>dq_inv</b> 
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Numerical integration and differentiation. Bit of a mess right now.. </p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a6b3352a4e5c31fbe9611651796ee1716"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b3352a4e5c31fbe9611651796ee1716">&#9670;&nbsp;</a></span>additivePIntegral()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;Direction direction, typename Real &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NumCalc::additivePIntegral </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; Real &gt; &amp;&#160;</td>
+          <td class="paramname"><em>answer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Real &gt; &amp;&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Real &gt; &amp;&#160;</td>
+          <td class="paramname"><em>g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; Real &gt; &amp;&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classGrid.html">Grid</a> &amp;&#160;</td>
+          <td class="paramname"><em>gr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>pinf</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Wquad(im)</p>
+<p>Wquad(i2) </p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

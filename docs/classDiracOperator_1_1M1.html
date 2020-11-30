@@ -73,7 +73,7 @@ $(function() {
 <p>Magnetic dipole operator: &lt;a||M1||b&gt;  
  <a href="classDiracOperator_1_1M1.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="Operators_8hpp_source.html">Operators.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="M1_8hpp_source.html">M1.hpp</a>&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDiracOperator_1_1TensorOperator.html">DiracOperator::TensorOperator</a>.</p>
 <table class="memberdecls">
@@ -121,6 +121,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a5753b23a35bc5f4903ca3feb3265f028">isZero</a> (const int ka, int kb) const</td></tr>
 <tr class="memdesc:a5753b23a35bc5f4903ca3feb3265f028 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">If matrix element &lt;a|h|b&gt; is zero, returns true. <br /></td></tr>
 <tr class="separator:a5753b23a35bc5f4903ca3feb3265f028 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27dd1f67b217d6d903b5056f5f6cd75b inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="a27dd1f67b217d6d903b5056f5f6cd75b"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isZero</b> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
+<tr class="separator:a27dd1f67b217d6d903b5056f5f6cd75b inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a501723147fe7ac5a237bced2d93eb024 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="a501723147fe7ac5a237bced2d93eb024"></a>
 const std::vector&lt; double &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a501723147fe7ac5a237bced2d93eb024">getv</a> () const</td></tr>
 <tr class="memdesc:a501723147fe7ac5a237bced2d93eb024 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const ref to vector v. <br /></td></tr>
@@ -150,10 +153,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="memitem:a8b1a912708e84f67e5bd1e7d17d529c0 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="a8b1a912708e84f67e5bd1e7d17d529c0"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><b>R_symbol</b> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
 <tr class="separator:a8b1a912708e84f67e5bd1e7d17d529c0 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab44aa615ffdb7a98fe9ad64917e1a49 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="aab44aa615ffdb7a98fe9ad64917e1a49"></a>
-<a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#aab44aa615ffdb7a98fe9ad64917e1a49">radial_rhs</a> (const int kappa_a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
-<tr class="memdesc:aab44aa615ffdb7a98fe9ad64917e1a49 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">radial_int = Fa * radial_rhs(a, Fb) (a needed for angular factor) <br /></td></tr>
-<tr class="separator:aab44aa615ffdb7a98fe9ad64917e1a49 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4de86194d90a44be2409df9896b9da7f inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="a4de86194d90a44be2409df9896b9da7f"></a>
+virtual <a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a4de86194d90a44be2409df9896b9da7f">radial_rhs</a> (const int kappa_a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
+<tr class="memdesc:a4de86194d90a44be2409df9896b9da7f inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">radial_int = Fa * radial_rhs(a, Fb) (a needed for angular factor) <br /></td></tr>
+<tr class="separator:a4de86194d90a44be2409df9896b9da7f inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8020a7b4e014c7387bc043c6ff1f9ad5 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="memItemLeft" align="right" valign="top"><a id="a8020a7b4e014c7387bc043c6ff1f9ad5"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a8020a7b4e014c7387bc043c6ff1f9ad5">rme3js</a> (const int twoja, const int twojb, int two_mb, int two_q=0) const</td></tr>
 <tr class="memdesc:a8020a7b4e014c7387bc043c6ff1f9ad5 inherit pub_methods_classDiracOperator_1_1TensorOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">ME = rme3js * RME. <br /></td></tr>
@@ -202,7 +205,7 @@ std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><
 </p>
 <p> <img class="formulaInl" alt="$ k = \omega/c = \omega*\alpha $" src="form_24.png"/>. Negative sign puts into units |mu_B| </p>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>DiracOperator/<a class="el" href="Operators_8hpp_source.html">Operators.hpp</a></li>
+<li>DiracOperator/Operators/<a class="el" href="M1_8hpp_source.html">M1.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -78,7 +78,7 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="TensorOperator_8hpp_source.html">TensorOperator.hpp</a>&gt;</code></p>
 
-<p>Inherited by <a class="el" href="classDiracOperator_1_1E1.html">DiracOperator::E1</a>, <a class="el" href="classDiracOperator_1_1E1__vform.html">DiracOperator::E1_vform</a>, <a class="el" href="classDiracOperator_1_1Ek.html">DiracOperator::Ek</a>, <a class="el" href="classDiracOperator_1_1Hyperfine.html">DiracOperator::Hyperfine</a>, <a class="el" href="classDiracOperator_1_1M1.html">DiracOperator::M1</a>, <a class="el" href="classDiracOperator_1_1ScalarOperator.html">DiracOperator::ScalarOperator</a>, and <a class="el" href="classDiracOperator_1_1VertexQED.html">DiracOperator::VertexQED</a>.</p>
+<p>Inherited by <a class="el" href="classDiracOperator_1_1E1__vform.html">DiracOperator::E1_vform</a>, <a class="el" href="classDiracOperator_1_1Ek.html">DiracOperator::Ek</a>, <a class="el" href="classDiracOperator_1_1HyperfineA.html">DiracOperator::HyperfineA</a>, DiracOperator::HyperfineK, <a class="el" href="classDiracOperator_1_1M1.html">DiracOperator::M1</a>, <a class="el" href="classDiracOperator_1_1ScalarOperator.html">DiracOperator::ScalarOperator</a>, and <a class="el" href="classDiracOperator_1_1VertexQED.html">DiracOperator::VertexQED</a>.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -86,6 +86,9 @@ Public Member Functions</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a5753b23a35bc5f4903ca3feb3265f028">isZero</a> (const int ka, int kb) const</td></tr>
 <tr class="memdesc:a5753b23a35bc5f4903ca3feb3265f028"><td class="mdescLeft">&#160;</td><td class="mdescRight">If matrix element &lt;a|h|b&gt; is zero, returns true. <br /></td></tr>
 <tr class="separator:a5753b23a35bc5f4903ca3feb3265f028"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27dd1f67b217d6d903b5056f5f6cd75b"><td class="memItemLeft" align="right" valign="top"><a id="a27dd1f67b217d6d903b5056f5f6cd75b"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isZero</b> (const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fa, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
+<tr class="separator:a27dd1f67b217d6d903b5056f5f6cd75b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1cfd94e53005dfd962f3ce604db77f3"><td class="memItemLeft" align="right" valign="top"><a id="af1cfd94e53005dfd962f3ce604db77f3"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#af1cfd94e53005dfd962f3ce604db77f3">updateFrequency</a> (const double)</td></tr>
 <tr class="memdesc:af1cfd94e53005dfd962f3ce604db77f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update frequency for frequency-dependant operators. <br /></td></tr>
@@ -143,10 +146,10 @@ virtual double&#160;</td><td class="memItemRight" valign="bottom"><b>angularCgf<
 virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a4ac744208bd4bd5445e10414abbd5af0">angularF</a> (const int, const int) const =0</td></tr>
 <tr class="memdesc:a4ac744208bd4bd5445e10414abbd5af0"><td class="mdescLeft">&#160;</td><td class="mdescRight">angularF: links radiation integral to RME. RME = &lt;a||h||b&gt; = angularF(a,b) * radial_int(a,b) <br /></td></tr>
 <tr class="separator:a4ac744208bd4bd5445e10414abbd5af0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab44aa615ffdb7a98fe9ad64917e1a49"><td class="memItemLeft" align="right" valign="top"><a id="aab44aa615ffdb7a98fe9ad64917e1a49"></a>
-<a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#aab44aa615ffdb7a98fe9ad64917e1a49">radial_rhs</a> (const int kappa_a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
-<tr class="memdesc:aab44aa615ffdb7a98fe9ad64917e1a49"><td class="mdescLeft">&#160;</td><td class="mdescRight">radial_int = Fa * radial_rhs(a, Fb) (a needed for angular factor) <br /></td></tr>
-<tr class="separator:aab44aa615ffdb7a98fe9ad64917e1a49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4de86194d90a44be2409df9896b9da7f"><td class="memItemLeft" align="right" valign="top"><a id="a4de86194d90a44be2409df9896b9da7f"></a>
+virtual <a class="el" href="classDiracSpinor.html">DiracSpinor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a4de86194d90a44be2409df9896b9da7f">radial_rhs</a> (const int kappa_a, const <a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;Fb) const</td></tr>
+<tr class="memdesc:a4de86194d90a44be2409df9896b9da7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">radial_int = Fa * radial_rhs(a, Fb) (a needed for angular factor) <br /></td></tr>
+<tr class="separator:a4de86194d90a44be2409df9896b9da7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8020a7b4e014c7387bc043c6ff1f9ad5"><td class="memItemLeft" align="right" valign="top"><a id="a8020a7b4e014c7387bc043c6ff1f9ad5"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDiracOperator_1_1TensorOperator.html#a8020a7b4e014c7387bc043c6ff1f9ad5">rme3js</a> (const int twoja, const int twojb, int two_mb, int two_q=0) const</td></tr>
 <tr class="memdesc:a8020a7b4e014c7387bc043c6ff1f9ad5"><td class="mdescLeft">&#160;</td><td class="mdescRight">ME = rme3js * RME. <br /></td></tr>
