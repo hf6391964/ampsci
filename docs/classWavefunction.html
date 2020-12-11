@@ -194,18 +194,18 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#a0e359ee6a36453ec2dc2823b106bd689">coreDensity</a> () const</td></tr>
 <tr class="memdesc:a0e359ee6a36453ec2dc2823b106bd689"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates rho(r) = sum_c psi^2(r) for core states, c={n,k,m}. <br /></td></tr>
 <tr class="separator:a0e359ee6a36453ec2dc2823b106bd689"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfd8536bc40762a0b9aa6be39dacf658"><td class="memItemLeft" align="right" valign="top"><a id="adfd8536bc40762a0b9aa6be39dacf658"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#adfd8536bc40762a0b9aa6be39dacf658">hartreeFockCore</a> (const std::string &amp;method, const double x_Breit, const std::string &amp;in_core, double eps_HF=0)</td></tr>
-<tr class="memdesc:adfd8536bc40762a0b9aa6be39dacf658"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs hartree-Fock procedure for core: note: poplulates core. <br /></td></tr>
-<tr class="separator:adfd8536bc40762a0b9aa6be39dacf658"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafffac45c34b92902c7fbbc5810f0ddb"><td class="memItemLeft" align="right" valign="top"><a id="aafffac45c34b92902c7fbbc5810f0ddb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#aafffac45c34b92902c7fbbc5810f0ddb">hartreeFockCore</a> (const std::string &amp;method=&quot;HartreeFock&quot;, const double x_Breit=0.0, const std::string &amp;in_core=&quot;&quot;, double eps_HF=0, bool print=true)</td></tr>
+<tr class="memdesc:aafffac45c34b92902c7fbbc5810f0ddb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs hartree-Fock procedure for core: note: poplulates core. <br /></td></tr>
+<tr class="separator:aafffac45c34b92902c7fbbc5810f0ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee52168498b9d13f4c081d1c76df9579"><td class="memItemLeft" align="right" valign="top"><a id="aee52168498b9d13f4c081d1c76df9579"></a>
 auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#aee52168498b9d13f4c081d1c76df9579">coreEnergyHF</a> () const</td></tr>
 <tr class="memdesc:aee52168498b9d13f4c081d1c76df9579"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates <a class="el" href="namespaceHF.html" title="Functions and classes for Hartree-Fock. ">HF</a> core energy (doesn't include magnetic QED?) <br /></td></tr>
 <tr class="separator:aee52168498b9d13f4c081d1c76df9579"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba83051a902184b8c889990710584daf"><td class="memItemLeft" align="right" valign="top"><a id="aba83051a902184b8c889990710584daf"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#aba83051a902184b8c889990710584daf">hartreeFockValence</a> (const std::string &amp;in_valence_str, const bool print=true)</td></tr>
-<tr class="memdesc:aba83051a902184b8c889990710584daf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs hartree-Fock procedure for valence: note: poplulates valnece. <br /></td></tr>
-<tr class="separator:aba83051a902184b8c889990710584daf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a330e5ccafa84422c6821c38d0d45fb38"><td class="memItemLeft" align="right" valign="top"><a id="a330e5ccafa84422c6821c38d0d45fb38"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#a330e5ccafa84422c6821c38d0d45fb38">hartreeFockValence</a> (const std::string &amp;in_valence_str=&quot;&quot;, const bool print=true)</td></tr>
+<tr class="memdesc:a330e5ccafa84422c6821c38d0d45fb38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs hartree-Fock procedure for valence: note: poplulates valnece. <br /></td></tr>
+<tr class="separator:a330e5ccafa84422c6821c38d0d45fb38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac97b219b6d39a6b86989ac014bcdbeeb"><td class="memItemLeft" align="right" valign="top"><a id="ac97b219b6d39a6b86989ac014bcdbeeb"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#ac97b219b6d39a6b86989ac014bcdbeeb">localValence</a> (const std::string &amp;in_valence_str, bool list_each=false)</td></tr>
 <tr class="memdesc:ac97b219b6d39a6b86989ac014bcdbeeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves new local valence (e.g., Kohn-Sham): note: poplulates valence. <br /></td></tr>
@@ -238,6 +238,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#adfef9bfb54ba371deb8f6ba1fa0d165c">formSigma</a> (const int nmin_core=1, const bool form_matrix=true, const double r0=1.0e-4, const double rmax=30.0, const int stride=4, const bool each_valence=false, const bool include_G=false, const std::vector&lt; double &gt; &amp;lambdas={}, const std::vector&lt; double &gt; &amp;fk={}, const std::string &amp;in_fname=&quot;&quot;, const std::string &amp;out_fname=&quot;&quot;, const bool FeynmanQ=false, const bool ScreeningQ=false, const bool holeParticleQ=false, const int lmax=6, const bool GreenBasis=false, const bool PolBasis=false, const double omre=-0.2, double w0=0.01, double wratio=1.5)</td></tr>
 <tr class="memdesc:adfef9bfb54ba371deb8f6ba1fa0d165c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forms + stores correlation potential Sigma. <br /></td></tr>
 <tr class="separator:adfef9bfb54ba371deb8f6ba1fa0d165c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a421ef0086c7d2a879947bc2691b7bfbc"><td class="memItemLeft" align="right" valign="top"><a id="a421ef0086c7d2a879947bc2691b7bfbc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>copySigma</b> (const <a class="el" href="classMBPT_1_1CorrelationPotential.html">MBPT::CorrelationPotential</a> *const Sigma)</td></tr>
+<tr class="separator:a421ef0086c7d2a879947bc2691b7bfbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7e19a81c27c14374bb244aef7ff70f4"><td class="memItemLeft" align="right" valign="top"><a id="ae7e19a81c27c14374bb244aef7ff70f4"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWavefunction.html#ae7e19a81c27c14374bb244aef7ff70f4">solveDirac</a> (<a class="el" href="classDiracSpinor.html">DiracSpinor</a> &amp;psi, double e_a, const std::vector&lt; double &gt; &amp;vex, int log_eps=0) const</td></tr>
 <tr class="memdesc:ae7e19a81c27c14374bb244aef7ff70f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves Dirac bound state problem, with optional 'extra' potential log_eps is log_10(convergence_target). <br /></td></tr>

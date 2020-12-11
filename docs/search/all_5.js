@@ -1,6 +1,7 @@
 var searchData=
 [
   ['f',['f',['../classDiracSpinor.html#a3d381cf9f0e41dc1b1d3dddf7cf2a503',1,'DiracSpinor::f()'],['../namespaceDiracHydrogen.html#a35551459588bf55899000b8eaedc1a72',1,'DiracHydrogen::f()']]],
+  ['fieldshift',['fieldShift',['../namespaceModule.html#a2dc32d10f2cec82d6c5f9c35f16478d0',1,'Module']]],
   ['fill',['fill',['../classAngular_1_1Ck__ab.html#a05a42bf60f04f8e45721ac9bad3e1a51',1,'Angular::Ck_ab::fill()'],['../classAngular_1_1SixJ.html#a090d3db7a15afe9a387621619ef0bbce',1,'Angular::SixJ::fill()']]],
   ['fill_5fhamiltonian_5fmatrix',['fill_Hamiltonian_matrix',['../namespaceSplineBasis.html#a73a50bee98288badee81104893028d70',1,'SplineBasis']]],
   ['fillbesselvec',['fillBesselVec',['../namespaceSphericalBessel.html#a3615b3e888bc7a60cfeefdd6ad03e8ef',1,'SphericalBessel']]],

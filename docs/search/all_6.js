@@ -3,7 +3,7 @@ var searchData=
   ['g',['g',['../classDiracSpinor.html#a38dc2045c8a8ed78333080ea18e5dde0',1,'DiracSpinor::g()'],['../namespaceDiracHydrogen.html#a3e3267d72945ad9318c3b5f2a731cf31',1,'DiracHydrogen::g()']]],
   ['g_5fe',['g_e',['../namespacePhysConst.html#af23da780550457d1252aea1f62043eda',1,'PhysConst']]],
   ['gamma',['gamma',['../namespaceDiracHydrogen.html#a1ccc530552528b5b3be43d03c3e8bbb4',1,'DiracHydrogen']]],
-  ['generateoperator',['generateOperator',['../namespaceModule.html#a4b3b426a1e92ee8fb7090dbbb6c4b4f1',1,'Module']]],
+  ['generateoperator',['generateOperator',['../namespaceModule.html#a4b3b426a1e92ee8fb7090dbbb6c4b4f1',1,'Module::generateOperator(const IO::UserInputBlock &amp;input, const Wavefunction &amp;wf, bool print=true)'],['../namespaceModule.html#af39fc03d176c6ae9cbdd0aa1fe902cb3',1,'Module::generateOperator(std::string_view oper_name, const IO::UserInputBlock &amp;input, const Wavefunction &amp;wf, bool print)']]],
   ['get',['get',['../classIO_1_1UserInput.html#aae000578387f8722e76e69da2ddafc50',1,'IO::UserInput::get(const std::string &amp;in_block, const std::string &amp;option, const T &amp;default_value) const'],['../classIO_1_1UserInput.html#ab399610d16c29e829c55b10dddf5fe2d',1,'IO::UserInput::get(const std::string &amp;in_block, const std::string &amp;option) const'],['../classIO_1_1UserInput.html#a980d09acec5cb153cd8f17f673df3608',1,'IO::UserInput::get(const std::string &amp;in_block) const']]],
   ['get_5f6j',['get_6j',['../classAngular_1_1SixJ.html#a065516433219575f169700da18f8d6c6',1,'Angular::SixJ']]],
   ['get_5f6j_5fmutable',['get_6j_mutable',['../classAngular_1_1SixJ.html#a5eeade7259ed4ad470768ffb01a937d5',1,'Angular::SixJ']]],
