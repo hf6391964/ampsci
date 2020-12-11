@@ -182,14 +182,16 @@ public: // const methods: "views" into WF object
   std::vector<double> coreDensity() const;
 
   //! Performs hartree-Fock procedure for core: note: poplulates core
-  void hartreeFockCore(const std::string &method, const double x_Breit,
-                       const std::string &in_core, double eps_HF = 0);
+  void hartreeFockCore(const std::string &method = "HartreeFock",
+                       const double x_Breit = 0.0,
+                       const std::string &in_core = "", double eps_HF = 0,
+                       bool print = true);
 
   //! Calculates HF core energy (doesn't include magnetic QED?)
   auto coreEnergyHF() const;
 
   //! Performs hartree-Fock procedure for valence: note: poplulates valnece
-  void hartreeFockValence(const std::string &in_valence_str,
+  void hartreeFockValence(const std::string &in_valence_str = "",
                           const bool print = true);
   //! Solves new local valence (e.g., Kohn-Sham): note: poplulates valence
   void localValence(const std::string &in_valence_str, bool list_each = false);
@@ -227,6 +229,10 @@ public: // const methods: "views" into WF object
                  const bool GreenBasis = false, const bool PolBasis = false,
                  const double omre = -0.2, double w0 = 0.01,
                  double wratio = 1.5);
+  void copySigma(const MBPT::CorrelationPotential *const Sigma) {
+    if (Sigma != nullptr)
+      m_Sigma = std::make_unique<MBPT::CorrelationPotential>(*Sigma);
+  }
 
   //! @brief Solves Dirac bound state problem, with optional 'extra' potential
   //! log_eps is log_10(convergence_target).

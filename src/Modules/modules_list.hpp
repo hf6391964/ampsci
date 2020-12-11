@@ -5,6 +5,7 @@
 #include "Modules/HFAnomaly.hpp"
 #include "Modules/exampleModule.hpp"
 #include "Modules/fitParametric.hpp"
+#include "Modules/isotopeShift.hpp"
 #include "Modules/matrixElements.hpp"
 #include "Modules/pnc.hpp"
 #include "Modules/polarisability.hpp"
@@ -36,12 +37,14 @@ static const std::vector<
                 {"HFAnomaly", &HFAnomaly},
                 {"HF_rmag", &HF_rmag},
                 {"pnc", &calculatePNC},
+                {"vertexQED", &vertexQED},
                 {"polarisability", &polarisability},
                 {"testFeynman", &testFeynman},
                 {"matrixElements", &matrixElements},
                 {"lifetimes", &calculateLifetimes},
                 {"structureRad", &structureRad},
                 {"screeningFactors", &screeningFactors},
+                {"fieldShift", &fieldShift},
                 {"exampleModule", &exampleModule}};
 
 } // namespace Module

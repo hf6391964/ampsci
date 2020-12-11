@@ -140,10 +140,14 @@ void Wavefunction::determineCore(const std::string &str_core_in)
 //******************************************************************************
 void Wavefunction::hartreeFockCore(const std::string &method,
                                    const double x_Breit,
-                                   const std::string &in_core, double eps_HF) {
-  solveInitialCore(in_core, 5);
-  m_pHF = std::make_unique<HF::HartreeFock>(this, HF::parseMethod(method),
-                                            x_Breit, eps_HF);
+                                   const std::string &in_core, double eps_HF,
+                                   bool print) {
+  if (m_pHF == nullptr) {
+    solveInitialCore(in_core, 5);
+    m_pHF = std::make_unique<HF::HartreeFock>(this, HF::parseMethod(method),
+                                              x_Breit, eps_HF);
+  }
+  m_pHF->verbose = print;
   vdir = m_pHF->solveCore();
 }
 
@@ -802,12 +806,13 @@ void Wavefunction::formSigma(
 
 //******************************************************************************
 void Wavefunction::hartreeFockBrueckner(const bool print) {
-  if (!m_pHF || !m_Sigma) {
+  if (!m_pHF) {
     std::cerr << "WARNING 62: Cant call hartreeFockValence before "
                  "hartreeFockCore\n";
     return;
   }
-  m_pHF->solveBrueckner(&valence, *(m_Sigma.get()), print);
+  if (m_Sigma)
+    m_pHF->solveBrueckner(&valence, *(m_Sigma.get()), print);
 }
 
 //******************************************************************************

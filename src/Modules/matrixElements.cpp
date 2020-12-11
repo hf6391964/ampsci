@@ -183,6 +183,85 @@ void matrixElements(const IO::UserInputBlock &input, const Wavefunction &wf) {
 }
 
 //****************************************************************************
+// Used for finding A and b for effective vertex QED operator
+void vertexQED(const IO::UserInputBlock &input, const Wavefunction &wf) {
+
+  // Check input options for spelling mistakes etc.:
+  input.checkBlock({"options", "A_vertex", "b_vertex"});
+
+  std::cout << "\n"
+            << "vertexQED module\n"
+            << "Solve new wavefunction, without QED:\n";
+
+  // Note: 'wf' should include QED (for perturbed orbitals)
+  // This is the wavefunction calculated in the main routine
+  // Note: As of now, this ONLY works for H-like systems
+  // (can be easily updated in future for general case)
+
+  // Double-check wf is H-like (i.e., has no 'core' states)
+  if (!wf.core.empty()) {
+    std::cout << "Note: only works for H-like systems!\n";
+    return;
+  }
+
+  // New wavefunction, but without QED, using same parameters as original
+  Wavefunction wf0(wf.rgrid->params(), wf.get_nuclearParameters());
+  // Solve for same valence states (but, without QED)
+  // note: This would be editted to allow for HartreeFock (non-H-like systems)
+  wf0.localValence(DiracSpinor::state_config(wf.valence));
+  // print the new valence energies to screen:
+  wf0.printValence();
+
+  // Generate the hyperfine structure operator (use "generate_hfs" function)
+  // 'h' is the hyperfine operator (without QED);
+  // nb: for now, just hyperfine. Can change easily to work for any operator
+  const auto hfs_options =
+      IO::UserInputBlock("hfs", input.get<std::string>("options", ""));
+  const auto h = generate_hfsA(hfs_options, wf, true);
+
+  // Form the vertex QED operator, called "hVertexQED":
+  const auto A_x = input.get("A_vertex", 1.0);
+  const auto b_x = input.get("b_vertex", 1.0);
+  const DiracOperator::VertexQED hVertexQED(h.get(), *wf.rgrid, A_x, b_x);
+
+  std::cout << "\nIncluding effective vertex QED with: A=" << A_x
+            << ", b=" << b_x << "\n";
+
+  std::cout
+      << "\nState,           A0,         A_po,     A_vertex,     A_QED/A0\n";
+  // Loop through each valence state, and calculate various QED corrections:
+  for (const auto &Fv : wf.valence) {
+
+    // Factor to convert "reduced matrix element" to "hyperfine constant A"
+    //(note: cancels in ratio)
+    const auto a = DiracOperator::HyperfineA::convertRMEtoA(Fv, Fv);
+
+    // Find corresponding state without QED: (can't assume in same order)
+    const auto &Fv0 = *wf0.getState(Fv.n, Fv.k);
+
+    // Zeroth-order A (no QED)
+    const auto A0 = h->reducedME(Fv0, Fv0) * a;
+
+    // Including perturbed orbital QED:
+    // (subtract A0 to get just PO contribution)
+    // nb: this is the part we need high-precission for, since A and A0 are
+    // similar in magnitude
+    const auto A_po = h->reducedME(Fv, Fv) * a - A0;
+
+    // Just the vertex part:
+    const auto A_vertex = hVertexQED.reducedME(Fv, Fv) * a;
+
+    // And the ratio of total QED to zeroth-order
+    // NOTE: I think this is NOT actually what you want!! Just an example!
+    const auto QED_ratio = (A_po + A_vertex) / A0;
+
+    // nb: insead of printf, you can directly write to a file
+    printf(" %4s, %12.5e, %12.5e, %12.5e, %12.5e\n", Fv.shortSymbol().c_str(),
+           A0, A_po, A_vertex, QED_ratio);
+  }
+}
+
+//****************************************************************************
 // Calculates Structure Radiation + Normalisation of States
 void structureRad(const IO::UserInputBlock &input, const Wavefunction &wf) {
 
@@ -406,7 +485,7 @@ void calculateLifetimes(const IO::UserInputBlock &input,
         Gamma += g_n * alpha2;
         std::cout << "  E2 --> " << Fn.symbol() << ": ";
         printf("w=%7.5f, |q|=%7.5f, g=%10.4eau\n", w, std::abs(d),
-               g_n * alpha3);
+               g_n * alpha3 * alpha2);
       }
     }
 
@@ -509,8 +588,8 @@ generate_M1(const IO::UserInputBlock &input, const Wavefunction &wf, bool) {
 
 //------------------------------------------------------------------------------
 std::unique_ptr<DiracOperator::TensorOperator>
-generate_hfs(const IO::UserInputBlock &input, const Wavefunction &wf,
-             bool print) {
+generate_hfsA(const IO::UserInputBlock &input, const Wavefunction &wf,
+              bool print) {
   using namespace DiracOperator;
   input.checkBlock({"mu", "I", "rrms", "F(r)", "parity", "l", "gl", "mu1",
                     "gl1", "l1", "l2", "I1", "I2", "printF", "screening"});
@@ -534,7 +613,7 @@ generate_hfs(const IO::UserInputBlock &input, const Wavefunction &wf,
   auto Fr = Hyperfine::sphericalBall_F();
   if (Fr_str == "shell")
     Fr = Hyperfine::sphericalShell_F();
-  else if (Fr_str == "pointlike")
+  else if (Fr_str == "pointlike" || Fr_str == "point")
     Fr = Hyperfine::pointlike_F();
   else if (Fr_str == "VolotkaBW") {
     auto pi = input.get("parity", isotope.parity);
@@ -584,8 +663,61 @@ generate_hfs(const IO::UserInputBlock &input, const Wavefunction &wf,
     }
   }
 
-  return std::make_unique<HyperfineA>(
-      HyperfineA(mu, I_nuc, r_nucau, *(wf.rgrid), Fr));
+  return std::make_unique<HyperfineA>(mu, I_nuc, r_nucau, *(wf.rgrid), Fr);
+}
+
+//------------------------------------------------------------------------------
+std::unique_ptr<DiracOperator::TensorOperator>
+generate_hfsK(const IO::UserInputBlock &input, const Wavefunction &wf,
+              bool print) {
+  using namespace DiracOperator;
+
+  bool ok = true;
+  input.checkBlock({"K", "rrms", "F(r)", "gQ"});
+  // gQ is g-factor (for magnetic), quadrupole moment for electric...
+  const auto k = input.get("K", 0);
+  if (k == 0) {
+    std::cout
+        << "\nFAIL 602: Bad K in hfsK: must be >0 (required: 1=hfsA, 2=hfsB)\n";
+    ok = false;
+  }
+
+  const auto gQ = input.get("gQ", 1.0);
+  if (print) {
+    std::cout << "\nHyperfine k=" << k;
+    if (k % 2 == 0) {
+      std::cout << " (electric) ";
+    } else {
+      std::cout << " (magnetic) ";
+    }
+    std::cout << "w/ gQ = " << gQ << "\n";
+  }
+
+  const auto isotope = Nuclear::findIsotopeData(wf.Znuc(), wf.Anuc());
+  const auto r_rmsfm = input.get("rrms", isotope.r_rms);
+  const auto r_nucfm = std::sqrt(5.0 / 3) * r_rmsfm;
+  const auto r_nucau = r_nucfm / PhysConst::aB_fm;
+
+  auto Fr_str = input.get<std::string>("F(r)", "ball");
+  const auto Fr = (Fr_str == "pointlike" || Fr_str == "point")
+                      ? Hyperfine::pointlike_F()
+                      : Fr_str == "shell"
+                            ? Hyperfine::sphericalShell_F()
+                            : Fr_str == "ball" ? Hyperfine::sphericalBall_F()
+                                               : Hyperfine::pointlike_F();
+  if (Fr_str != "ball" && Fr_str != "shell")
+    Fr_str = "pointlike";
+  else
+    std::cout << "Warning: F(r) not correct for k!=1 XXX \n";
+  if (print) {
+    std::cout << "w/ " << Fr_str << " for F(r), r_N = " << r_nucfm << "fm "
+              << " (rrms=" << r_rmsfm << "fm)\n";
+  }
+
+  if (!ok)
+    return std::make_unique<NullOperator>();
+
+  return std::make_unique<HyperfineK>(k, gQ, r_nucau, *wf.rgrid, Fr);
 }
 
 //------------------------------------------------------------------------------
